@@ -23,3 +23,9 @@ List and descriptions of support functionality.
 * Writing support.
 ## MSBF
 * Implement the entire format from FLW3 editor.
+## Installation
+```
+pip install PylibMS
+```
+# Usage
+See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for explanations and examples on how to use the library.
