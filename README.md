@@ -24,6 +24,7 @@ List and descriptions of support functionality.
 ## MSBF
 * Implement the entire format from FLW3 editor.
 ## Installation
+Python version must be >=3.10 and then run:
 ```
 pip install PylibMS
 ```
