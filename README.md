@@ -6,7 +6,6 @@ PyLMS is a library built in Python3.10+ for Nintendo's LMS (libMessageStudio) fi
 * Animal Crossing: Amiibo Festival
 * Super Mario 3D World
 * Super Mario 3D Land.
-* 
 # Features
 List and descriptions of support functionality.
 ## MSBT
