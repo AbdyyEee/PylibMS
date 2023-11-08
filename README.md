@@ -21,5 +21,5 @@ List and descriptions of support functionality.
 * Second tag decoding mode that only includes tag group and name.
 ## MSBP
 * Writing support.
-# MSBF
+## MSBF
 * Implement the entire format from FLW3 editor.
