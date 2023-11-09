@@ -278,19 +278,20 @@ class TXT2:
                     start = writer.tell()
                     # Run the write function preset
                     tag["write_function"](writer, decoded_parameters)
-
                     end = writer.tell()
                     size = end - start
 
         # Tags must be even size, padded with the padding char defined in preset
-        # Only write the character if the character is provided, to prevent any read errors
-        # if the user wishes to re-read the file without the padded tags.
+        # Only write the character if the character is provided, and write a null character
+        # in case the user does not provide one and still wants to re-read the file.
         if size % 2 == 1:
+            size += 1
+            writer.seek(end)
             if "padding_char" in self.preset:
-                size += 1
-                writer.seek(end)
                 writer.write_bytes(bytes.fromhex(self.preset["padding_char"]))
-                end += 1
+            else:
+                writer.write_bytes(b"\x00")
+            end += 1
 
         writer.seek(size_offset)
         writer.write_uint16(size)
