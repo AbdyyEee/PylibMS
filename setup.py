@@ -8,7 +8,6 @@ setup(
     version="0.1.4",
     author="AbdyyEee",
     packages=find_packages(),
-    license="mit",
     description="Library for Nintendo's LMS file formats (MSBT, MSBP) for Nintendo 3DS and Wii U",
     long_description=long_description,
     long_description_content_type="text/markdown",
