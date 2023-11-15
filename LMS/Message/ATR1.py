@@ -54,11 +54,10 @@ class ATR1:
         bytes_per_attribute = reader.read_uint32()
 
         # Read the attributes
-        for _ in range(attribute_count):
-            if not isinstance(project, MSBP):
-                self.attributes.append(reader.read_bytes(bytes_per_attribute))
-                continue
-
+        if not isinstance(project, MSBP):
+            self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
+            return
+        
         # Create the structure
         for index in project.ALB1.labels:
             label = project.ALB1.labels[index]
@@ -127,7 +126,13 @@ class ATR1:
         attribute_count = len(self.attributes)
         writer.write_uint32(attribute_count)
 
-        attribute = self.attributes[0]
+        # If an error occurs trying to get length, there are no attributes
+        try:
+            attribute = self.attributes[0]
+        except IndexError:
+            attribute = None 
+            bytes_per_attribute = 0
+     
         if isinstance(attribute, bytes):
             bytes_per_attribute = len(attribute)
         else:
