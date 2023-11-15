@@ -3,6 +3,9 @@ from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 from LMS.Project.MSBP import MSBP
 from LMS.Common.LMS_Enum import LMS_Types
+
+from LMS.Common.Base_Preset import base_preset
+
 import re
 
 
@@ -14,13 +17,14 @@ class TXT2:
     def __init__(self):
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
-        self.preset: list[dict] = []
+        self.preset: list[dict] = base_preset
 
     def generate_preset_msbp(self, name: str, project: MSBP) -> dict:
         """Generates an editable preset .py file for use with tag decoding mode of `preset`.
 
         :param `name`: Name for the file.
         :param `project`: A MSBP object."""
+
         with open(f"{name}.py", "w+") as preset:
             preset.write("from LMS.Stream.Reader import Reader\n")
             preset.write("from LMS.Stream.Writer import Writer\n\n")
@@ -32,6 +36,10 @@ class TXT2:
                     f"\n\t{group_index}: {{\n\t'name': '{group_name}', \n\t'tags': [\n"
                 )
                 for tag_index in group["tag_indexes"]:
+                    # Prevent the system tags from being written as it is defined in base_preset
+                    if group_index == 0 and tag_index in [0, 1, 2, 3, 4]:
+                        continue 
+                    
                     tag = project.TAG2.tags[tag_index]
                     tag_name = tag["name"]
                     read_function_name = f"read_{group_name}_{tag_name}"
@@ -126,18 +134,20 @@ class TXT2:
                 "An invalid tag decoding mode was provided, expected default or preset."
             )
 
-        if self.tag_decoding_mode == "preset" and self.preset == {}:
+        if self.tag_decoding_mode == "preset" and self.preset == base_preset:
             raise Exception(
                 "Tag decoding mode of preset was provided without a preset being set!"
             )
 
         self.block.read_header(reader)
         message_count = reader.read_uint32()
+
         encoding = "UTF-16-LE" if reader.byte_order == "little" else "UTF-16-BE"
         tag_indicator = b"\x0E\x00" if reader.byte_order == "little" else b"\x00\x0E"
 
         # Read the messages
         offsets = self.block.get_item_offsets(reader, message_count)
+
         for i, offset in enumerate(offsets):
             if i < len(offsets) - 1:
                 next_offset = offsets[i + 1]
@@ -153,7 +163,6 @@ class TXT2:
                     if tag_decoding_mode == "default":
                         message += self.read_encoded_control_tag(reader, encoding)
                         continue
-
                     message += self.read_decoded_control_tag(reader, encoding)
                 else:
                     message += bytes
@@ -170,6 +179,23 @@ class TXT2:
         group_index = reader.read_uint16()
         tag_index = reader.read_uint16()
         parameter_size = reader.read_uint16()
+        end = reader.tell() + parameter_size
+
+        if group_index in base_preset["data"]:
+            group_name = base_preset["data"][group_index]["name"]
+            tag_name = base_preset["data"][group_index]["tags"][tag_index]["name"]
+            read_function = base_preset["data"][group_index]["tags"][tag_index][
+                "read_function"
+            ]
+            data = read_function(reader)
+
+            parsed_parameters = ""
+            for parameter in data:
+                parsed_parameters += f'{parameter}="{data[parameter]}" '
+
+            tag = f"<{group_name}:{tag_name}: {parsed_parameters}".strip() + f">"
+            reader.seek(end)
+            return tag.encode(encoding)
 
         hex_parameters = reader.read_bytes(parameter_size).hex()
         encoded_parameters = "-".join(
@@ -179,7 +205,7 @@ class TXT2:
             ]
         )
 
-        return f"[n{group_index}.{tag_index}:{encoded_parameters}]".encode(encoding)
+        return f"<n{group_index}.{tag_index}:{encoded_parameters}>".encode(encoding)
 
     def read_decoded_control_tag(self, reader: Reader, encoding: str) -> bytes:
         """Reads a decoded control tag from a stream.
@@ -214,7 +240,7 @@ class TXT2:
         for parameter in data:
             parsed_parameters += f'{parameter}="{data[parameter]}" '
 
-        tag = f"[{group_name}:{tag_name}: {parsed_parameters}".strip() + f"]"
+        tag = f"<{group_name}:{tag_name}: {parsed_parameters}".strip() + f">"
         reader.seek(end)
         return tag.encode(encoding)
 
@@ -246,7 +272,8 @@ class TXT2:
 
         :param `reader`: A Reader object.
         :param `tag_data`: The tag."""
-        has_parameters = tag[tag.rfind(":") + 1] != "]"
+        # TODO: Make this not manual and use a library
+        has_parameters = tag[tag.rfind(":") + 1] != ">"
         decoded_parameters = {}
         if has_parameters:
             # Use this RE expression to avoid spaces in quotes cause im too lazy
@@ -312,7 +339,7 @@ class TXT2:
             encoded_message = b""
             message_writer = Writer(encoded_message, writer.byte_order)
             for i in range(len(message)):
-                if message[i] == "[":
+                if message[i] == "<":
                     # Start parsing the tag (in a hacky way xD)
                     in_tag = True
                     start_index = i
@@ -321,7 +348,7 @@ class TXT2:
                     # Get the end index of the tag
                     while True:
                         end_character = message[end_index]
-                        if end_character == "]":
+                        if end_character == ">":
                             end_index += 1
                             break
                         end_index += 1
@@ -345,7 +372,7 @@ class TXT2:
                     self.write_decoded_control_tag(message_writer, tag)
 
                     i += end_index
-                elif message[i] == "]":
+                elif message[i] == ">":
                     in_tag = False
                 else:
                     if in_tag:
