@@ -54,7 +54,7 @@ class ATR1:
         bytes_per_attribute = reader.read_uint32()
 
         # Read the attributes
-        if not isinstance(project, MSBP):
+        if not isinstance(project, MSBP) or len(project.ALB1.labels) == 0:
             self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
             return
         
