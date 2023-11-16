@@ -18,6 +18,12 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
         self.preset: list[dict] = base_preset
+        
+    def split_message_by_tag(self, message: str) -> list[str]:
+        """Splits a message by the control tags.
+
+        :param `message`: The message to split."""
+        return re.split(r'(<[^>]+>)', message)
 
     def generate_preset_msbp(self, name: str, project: MSBP) -> dict:
         """Generates an editable preset .py file for use with tag decoding mode of `preset`.
