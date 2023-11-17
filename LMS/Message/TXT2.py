@@ -18,7 +18,45 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
         self.preset: list[dict] = base_preset
+    
+    def tag_encoded(self, tag: str) -> bool:
+        """Returns if a tag is encoded or not.
         
+        :param `tag`: The tag to check."""
+        return "." in tag[: tag.find(":")]
+    
+    def get_decoded_tag_information(self, tag: str) -> dict:
+        """Returns a dictionary of all the information on a tag if its decoded.
+        
+        :param `tag`: The tag to get the infomation for."""
+        result = {}
+        if not self.tag_encoded(tag):
+            group_name = tag[1:tag.find(":")]
+            tag_name = tag[tag.find(":") + 1: tag.rfind(":")]
+
+            result["group_name"] = group_name
+            result["tag_name"] = tag_name
+            dictionary_parameters = dict(re.findall(r'(\w+)\s*=\s*["\']([^"\']+)["\']', tag))
+
+            result["parameters"] = dictionary_parameters
+            return result
+
+    def get_tag_info(self, tag: str) -> dict:
+        """Returns a dictionary of all the information on a tag."""
+        result = {}
+        is_encoded = "." in tag[: tag.find(":")]
+
+        if not is_encoded:
+            group_name = tag[1:tag.find(":")]
+            tag_name = tag[tag.find(":") + 1: tag.rfind(":")]
+
+            result["group_name"] = group_name
+            result["tag_name"] = tag_name
+            result["parameters"] = {}
+
+            return result
+
+
     def split_message_by_tag(self, message: str) -> list[str]:
         """Splits a message by the control tags.
 
