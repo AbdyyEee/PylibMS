@@ -18,6 +18,7 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
         self.preset: list[dict] = base_preset
+        self.preset_set = False
 
     def tag_encoded(self, tag: str) -> bool:
         """Returns if a tag is encoded or not.
@@ -167,8 +168,15 @@ class TXT2:
             preset.write(function_dictionary)
 
     def set_preset(self, preset: dict) -> None:
-        self.preset = preset
+        self.preset = {}
+        self.preset["data"] = {} 
+        self.preset["data"] = base_preset["data"]
 
+        for group in preset["data"]:
+            self.preset["data"][group] = preset["data"][group]
+            
+        self.preset_set = True
+            
     def read(self, reader: Reader, tag_decoding_mode: str = "default") -> None:
         """Reads the TXT2 block from a stream.
 
