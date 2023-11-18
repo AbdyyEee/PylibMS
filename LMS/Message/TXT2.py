@@ -88,11 +88,11 @@ class TXT2:
                 function_dictionary += (
                     f"\n\t{group_index}: {{\n\t'name': '{group_name}', \n\t'tags': [\n"
                 )
+                # Prevent the system tags from being written as it is defined in base_preset
+                if group_index == 0:
+                    continue  
+        
                 for tag_index in group["tag_indexes"]:
-                    # Prevent the system tags from being written as it is defined in base_preset
-                    if group_index == 0 and tag_index in [0, 1, 2, 3, 4]:
-                        continue
-
                     tag = project.TAG2.tags[tag_index]
                     tag_name = tag["name"]
                     read_function_name = f"read_{group_name}_{tag_name}"
