@@ -174,7 +174,7 @@ class TXT2:
 
         for group in preset["data"]:
             self.preset["data"][group] = preset["data"][group]
-            
+
         self.preset_set = True
             
     def read(self, reader: Reader, tag_decoding_mode: str = "default") -> None:
@@ -192,11 +192,6 @@ class TXT2:
         if self.tag_decoding_mode != "default" and self.tag_decoding_mode != "preset":
             raise Exception(
                 "An invalid tag decoding mode was provided, expected default or preset."
-            )
-
-        if self.tag_decoding_mode == "preset" and self.preset == base_preset:
-            raise Exception(
-                "Tag decoding mode of preset was provided without a preset being set!"
             )
 
         self.block.read_header(reader)
