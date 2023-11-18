@@ -83,15 +83,13 @@ class TXT2:
             preset.write("from LMS.Stream.Writer import Writer\n\n")
             function_dictionary = 'preset = { "data": {'
 
-            for group_index, group in enumerate(project.TGG2.groups):
+            tag_groups = project.TGG2.groups[1:]
+
+            for group_index, group in tag_groups:
                 group_name = group["name"]
                 function_dictionary += (
                     f"\n\t{group_index}: {{\n\t'name': '{group_name}', \n\t'tags': [\n"
                 )
-                # Prevent the system tags from being written as it is defined in base_preset
-                if group_index == 0:
-                    continue  
-        
                 for tag_index in group["tag_indexes"]:
                     tag = project.TAG2.tags[tag_index]
                     tag_name = tag["name"]
