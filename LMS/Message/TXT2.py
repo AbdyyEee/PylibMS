@@ -85,7 +85,7 @@ class TXT2:
 
             tag_groups = project.TGG2.groups[1:]
 
-            for group_index, group in enumerate(tag_groups):
+            for group_index, group in enumerate(tag_groups, start=1):
                 group_name = group["name"]
                 function_dictionary += (
                     f"\n\t{group_index}: {{\n\t'name': '{group_name}', \n\t'tags': [\n"
