@@ -1,5 +1,6 @@
 from LMS.Common.LMS_Binary import LMS_Binary
 from LMS.Common.LMS_HashTable import LMS_HashTable
+from LMS.Common.LMS_Enum import LMS_Types
 from LMS.Stream.Reader import Reader
 
 from LMS.Project.CLR1 import CLR1
@@ -36,6 +37,59 @@ class MSBP:
         self.SLB1: LMS_HashTable = LMS_HashTable()
         self.CTI1: CTI1 = CTI1()
 
+    def get_attribute_structure(self) -> dict:
+        """Returns a formatted dictionary of all the data in the ATI2, ALB1, ALI2 blocks."""
+        structure = {}
+
+        if self.ALB1 is None:
+            return {}
+        
+        for index in self.ALB1.labels:
+            label = self.ALB1.labels[index]
+            type = self.ATI2.attributes[index]["type"]
+            offset = self.ATI2.attributes[index]["offset"]
+            list_index = self.ATI2.attributes[index]["list_index"]
+
+            structure[label] = {
+                "type": type,
+                "offset": offset,
+                "list_index": list_index,
+            }
+
+            if type == LMS_Types.list_index:
+                structure[label]["list_items"] = self.ALI2.attribute_lists[
+                    list_index
+                ]
+        
+        return structure
+
+    def get_tag_structure(self) -> dict:
+        """Returns a formatted dictionary of all the data in the TGG2, TAG2, TGP2, AND TGL2 blocks."""
+        structure = {}
+
+        if self.TGG2 is None:
+            return {}
+
+        # Ignore the system group
+        tag_groups = self.TGG2.groups[1:]
+
+        for group_index, group in enumerate(tag_groups, start=1):
+            structure[group_index] = {}
+            structure[group_index]["name"] = group["name"]
+            structure[group_index]["tags"] = []
+
+            for relative_index, absolute_index in enumerate(group["tag_indexes"]):
+                tag = self.TAG2.tags[absolute_index]
+                structure[group_index]["tags"].append({"name": tag["name"], "parameters": []})
+
+                for parameter_index in tag["parameter_indexes"]:
+                    parameter = self.TGP2.parameters[parameter_index]
+                    parameter_name = parameter["name"]
+                    parameter_type = parameter["type"]
+                    structure[group_index]["tags"][relative_index]["parameters"].append({"name": parameter_name,  "type": parameter_type})
+
+        return structure
+    
     def read(self, reader: Reader) -> None:
         """Reads a MSBP file from a stream.
 
