@@ -11,7 +11,7 @@ class LMS_Types(Enum):
     """A class that represents binary types utilized in attributes and tags."""
     uint8_0 = 0
     uint8_1 = 3
-    float = 6 # According to Trippixyz on discord, float will be parsed like a regular UInt8 though.
+    float = 6 
     uint16_0 = 1
     uint16_1 = 4
     uint16_2 = 7
