@@ -1,7 +1,7 @@
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 
-from LMS.Common.LMS_Enum import LMS_MessageEncoding
+from LMS.Common.LMS_Enum import LMS_MessageEncoding, LMS_Types
 
 class LMS_Binary:
     """A class that represents common data and functions shared betweeen all LMS files."""
@@ -13,6 +13,19 @@ class LMS_Binary:
         self.revision: int = None 
         self.block_count: int = None 
         self.file_size: int = None
+    
+    def check_type(self, value: int | LMS_Types, types: list[LMS_Types]) -> bool:
+        """Returns if a value or type provided matches a list of types:
+        
+        :param `value`: A int or LMS_Type enum value. 
+        :param `types`: A list of types to check."""
+        if isinstance(value, int):
+            types = [type.value for type in types]
+        
+        if value in types:
+            return True
+        
+        return False
 
     def read_header(self, reader: Reader) -> None:
         """Reads the header from the stream.

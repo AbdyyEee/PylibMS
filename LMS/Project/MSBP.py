@@ -43,7 +43,7 @@ class MSBP:
 
         if self.ALB1 is None:
             return {}
-        
+
         for index in self.ALB1.labels:
             label = self.ALB1.labels[index]
             type = self.ATI2.attributes[index]["type"]
@@ -57,10 +57,8 @@ class MSBP:
             }
 
             if type == LMS_Types.list_index:
-                structure[label]["list_items"] = self.ALI2.attribute_lists[
-                    list_index
-                ]
-        
+                structure[label]["list_items"] = self.ALI2.attribute_lists[list_index]
+
         return structure
 
     def get_tag_structure(self) -> dict:
@@ -80,7 +78,9 @@ class MSBP:
 
             for relative_index, absolute_index in enumerate(group["tag_indexes"]):
                 tag = self.TAG2.tags[absolute_index]
-                structure[group_index]["tags"].append({"name": tag["name"], "parameters": []})
+                structure[group_index]["tags"].append(
+                    {"name": tag["name"], "parameters": []}
+                )
 
                 for parameter_index in tag["parameter_indexes"]:
                     parameter = self.TGP2.parameters[parameter_index]
@@ -89,15 +89,25 @@ class MSBP:
                     parameter_type = parameter["type"]
 
                     if parameter_type == LMS_Types.list_index:
-                           structure[group_index]["tags"][relative_index]["parameters"].append(
-                               {"name": parameter_name,  "type": parameter_type, "list_items": [self.TGL2.items[i] for i in parameter["item_indexes"]]})
+                        structure[group_index]["tags"][relative_index][
+                            "parameters"
+                        ].append(
+                            {
+                                "name": parameter_name,
+                                "type": parameter_type,
+                                "list_items": [
+                                    self.TGL2.items[i]
+                                    for i in parameter["item_indexes"]
+                                ],
+                            }
+                        )
                     else:
-                        structure[group_index]["tags"][relative_index]["parameters"].append({"name": parameter_name,  "type": parameter_type})
-
-                  
+                        structure[group_index]["tags"][relative_index][
+                            "parameters"
+                        ].append({"name": parameter_name, "type": parameter_type})
 
         return structure
-    
+
     def read(self, reader: Reader) -> None:
         """Reads a MSBP file from a stream.
 

@@ -1,5 +1,6 @@
 from LMS.Common.LMS_Binary import LMS_Binary
 from LMS.Common.LMS_Enum import LMS_MessageEncoding
+from LMS.Common.LMS_Enum import LMS_Types
 from LMS.Project.MSBP import MSBP
 
 from LMS.Stream.Reader import Reader
@@ -8,7 +9,6 @@ from LMS.Stream.Writer import Writer
 from LMS.Common.LMS_HashTable import LMS_HashTable
 from LMS.Message.TXT2 import TXT2
 from LMS.Message.ATR1 import ATR1
-
 
 
 class MSBT:
@@ -39,7 +39,7 @@ class MSBT:
         lbl1_valid, lbl1_offset = self.binary.search_block_by_name(reader, "LBL1")
         atr1_valid, atr1_offset = self.binary.search_block_by_name(reader, "ATR1")
         txt2_valid, txt2_offset = self.binary.search_block_by_name(reader, "TXT2")
-       
+
         # Read LBL1
         if lbl1_valid:
             reader.seek(lbl1_offset)
@@ -72,7 +72,7 @@ class MSBT:
 
         if self.ATR1 is not None:
             block_count += 1
-        
+
         if self.TXT2 is not None:
             block_count += 1
 
