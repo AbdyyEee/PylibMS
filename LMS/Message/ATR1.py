@@ -58,16 +58,14 @@ class ATR1:
             self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
             return
         
-        # Create the structure
-        structure = project.get_attribute_structure()
-        
+        self.structure = project.get_attribute_structure()
         byte_count = 0 
 
         # Verify the bytes per attribute is the same as defined in the MSBP
         # This is to prevent unintended behaviour where the MSBP defines attributes
         # But a file is not accurate with those attributes
-        for label in structure:
-            type = structure[label]["type"]
+        for label in self.structur:
+            type = self.structur[label]["type"]
             if project.binary.check_type(type, [LMS_Types.uint8_0, LMS_Types.uint8_1, LMS_Types.float]):
                 byte_count += 1
             elif project.binary.check_type(type, [LMS_Types.uint16_0, LMS_Types.uint16_1, LMS_Types.uint16_2]):
