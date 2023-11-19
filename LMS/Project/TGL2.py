@@ -17,7 +17,9 @@ class TGL2:
         :param `reader`: A Reader object."""
         self.block.read_header(reader)
 
-        item_count = reader.read_uint32()
+        item_count = reader.read_uint16()
+        reader.skip(2)
+        
         # Read the list items
         for offset in self.block.get_item_offsets(reader, item_count):
             reader.seek(offset)

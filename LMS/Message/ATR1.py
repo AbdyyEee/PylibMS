@@ -59,22 +59,27 @@ class ATR1:
             return
         
         # Create the structure
-        for index in project.ALB1.labels:
-            label = project.ALB1.labels[index]
-            type = project.ATI2.attributes[index]["type"]
-            offset = project.ATI2.attributes[index]["offset"]
-            list_index = project.ATI2.attributes[index]["list_index"]
+        structure = project.get_attribute_structure()
+        
+        byte_count = 0 
 
-            self.structure[label] = {
-                "type": type,
-                "offset": offset,
-                "list_index": list_index,
-            }
-
-            if type == LMS_Types.list_index:
-                self.structure[label]["list_items"] = project.ALI2.attribute_lists[
-                    list_index
-                ]
+        # Verify the bytes per attribute is the same as defined in the MSBP
+        # This is to prevent unintended behaviour where the MSBP defines attributes
+        # But a file is not accurate with those attributes
+        for label in structure:
+            type = structure[label]["type"]
+            if project.binary.check_type(type, [LMS_Types.uint8_0, LMS_Types.uint8_1, LMS_Types.float]):
+                byte_count += 1
+            elif project.binary.check_type(type, [LMS_Types.uint16_0, LMS_Types.uint16_1, LMS_Types.uint16_2]):
+                byte_count += 2
+            elif project.binary.check_type(type, [LMS_Types.uint32_0, LMS_Types.uint32_1, LMS_Types.string]):
+                byte_count += 4
+            else:
+                byte_count += 1
+        
+        if byte_count != bytes_per_attribute:
+            self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
+            return
 
         # Write the attributes
         for _ in range(attribute_count):
