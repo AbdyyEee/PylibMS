@@ -84,9 +84,17 @@ class MSBP:
 
                 for parameter_index in tag["parameter_indexes"]:
                     parameter = self.TGP2.parameters[parameter_index]
+
                     parameter_name = parameter["name"]
                     parameter_type = parameter["type"]
-                    structure[group_index]["tags"][relative_index]["parameters"].append({"name": parameter_name,  "type": parameter_type})
+
+                    if parameter_type == LMS_Types.list_index:
+                           structure[group_index]["tags"][relative_index]["parameters"].append(
+                               {"name": parameter_name,  "type": parameter_type, "list_items": [self.TGL2.items[i] for i in parameter["item_indexes"]]})
+                    else:
+                        structure[group_index]["tags"][relative_index]["parameters"].append({"name": parameter_name,  "type": parameter_type})
+
+                  
 
         return structure
     
