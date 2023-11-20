@@ -361,16 +361,10 @@ class TXT2:
                     end = writer.tell()
                     size = end - start
 
-        # Tags must be even size, padded with the padding char defined in preset
-        # Only write the character if the character is provided, and write a null character
-        # in case the user does not provide one and still wants to re-read the file.
         if size % 2 == 1:
             size += 1
             writer.seek(end)
-            if "padding_char" in self.preset:
-                writer.write_bytes(bytes.fromhex(self.preset["padding_char"]))
-            else:
-                writer.write_bytes(b"\x00")
+            writer.write_bytes(b"\xCD")
             end += 1
 
         writer.seek(size_offset)
