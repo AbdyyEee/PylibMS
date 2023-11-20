@@ -12,7 +12,7 @@ List and descriptions of support functionality.
 * Reading and writing of TXT2, LBL1, and ATR1 blocks big and little endian.
 * Support for decoding of attributes, given a MSBP.
 * Support for decoding of control tags given a preset.
-    * Example: `[n0.3:00-00-00-FF]` in Kuriimu returns `[System:Color: r="0" g="0" b="0" a="255"]`.
+    * Example: `<n0.3:00-00-00-FF>` in Kuriimu returns `<System:Color: r="0" g="0" b="0" a="255">`.
 ## MSBP
 * Reading little and big endian MSBP files.
 # Planned
