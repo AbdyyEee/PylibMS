@@ -28,6 +28,9 @@ class TXT2:
         if self.tag_encoded(tag):
             return False 
         
+        if not self.is_tag(tag):
+            return False
+        
         group_name_tag = tag[1 : tag.find(":")]
         tag_name_tag = tag[tag.find(":") + 1 : tag.rfind(":")]
 
