@@ -34,7 +34,6 @@ class LMS_HashTable:
         """Deletes a label in the hash table block
 
         :param `label`: The label to delete."""
-        new = {}
         found = False
         for index in self.labels:
             if self.labels[index] == label:
@@ -44,12 +43,15 @@ class LMS_HashTable:
             raise Exception("This label does not exist in the block.")
 
         index = self.get_index_by_label(label)
-        # Add all the labels before index
-        for i in range(index):
-            new[i] = self.labels[i]
-        # Add all the labels after index
-        for i in range(index + 1, len(self.labels)):
-            new[i - 1] = self.labels[i]
+
+        del self.labels[index]
+
+        # Resize the indexes
+        for i in range(index, len(self.labels)):
+            self.labels[i] = self.labels[i + 1]
+
+        # Remove the last element to avoid duplication
+        self.labels.pop(len(self.labels) - 1, None)
 
 
     def edit_label(self, label: str, new_labeL: str) -> None:
