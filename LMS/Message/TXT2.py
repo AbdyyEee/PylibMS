@@ -334,7 +334,7 @@ class TXT2:
         :param `reader`: A Reader object.
         :param `tag_data`: The tag."""
         has_parameters = tag[tag.rfind(":") + 1] != ">"
-        tag_info = self.get_decoded_tag_information(tag) if has_parameters else {}
+        tag_info = self.get_decoded_tag_information(tag) if has_parameters
         
         preset_groups = [group["name"] for group in self.preset["data"].values()]
         group_index = preset_groups.index(tag_info["group_name"])
