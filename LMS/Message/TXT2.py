@@ -5,7 +5,6 @@ from LMS.Project.MSBP import MSBP
 from LMS.Common.LMS_Enum import LMS_Types
 
 from LMS.Common.Base_Preset import base_preset
-
 import re
 
 
@@ -20,6 +19,30 @@ class TXT2:
         self.preset: list[dict] = base_preset
         self.preset_set = False
 
+    def check_tag_information(self, tag: str, group_name: str, tag_name: str) -> bool:
+        """Returns if a tag is apart of a specific group and tag name.
+
+        :param `tag`: The tag to check.
+        :param `group_name`: The group name to check.
+        :param `tag_name`: The tag name to check."""
+        if self.tag_encoded(tag):
+            return False 
+        
+        group_name_tag = tag[1 : tag.find(":")]
+        tag_name_tag = tag[tag.find(":") + 1 : tag.rfind(":")]
+
+        if group_name_tag == group_name and tag_name_tag == tag_name:
+            return True
+
+        return False
+
+    def is_tag(self, message: str) -> bool:
+        """Returns if a message is a tag."""
+        if message.startswith("<") and message.endswith(">"):
+            return True
+
+        return False
+
     def tag_encoded(self, tag: str) -> bool:
         """Returns if a tag is encoded or not.
 
@@ -31,6 +54,9 @@ class TXT2:
 
         :param `tag`: The tag to get
         the infomation for."""
+        if not self.is_tag(tag):
+            return
+
         result = {}
         if not self.tag_encoded(tag):
             group_name = tag[1 : tag.find(":")]
@@ -44,27 +70,6 @@ class TXT2:
 
             result["parameters"] = dictionary_parameters
             return result
-
-    def get_tag_info(self, tag: str) -> dict:
-        """Returns a dictionary of all the information on a tag assuming its decoded.
-        
-        :param `tag`: The tag to get the information for."""
-        result = {}
-
-        if self.tag_encoded(tag):
-            return
-
-        group_name = tag[1 : tag.find(":")]
-        tag_name = tag[tag.find(":") + 1 : tag.rfind(":")]
-
-        result["group_name"] = group_name
-        result["tag_name"] = tag_name
-        dictionary_parameters = dict(
-            re.findall(r'(\w+)\s*=\s*["\']([^"\']+)["\']', tag)
-        )
-
-        result["parameters"] = dictionary_parameters
-        return result
 
     def split_message_by_tag(self, message: str) -> list[str]:
         """Splits a message by the control tags.
@@ -167,14 +172,14 @@ class TXT2:
 
     def set_preset(self, preset: dict) -> None:
         self.preset = {}
-        self.preset["data"] = {} 
+        self.preset["data"] = {}
         self.preset["data"] = base_preset["data"]
 
         for group in preset["data"]:
             self.preset["data"][group] = preset["data"][group]
 
         self.preset_set = True
-            
+
     def read(self, reader: Reader, tag_decoding_mode: str = "default") -> None:
         """Reads the TXT2 block from a stream.
 
@@ -325,42 +330,31 @@ class TXT2:
 
         :param `reader`: A Reader object.
         :param `tag_data`: The tag."""
-        # TODO: Make this not manual and use a library
         has_parameters = tag[tag.rfind(":") + 1] != ">"
-        decoded_parameters = {}
-        if has_parameters:
-            # Use this RE expression to avoid spaces in quotes cause im too lazy
-            string_parameters = tag[tag.rfind(":") + 2 : len(tag) - 1]
-            split_parameters = re.findall('(?:".*?"|\S)+', string_parameters)
-
-            # Parse each individual parameter
-            for parameter in split_parameters:
-                name = parameter[0 : parameter.index("=")]
-                value = parameter[parameter.index('"') + 1 : parameter.rindex('"')]
-                decoded_parameters[name] = value
-
-        group_name = tag[1 : tag.index(":")]
-        tag_name = tag[tag.index(":") + 1 : tag.rindex(":")]
-
+        tag_info = self.get_decoded_tag_information(tag) if has_parameters else {}
+        
+        preset_groups = [group["name"] for group in self.preset["data"].values()]
+        group_index = preset_groups.index(tag_info["group_name"])
+        preset_tags = [entry["name"] for entry in self.preset["data"][group_index]["tags"]]
+        tag_index = preset_tags.index(tag_info["tag_name"])
+        
         # Start writing the tag data
-        for group in self.preset["data"]:
-            for tag_index, tag in enumerate(self.preset["data"][group]["tags"]):
-                if (
-                    group_name == self.preset["data"][group]["name"]
-                    and tag["name"] == tag_name
-                ):
-                    writer.write_uint16(group)
-                    writer.write_uint16(tag_index)
+        writer.write_uint16(group_index)
+        writer.write_uint16(tag_index)
 
-                    size_offset = writer.tell()
-                    # Write 0 as placeholder for size
-                    writer.write_uint16(0)
-                    start = writer.tell()
-                    # Run the write function preset
-                    tag["write_function"](writer, decoded_parameters)
-                    end = writer.tell()
-                    size = end - start
+        size_offset = writer.tell()
+        # Write 0 as placeholder for size
+        writer.write_uint16(0)
+        start = writer.tell()
 
+        # Run the write function preset
+        write_function = self.preset["data"][group_index]["tags"][tag_index]["write_function"]
+        write_function(writer, tag_info["parameters"])
+
+        end = writer.tell()
+        size = end - start
+        # Tag parameters must be of even length
+        # Nintendo pads tags of uneven length with 0xCD character
         if size % 2 == 1:
             size += 1
             writer.seek(end)
@@ -380,51 +374,24 @@ class TXT2:
         writer.write_uint32(message_count)
         message_offset = message_count * 4 + 4
 
-        in_tag = False
+        tag_indicator = b"\x0E\x00" if writer.byte_order == "little" else b"\x00\x0E"
+
         encoded_messages = []
         for message in self.messages:
-            encoded_message = b""
-            message_writer = Writer(encoded_message, writer.byte_order)
-            for i in range(len(message)):
-                if message[i] == "<":
-                    # Start parsing the tag (in a hacky way xD)
-                    in_tag = True
-                    start_index = i
-                    end_index = i
+            split_message = self.split_message_by_tag(message)
+            message_writer = Writer(b"", writer.byte_order)
 
-                    # Get the end index of the tag
-                    while True:
-                        end_character = message[end_index]
-                        if end_character == ">":
-                            end_index += 1
-                            break
-                        end_index += 1
-
-                    # Get the tag data
-                    tag = message[start_index:end_index]
-                    is_encoded = "." in tag[: tag.find(":")]
-
-                    tag_indicator = (
-                        b"\x0E\x00"
-                        if message_writer.byte_order == "little"
-                        else b"\x00\x0E"
-                    )
+            for part in split_message:
+                if self.is_tag(part):
                     message_writer.write_bytes(tag_indicator)
+                    
+                    if self.tag_encoded(part):
+                        self.write_encoded_control_tag(message_writer, part)
+                        continue 
 
-                    # Parse parameters
-                    if is_encoded:
-                        self.write_encoded_control_tag(message_writer, tag)
-                        continue
-
-                    self.write_decoded_control_tag(message_writer, tag)
-
-                    i += end_index
-                elif message[i] == ">":
-                    in_tag = False
+                    self.write_decoded_control_tag(message_writer, part)
                 else:
-                    if in_tag:
-                        continue
-                    message_writer.write_utf16_string(message[i])
+                    message_writer.write_utf16_string(part)
 
             encoded_messages.append(message_writer.get_data())
 

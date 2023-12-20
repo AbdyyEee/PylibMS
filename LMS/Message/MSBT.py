@@ -78,7 +78,7 @@ class MSBT:
 
         self.binary.magic = "MsgStdBn"
         self.binary.encoding = LMS_MessageEncoding(2)
-        self.binary.revision = 3
+        self.binary.revision = 2
         self.binary.block_count = block_count
 
         self.binary.write_header(writer)

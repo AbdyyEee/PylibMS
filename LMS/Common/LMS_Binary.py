@@ -9,7 +9,7 @@ class LMS_Binary:
     def __init__(self):
         self.magic: str  = None 
         self.bom: str = None 
-        self.encoding: LMS_MessageEncoding = None 
+        self.encoding: LMS_MessageEncoding = LMS_MessageEncoding.UTF8
         self.revision: int = None 
         self.block_count: int = None 
         self.file_size: int = None
@@ -39,6 +39,7 @@ class LMS_Binary:
         # Unk 1
         reader.skip(2)
         self.encoding = LMS_MessageEncoding(reader.read_uint8())
+        
         self.revision = reader.read_uint8()
         self.block_count = reader.read_uint16()
         # Unk 2
@@ -53,6 +54,7 @@ class LMS_Binary:
         size = reader.tell() 
         if size != self.file_size: 
             raise Exception("The file size is misaligned!")
+        
         reader.seek(end)
 
     def write_header(self, writer: Writer) -> None:
@@ -65,6 +67,7 @@ class LMS_Binary:
                            "little" else b"\xFE\xFF")
         # Unk 1
         writer.write_bytes(b"\x00\x00")
+        
         writer.write_uint8(self.encoding.value)
         writer.write_uint8(self.revision)
         writer.write_uint16(self.block_count)

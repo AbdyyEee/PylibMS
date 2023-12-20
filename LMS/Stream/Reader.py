@@ -46,6 +46,9 @@ class Reader:
         """Reads a UInt16 from the stream."""
         return struct.unpack(types[self.byte_order]["uint16"], self.data.read(2))[0]
 
+    def read_float16(self) -> int:
+        return struct.unpack("<e", self.data.read(2))[0]
+    
     def read_uint32(self) -> int:
         """Reads a UInt32 from the stream."""
         return struct.unpack(types[self.byte_order]["uint32"], self.data.read(4))[0]

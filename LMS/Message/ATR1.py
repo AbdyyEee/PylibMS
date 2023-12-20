@@ -75,6 +75,7 @@ class ATR1:
             else:
                 byte_count += 1
         
+        
         if byte_count != bytes_per_attribute:
             self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
             return
@@ -96,7 +97,7 @@ class ATR1:
                     case LMS_Types.uint16_1:
                         attribute[label] = reader.read_uint16()
                     case LMS_Types.uint16_2:
-                        attribute[label] = reader.read_uint16()
+                        attribute[label] = reader.read_float16()
                     case LMS_Types.uint32_0:
                         attribute[label] = reader.read_uint32()
                     case LMS_Types.uint32_1:
