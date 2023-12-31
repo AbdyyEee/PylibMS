@@ -190,7 +190,7 @@ class Tag_Utility:
         else:
             structure = msbp.get_tag_structure()
 
-        group_index = [group["name"]
+        group_index = [structure[group]["name"]
                        for group in structure].index(tag_info["group_name"])
         tag_index = [tag["name"] for tag in structure[group_index]
                      ["tags"]].index(tag_info["tag_name"])
