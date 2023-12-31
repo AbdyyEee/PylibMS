@@ -13,7 +13,7 @@ class Tag_Utility:
         """Returns a list of the group and tag name given a tag.
 
         :param `tag`: The tag to get the information for."""
-        soup = BeautifulSoup(tag, "html.parser")
+        soup = BeautifulSoup(tag, "xml")
         return soup.find().name.split("::")
 
     @staticmethod
@@ -139,7 +139,7 @@ class Tag_Utility:
         return tag
 
     @staticmethod
-    def write_encoded_control_tag(writer: Writer, tag: str) -> None:
+    def write_encoded_tag(writer: Writer, tag: str) -> None:
         """Writes an encoded control tag to a stream.
 
         :param `reader`: A Reader object.
@@ -163,7 +163,7 @@ class Tag_Utility:
                 writer.write_bytes(bytes.fromhex(parameter))
 
     @staticmethod
-    def write_decoded_control_tag(writer: Writer, tag: str, msbp: MSBP) -> None:
+    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP) -> None:
         """Writes a decoded control tag to a stream.
 
         :param `writer`: A Writer object.
@@ -171,9 +171,9 @@ class Tag_Utility:
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
         structure = msbp.get_tag_structure()
 
-        group_index = [group["name"].lower()
+        group_index = [group["name"]
                        for group in msbp.TGG2.groups].index(tag_info["group_name"])
-        tag_index = [tag["name"].lower() for tag in structure[group_index]
+        tag_index = [tag["name"] for tag in structure[group_index]
                      ["tags"]].index(tag_info["tag_name"])
 
         writer.write_uint16(group_index)
@@ -183,7 +183,7 @@ class Tag_Utility:
         start = writer.tell()
 
         for parameter in structure[group_index]["tags"][tag_index]["parameters"]:
-            value = tag_info["parameters"][parameter["name"].lower()]
+            value = tag_info["parameters"][parameter["name"]]
             if msbp.binary._8_bit_type(parameter["type"]):
                 writer.write_uint8(int(value))
             elif msbp.binary._16_bit_type(parameter["type"]):

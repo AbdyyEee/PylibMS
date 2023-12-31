@@ -88,10 +88,10 @@ class TXT2:
                     message_writer.write_bytes(tag_indicator)
 
                     if Tag_Utility.tag_encoded(part):
-                        Tag_Utility.write_encoded_control_tag(
+                        Tag_Utility.write_encoded_tag(
                             message_writer, part)
                         continue
-                    Tag_Utility.write_decoded_control_tag(
+                    Tag_Utility.write_decoded_tag(
                         message_writer, part, msbp)
                 else:
                     message_writer.write_utf16_string(part)
