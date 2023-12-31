@@ -65,9 +65,6 @@ class MSBP:
         """Returns a formatted dictionary of all the data in the TGG2, TAG2, TGP2, AND TGL2 blocks."""
         structure = {}
 
-        if self.TGG2 is None:
-            return {}
-
         for group_index, group in enumerate(self.TGG2.groups):
             structure[group_index] = {}
             structure[group_index]["name"] = group["name"]

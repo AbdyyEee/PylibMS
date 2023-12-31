@@ -168,8 +168,27 @@ class Tag_Utility:
 
         :param `writer`: A Writer object.
         :param `tag`: The tag."""
+        
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
-        structure = msbp.get_tag_structure()
+        if msbp is None:
+            structure = {0: {
+                    "name": "System",
+                    "tags": [
+                        {"name": "Ruby", "parameters": [{"name": "rt", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
+                        {"name": "Font", "parameters": [{"name": "face", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
+                        {"name": "Size", "parameters": [{"name": "percent", "type": LMS_BinaryTypes.UINT16_0}]},
+                        {"name": "Color", "parameters": [
+                            {"name": "r", "type": LMS_BinaryTypes.UINT8_0},
+                            {"name": "g", "type": LMS_BinaryTypes.UINT8_0},
+                            {"name": "b", "type": LMS_BinaryTypes.UINT8_0},
+                            {"name": "a", "type": LMS_BinaryTypes.UINT8_0}
+                        ]},
+                        {"name": "PageBreak", "parameters": []}
+                    ]
+                }
+            }
+        else:
+            structure = msbp.get_tag_structure()
 
         group_index = [group["name"]
                        for group in msbp.TGG2.groups].index(tag_info["group_name"])
