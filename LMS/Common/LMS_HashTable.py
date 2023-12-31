@@ -5,12 +5,13 @@ from LMS.Stream.Writer import Writer
 
 class LMS_HashTable:
     """A class that represents a generic hash table block.
-    
+
     https://github.com/kinnay/Nintendo-File-Formats/wiki/LMS-File-Format#hash-tables"""
+
     def __init__(self):
         self.block = LMS_Block()
         self.labels: dict[int:str] = {}
-    
+
     def get_index_by_label(self, label: str) -> None:
         """Returns the index of a label given its name
 
@@ -18,7 +19,7 @@ class LMS_HashTable:
         for index in self.labels:
             if self.labels[index] == label:
                 return index
- 
+
     def add_label(self, label: str) -> None:
         """Adds a label to the hash tabel block.
 
@@ -53,7 +54,6 @@ class LMS_HashTable:
         # Remove the last element to avoid duplication
         self.labels.pop(len(self.labels) - 1, None)
 
-
     def edit_label(self, label: str, new_labeL: str) -> None:
         """Edits a label in the hash table block.
 
@@ -84,9 +84,9 @@ class LMS_HashTable:
                 self.labels[item_index] = label
 
             reader.seek(end)
-        
+
         sorted_labels = {}
-       
+
         for index in sorted(self.labels):
             sorted_labels[index] = self.labels[index]
 
@@ -121,7 +121,7 @@ class LMS_HashTable:
             if hash not in hash_slots:
                 hash_slots[hash] = [label]
             else:
-                 hash_slots[hash].append(label)
+                hash_slots[hash].append(label)
         size = 0
         label_offsets = slot_count * 8 + 4
         size += label_offsets

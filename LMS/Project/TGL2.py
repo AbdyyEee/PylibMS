@@ -19,7 +19,7 @@ class TGL2:
 
         item_count = reader.read_uint16()
         reader.skip(2)
-        
+
         # Read the list items
         for offset in self.block.get_item_offsets(reader, item_count):
             reader.seek(offset)

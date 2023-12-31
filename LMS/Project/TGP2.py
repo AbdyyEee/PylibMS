@@ -1,6 +1,6 @@
 from LMS.Common.LMS_Block import LMS_Block
 from LMS.Stream.Reader import Reader
-from LMS.Common.LMS_Enum import LMS_Types
+from LMS.Common.LMS_Enum import LMS_BinaryTypes
 
 
 class TGP2:
@@ -24,12 +24,15 @@ class TGP2:
         for offset in self.block.get_item_offsets(reader, parameter_count):
             parameter = {}
             reader.seek(offset)
-            type = LMS_Types(reader.read_uint8())
+            type = LMS_BinaryTypes(reader.read_uint8())
             parameter["type"] = type
 
-            if type != LMS_Types.list_index:
+            if type is not LMS_BinaryTypes.LIST_INDEX:
                 parameter["name"] = reader.read_string_nt()
                 self.parameters.append(parameter)
+
+                if type is LMS_BinaryTypes.STRING:
+                    parameter["cd_prefix"] = False
                 continue
 
             reader.skip(1)

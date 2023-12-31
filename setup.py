@@ -5,13 +5,14 @@ with open("README.md", "r") as f:
 
 setup(
     name="PylibMS",
-    version="0.3.8",
+    version="0.4.0",
     author="AbdyyEee",
     packages=find_packages(),
     description="Library for Nintendo's LMS file formats (MSBT, MSBP) for Nintendo 3DS and Wii U",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/AbdyyEee/PylibMS",
-    keywords=["nintendo", "msbf", "msbt", "msbp", "modding", "lms", "libmessagestudio"],
+    keywords=["nintendo", "msbf", "msbt", "msbp",
+              "modding", "lms", "libmessagestudio"],
     python_requires=">=3.10"
 )

@@ -1,6 +1,6 @@
 from LMS.Common.LMS_Binary import LMS_Binary
 from LMS.Common.LMS_Enum import LMS_MessageEncoding
-from LMS.Common.LMS_Enum import LMS_Types
+from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Project.MSBP import MSBP
 
 from LMS.Stream.Reader import Reader
@@ -19,26 +19,23 @@ class MSBT:
     def __init__(self):
         self.binary: LMS_Binary = LMS_Binary()
         self.LBL1: LMS_HashTable = LMS_HashTable()
-        self.ATR1: ATR1 = ATR1()
-        self.TXT2: TXT2 = TXT2()
+        self.ATR1: ATR1 = ATR1(self)
+        self.TXT2: TXT2 = TXT2(self)
 
-    def read(
-        self, reader: Reader, msbp: MSBP = None, tag_decoding_mode: str = "default"
-    ) -> None:
+    def read(self, reader: Reader, msbp: MSBP = None):
         """Reads a MSBT file from a stream.
 
         :param `reader`: A Reader object.
-        :param `msbp`: A MSBP object. Used for decoding of attributes.
-        :param `tag_decoding_mode`: The mode at which to decode tags.
-            * `default` uses near Kuriimu syntax `<n0.4:>`, `<n0.3:00-00-00-FF>`,
-            * `preset` completely decodes it `<System:PageBreak:>`, `<System:Color r="0" g="0" b="0" a="255">`.
-                * A preset must be set using `TXT2.generate_preset_msbp` or a manual one that has been created.
+        :param `msbp`: A MSBP object. Used for decoding of attributes and tags
         """
         self.binary.read_header(reader)
 
-        lbl1_valid, lbl1_offset = self.binary.search_block_by_name(reader, "LBL1")
-        atr1_valid, atr1_offset = self.binary.search_block_by_name(reader, "ATR1")
-        txt2_valid, txt2_offset = self.binary.search_block_by_name(reader, "TXT2")
+        lbl1_valid, lbl1_offset = self.binary.search_block_by_name(
+            reader, "LBL1")
+        atr1_valid, atr1_offset = self.binary.search_block_by_name(
+            reader, "ATR1")
+        txt2_valid, txt2_offset = self.binary.search_block_by_name(
+            reader, "TXT2")
 
         # Read LBL1
         if lbl1_valid:
@@ -57,14 +54,16 @@ class MSBT:
         # Read TXT2
         if txt2_valid:
             reader.seek(txt2_offset)
-            self.TXT2.read(reader, tag_decoding_mode)
+            self.TXT2.read(reader, msbp)
         else:
             self.TXT2 = None
 
-    def write(self, writer: Writer) -> None:
+    def write(self, writer: Writer, msbp: MSBP = None) -> None:
         """Writes a MSBT file to a stream.
 
         :param `reader`: A Reader object."""
+        writer.byte_order = self.binary.bom
+
         block_count = 0
 
         if self.LBL1 is not None:
@@ -77,8 +76,8 @@ class MSBT:
             block_count += 1
 
         self.binary.magic = "MsgStdBn"
-        self.binary.encoding = LMS_MessageEncoding(2)
-        self.binary.revision = 2
+        self.binary.encoding = LMS_MessageEncoding(1)
+        self.binary.revision = 3
         self.binary.block_count = block_count
 
         self.binary.write_header(writer)
@@ -93,7 +92,10 @@ class MSBT:
             self.ATR1.write(writer)
 
         if self.TXT2 is not None:
-            self.TXT2.write(writer)
+            if msbp is not None:
+                self.TXT2.write(writer, msbp)
+            else:
+                self.TXT2.write(writer)
 
         writer.seek(0, 2)
         size = writer.tell()

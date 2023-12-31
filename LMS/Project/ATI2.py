@@ -1,5 +1,5 @@
 from LMS.Common.LMS_Block import LMS_Block
-from LMS.Common.LMS_Enum import LMS_Types
+from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Stream.Reader import Reader
 
 
@@ -22,7 +22,7 @@ class ATI2:
         # Read the attribute information
         for _ in range(attribute_count):
             attribute = {}
-            attribute["type"] = LMS_Types(reader.read_uint8())
+            attribute["type"] = LMS_BinaryTypes(reader.read_uint8())
             reader.skip(1)
             attribute["list_index"] = reader.read_uint16()
             attribute["offset"] = reader.read_uint32()

@@ -1,6 +1,6 @@
 from LMS.Common.LMS_Binary import LMS_Binary
 from LMS.Common.LMS_HashTable import LMS_HashTable
-from LMS.Common.LMS_Enum import LMS_Types
+from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Stream.Reader import Reader
 
 from LMS.Project.CLR1 import CLR1
@@ -56,7 +56,7 @@ class MSBP:
                 "list_index": list_index,
             }
 
-            if type == LMS_Types.list_index:
+            if type == LMS_BinaryTypes.LIST_INDEX:
                 structure[label]["list_items"] = self.ALI2.attribute_lists[list_index]
 
         return structure
@@ -68,10 +68,7 @@ class MSBP:
         if self.TGG2 is None:
             return {}
 
-        # Ignore the system group
-        tag_groups = self.TGG2.groups[1:]
-
-        for group_index, group in enumerate(tag_groups, start=1):
+        for group_index, group in enumerate(self.TGG2.groups):
             structure[group_index] = {}
             structure[group_index]["name"] = group["name"]
             structure[group_index]["tags"] = []
@@ -88,7 +85,7 @@ class MSBP:
                     parameter_name = parameter["name"]
                     parameter_type = parameter["type"]
 
-                    if parameter_type == LMS_Types.list_index:
+                    if parameter_type is LMS_BinaryTypes.LIST_INDEX:
                         structure[group_index]["tags"][relative_index][
                             "parameters"
                         ].append(
@@ -101,11 +98,19 @@ class MSBP:
                                 ],
                             }
                         )
+                    elif parameter_type is LMS_BinaryTypes.STRING:
+                        structure[group_index]["tags"][relative_index][
+                            "parameters"
+                        ].append({"name": parameter_name, "type": parameter_type, "cd_prefix": parameter["cd_prefix"]})
                     else:
                         structure[group_index]["tags"][relative_index][
                             "parameters"
                         ].append({"name": parameter_name, "type": parameter_type})
 
+        # Delete the name attribute of the color tag in system to prevent errors when used in TXT2
+        # games often just use rgba and not name
+        # TODO: Perhaps add an option to exclude this
+        del structure[0]["tags"][3]["parameters"][4]
         return structure
 
     def read(self, reader: Reader) -> None:
@@ -114,18 +119,30 @@ class MSBP:
         :param `reader`: A Reader object."""
         self.binary.read_header(reader)
 
-        clr1_valid, clr1_offset = self.binary.search_block_by_name(reader, "CLR1")
-        clb1_valid, clb1_offset = self.binary.search_block_by_name(reader, "CLB1")
-        ati2_valid, ati2_offset = self.binary.search_block_by_name(reader, "ATI2")
-        alb1_valid, alb1_offset = self.binary.search_block_by_name(reader, "ALB1")
-        ali2_valid, ali2_offset = self.binary.search_block_by_name(reader, "ALI2")
-        tgg2_valid, tgg2_offset = self.binary.search_block_by_name(reader, "TGG2")
-        tag2_valid, tag2_offset = self.binary.search_block_by_name(reader, "TAG2")
-        tgp2_valid, tgp2_offset = self.binary.search_block_by_name(reader, "TGP2")
-        tgl2_valid, tgl2_offset = self.binary.search_block_by_name(reader, "TGL2")
-        syl3_valid, syl3_offset = self.binary.search_block_by_name(reader, "SYL3")
-        slb1_valid, slb1_offset = self.binary.search_block_by_name(reader, "SLB1")
-        cti1_valid, cti1_offset = self.binary.search_block_by_name(reader, "CTI1")
+        clr1_valid, clr1_offset = self.binary.search_block_by_name(
+            reader, "CLR1")
+        clb1_valid, clb1_offset = self.binary.search_block_by_name(
+            reader, "CLB1")
+        ati2_valid, ati2_offset = self.binary.search_block_by_name(
+            reader, "ATI2")
+        alb1_valid, alb1_offset = self.binary.search_block_by_name(
+            reader, "ALB1")
+        ali2_valid, ali2_offset = self.binary.search_block_by_name(
+            reader, "ALI2")
+        tgg2_valid, tgg2_offset = self.binary.search_block_by_name(
+            reader, "TGG2")
+        tag2_valid, tag2_offset = self.binary.search_block_by_name(
+            reader, "TAG2")
+        tgp2_valid, tgp2_offset = self.binary.search_block_by_name(
+            reader, "TGP2")
+        tgl2_valid, tgl2_offset = self.binary.search_block_by_name(
+            reader, "TGL2")
+        syl3_valid, syl3_offset = self.binary.search_block_by_name(
+            reader, "SYL3")
+        slb1_valid, slb1_offset = self.binary.search_block_by_name(
+            reader, "SLB1")
+        cti1_valid, cti1_offset = self.binary.search_block_by_name(
+            reader, "CTI1")
 
         # Read CLR1
         if clr1_valid:

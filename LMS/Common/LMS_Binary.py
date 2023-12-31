@@ -1,65 +1,80 @@
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 
-from LMS.Common.LMS_Enum import LMS_MessageEncoding, LMS_Types
+from LMS.Common.LMS_Enum import LMS_MessageEncoding, LMS_BinaryTypes
+
 
 class LMS_Binary:
     """A class that represents common data and functions shared betweeen all LMS files."""
 
     def __init__(self):
-        self.magic: str  = None 
-        self.bom: str = None 
+        self.magic: str = None
+        self.bom: str = None
         self.encoding: LMS_MessageEncoding = LMS_MessageEncoding.UTF8
-        self.revision: int = None 
-        self.block_count: int = None 
+        self.revision: int = None
+        self.block_count: int = None
         self.file_size: int = None
-    
-    def check_type(self, value: int | LMS_Types, types: list[LMS_Types]) -> bool:
-        """Returns if a value or type provided matches a list of types:
-        
-        :param `value`: A int or LMS_Type enum value. 
-        :param `types`: A list of types to check."""
+
+    def _8_bit_type(self, value: int | LMS_BinaryTypes):
+        """Returns if a value or type is 8 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
         if isinstance(value, int):
-            types = [type.value for type in types]
-        
-        if value in types:
-            return True
-        
-        return False
+            value = LMS_BinaryTypes(value)
+        # Exlcude list type as it has special reading
+        return value in [LMS_BinaryTypes.UINT8_0, LMS_BinaryTypes.UINT8_1, LMS_BinaryTypes.FLOAT]
+
+    def _16_bit_type(self, value: int | LMS_BinaryTypes):
+        """Returns if a value or type is 16 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
+        if isinstance(value, int):
+            value = LMS_BinaryTypes(value)
+
+        return value in [LMS_BinaryTypes.UINT16_0, LMS_BinaryTypes.UINT16_1, LMS_BinaryTypes.UINT16_2]
+
+    def _32_bit_type(self, value: int | LMS_BinaryTypes):
+        """Returns if a value or type is 32 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
+        if isinstance(value, int):
+            value = LMS_BinaryTypes(value)
+
+        # Exlcude String type as it has special reading
+        return value in [LMS_BinaryTypes.UINT32_0, LMS_BinaryTypes.UINT32_1]
 
     def read_header(self, reader: Reader) -> None:
         """Reads the header from the stream.
-        
+
         :param `reader`: A Reader object."""
         self.magic = reader.read_string_len(8)
         self.bom = "little" if reader.read_bytes(2) == b"\xFF\xFE" else "big"
-       
-        reader.change_byte_order(self.bom)
 
+        reader.byte_order = self.bom
         # Unk 1
         reader.skip(2)
         self.encoding = LMS_MessageEncoding(reader.read_uint8())
-        
+
         self.revision = reader.read_uint8()
         self.block_count = reader.read_uint16()
         # Unk 2
         reader.skip(2)
         self.file_size = reader.read_uint32()
-        # Skip to end 
+        # Skip to end
         reader.skip(10)
         end = reader.tell()
 
-        # Verify file size alignment 
+        # Verify file size alignment
         reader.seek(0, 2)
-        size = reader.tell() 
-        if size != self.file_size: 
+        size = reader.tell()
+        if size != self.file_size:
             raise Exception("The file size is misaligned!")
-        
+
         reader.seek(end)
 
     def write_header(self, writer: Writer) -> None:
         """Writes the header from the stream.
-        
+
         :param `writer`: A Writer object."""
         self.bom = writer.byte_order
         writer.write_string(self.magic)
@@ -67,7 +82,7 @@ class LMS_Binary:
                            "little" else b"\xFE\xFF")
         # Unk 1
         writer.write_bytes(b"\x00\x00")
-        
+
         writer.write_uint8(self.encoding.value)
         writer.write_uint8(self.revision)
         writer.write_uint16(self.block_count)
@@ -79,7 +94,7 @@ class LMS_Binary:
 
     def write_size(self, writer: Writer):
         """Writes the size of the file to the stream.
-        
+
         :param `writer`: A Writer object."""
         writer.seek(0, 2)
         size = writer.tell()
@@ -88,7 +103,7 @@ class LMS_Binary:
 
     def search_block_by_name(self, reader: Reader, name: str) -> tuple[bool, int]:
         """Returns the absolute offset of a specific block from a stream and if the offset is valid.
-        
+
         :param `reader`: A Reader object.
         :param `name`: The name of the block."""
         name = name.upper()
@@ -97,7 +112,7 @@ class LMS_Binary:
 
     def search_all_blocks(self, reader: Reader) -> dict[str:int]:
         """Returns the absolute offset of every block in a stream.
-        
+
         :param `reader`: A Reader object."""
         result = {}
         # First block is always located absolute 32
@@ -119,6 +134,3 @@ class LMS_Binary:
             result[magic] = offset
 
         return result
-
-
-            

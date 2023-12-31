@@ -1,5 +1,5 @@
 from LMS.Common.LMS_Block import LMS_Block
-from LMS.Common.LMS_Enum import LMS_Types
+from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Project.MSBP import MSBP
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
@@ -10,108 +10,111 @@ class ATR1:
 
     https://github.com/kinnay/Nintendo-File-Formats/wiki/MSBT-File-Format#atr1-block"""
 
-    def __init__(self):
+    def __init__(self, msbt=None):
+        from LMS.Message.MSBT import MSBT
+
+        self.msbt: MSBT = msbt
+
         self.block: LMS_Block = LMS_Block()
         self.attributes: list[dict | bytes] = []
         self.structure: dict = {}
+
+        # Define a string table attribute for when attributes arent decoded
+        self.strings: list[str] = []
+
+    def attributes_valid(self) -> bool:
+        """Checks if the attributes are decoded and valid, as in they are not type bytes or are empty."""
+        if len(self.msbt.ATR1.attributes) > 0:
+            return not isinstance(self.msbt.ATR1.attributes[0], bytes)
+        return False
+
+    def read_encoded_attributes(self, reader: Reader) -> None:
+        """Reads encoded attributes and the string table.
+
+        :param `reader`: A Reader object."""
+        self.attributes = [
+            reader.read_bytes(self.bytes_per_attribute)
+            for _ in range(self.attribute_count)
+        ]
+
+        if self.block.size > self.attribute_count * self.bytes_per_attribute:
+            self.strings = [
+                reader.read_utf16_string() for _ in range(self.attribute_count)
+            ]
 
     def create_decoded_attribute(self) -> dict:
         """Adds an attribute, setting each value to the default for each type."""
         attribute = {}
         for label in self.structure:
             type = self.structure[label]["type"]
-            match type:
-                case LMS_Types.uint8_0:
-                    attribute[label] = 0
-                case LMS_Types.uint8_1:
-                    attribute[label] = 0
-                case LMS_Types.float:
-                    attribute[label] = 0
-                case LMS_Types.uint16_0:
-                    attribute[label] = 0
-                case LMS_Types.uint16_1:
-                    attribute[label] = 0
-                case LMS_Types.uint16_2:
-                    attribute[label] = 0
-                case LMS_Types.uint32_0:
-                    attribute[label] = 0
-                case LMS_Types.uint32_1:
-                    attribute[label] = 0
-                case LMS_Types.string:
-                    attribute[label] = ""
-                case LMS_Types.list_index:
-                    attribute[label] = self.structure[label]["list_items"][0]
-        return attribute
+            if (
+                self.msbt.binary._8_bit_type(type)
+                or self.msbt.binary._16_bit_type()
+                or self.msbt.binary._32_bit_type
+            ):
+                attribute[label] = 0
+            elif type is LMS_BinaryTypes.STRING:
+                attribute[label] = ""
+            else:
+                attribute[label] = self.structure[label]["list_items"][0]
 
-    def read(self, reader: Reader, project: MSBP = None) -> None:
+    def read(self, reader: Reader, msbp: MSBP = None) -> None:
         """Reads the ATR1 block from a stream.
 
         :param `reader`: A Reader object.
         :param `project`: A MSBP object used for decoding attributes."""
 
         self.block.read_header(reader)
-        attribute_count = reader.read_uint32()
-        bytes_per_attribute = reader.read_uint32()
+        self.attribute_count = reader.read_uint32()
+        self.bytes_per_attribute = reader.read_uint32()
 
         # Read the attributes
-        if not isinstance(project, MSBP) or len(project.ALB1.labels) == 0:
-            self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
+        if msbp is None or len(msbp.ALB1.labels) == 0:
+            self.read_encoded_attributes(reader)
             return
-        
-        self.structure = project.get_attribute_structure()
-        byte_count = 0 
+
+        self.structure = msbp.get_attribute_structure()
 
         # Verify the bytes per attribute is the same as defined in the MSBP
         # This is to prevent unintended behaviour where the MSBP defines attributes
         # But a file is not accurate with those attributes
+        byte_count = 0
         for label in self.structure:
             type = self.structure[label]["type"]
-            if project.binary.check_type(type, [LMS_Types.uint8_0, LMS_Types.uint8_1, LMS_Types.float]):
+            if self.msbt.binary._8_bit_type(type):
                 byte_count += 1
-            elif project.binary.check_type(type, [LMS_Types.uint16_0, LMS_Types.uint16_1, LMS_Types.uint16_2]):
+            elif self.msbt.binary._16_bit_type(type):
                 byte_count += 2
-            elif project.binary.check_type(type, [LMS_Types.uint32_0, LMS_Types.uint32_1, LMS_Types.string]):
+            elif self.msbt.binary._32_bit_type(type) or type is LMS_BinaryTypes.STRING:
                 byte_count += 4
             else:
                 byte_count += 1
-        
-        
-        if byte_count != bytes_per_attribute:
-            self.attributes = [reader.read_bytes(bytes_per_attribute) for _ in range(attribute_count)]
+
+        if byte_count != self.bytes_per_attribute:
+            self.read_encoded_attributes(reader)
             return
 
         # Write the attributes
-        for _ in range(attribute_count):
+        for _ in range(self.attribute_count):
             attribute = {}
             for label in self.structure:
                 type = self.structure[label]["type"]
-                match type:
-                    case LMS_Types.uint8_0:
-                        attribute[label] = reader.read_uint8()
-                    case LMS_Types.uint8_1:
-                        attribute[label] = reader.read_uint8()
-                    case LMS_Types.float:
-                        attribute[label] = reader.read_uint8()
-                    case LMS_Types.uint16_0:
-                        attribute[label] = reader.read_uint16()
-                    case LMS_Types.uint16_1:
-                        attribute[label] = reader.read_uint16()
-                    case LMS_Types.uint16_2:
-                        attribute[label] = reader.read_float16()
-                    case LMS_Types.uint32_0:
-                        attribute[label] = reader.read_uint32()
-                    case LMS_Types.uint32_1:
-                        attribute[label] = reader.read_uint32()
-                    case LMS_Types.string:
-                        offset = self.block.data_start + reader.read_uint32()
-                        last = reader.tell()
-                        reader.seek(offset)
-                        string = reader.read_utf16_string()
-                        attribute[label] = string
-                        reader.seek(last)
-                    case LMS_Types.list_index:
-                        index = reader.read_uint8()
-                        attribute[label] = self.structure[label]["list_items"][index]
+                if self.msbt.binary._8_bit_type(type):
+                    attribute[label] = reader.read_uint8()
+                elif self.msbt.binary._16_bit_type(type):
+                    attribute[label] = reader.read_uint16()
+                elif self.msbt.binary._32_bit_type(type):
+                    attribute[label] = reader.read_uint32()
+                elif type is LMS_BinaryTypes.STRING:
+                    offset = self.block.data_start + reader.read_uint32()
+                    last = reader.tell()
+                    reader.seek(offset)
+                    string = reader.read_utf16_string()
+                    attribute[label] = string
+                    reader.seek(last)
+                else:
+                    index = reader.read_uint8()
+                    attribute[label] = self.structure[label]["list_items"][index]
 
             self.attributes.append(attribute)
 
@@ -131,47 +134,38 @@ class ATR1:
         writer.write_uint32(attribute_count)
 
         # If an error occurs trying to get length, there are no attributes
-        try:
-            attribute = self.attributes[0]
-        except IndexError:
-            attribute = None 
-            bytes_per_attribute = 0
-     
-        if isinstance(attribute, bytes):
-            bytes_per_attribute = len(attribute)
+
+        if not self.attributes_valid() and len(self.attributes) > 0:
+            bytes_per_attribute = len(self.attributes[0])
         else:
             for label in self.structure:
                 type = self.structure[label]["type"]
-                match type:
-                    case LMS_Types.uint8_0:
-                        bytes_per_attribute += 1
-                    case LMS_Types.uint8_1:
-                        bytes_per_attribute += 1
-                    case LMS_Types.float:
-                        bytes_per_attribute += 1
-                    case LMS_Types.uint16_0:
-                        bytes_per_attribute += 2
-                    case LMS_Types.uint16_1:
-                        bytes_per_attribute += 2
-                    case LMS_Types.uint16_2:
-                        bytes_per_attribute += 2
-                    case LMS_Types.uint32_0:
-                        bytes_per_attribute += 4
-                    case LMS_Types.uint32_1:
-                        bytes_per_attribute += 4
-                    case LMS_Types.string:
-                        bytes_per_attribute += 4
-                    case LMS_Types.list_index:
-                        bytes_per_attribute += 1
+                if self.msbt.binary._8_bit_type(type):
+                    bytes_per_attribute += 1
+                elif self.msbt.binary._16_bit_type(type):
+                    bytes_per_attribute += 2
+                elif (
+                    self.msbt.binary._32_bit_type(type)
+                    or type is LMS_BinaryTypes.STRING
+                ):
+                    bytes_per_attribute += 4
+                else:
+                    bytes_per_attribute += 1
 
         writer.write_uint32(bytes_per_attribute)
 
         # Verify each attribute is type bytes meaning to write the raw parameters
-        if all(isinstance(attribute, bytes) for attribute in self.attributes):
+        if not self.attributes_valid():
             for attribute in self.attributes:
                 writer.write_bytes(attribute)
 
-            self.block.size = 8 + attribute_count * bytes_per_attribute
+            string_size = 0
+
+            for string in self.strings:
+                string_size += 2 + len(string.encode(writer.get_utf16_encoding()))
+                writer.write_utf16_string(string, use_double=True)
+
+            self.block.size = 8 + attribute_count * bytes_per_attribute + string_size
             self.block.write_end_data(writer)
             return
 
@@ -181,34 +175,21 @@ class ATR1:
         for attribute in self.attributes:
             for label in self.structure:
                 type = self.structure[label]["type"]
-                match type:
-                    case LMS_Types.uint8_0:
-                        writer.write_uint8(attribute[label])
-                    case LMS_Types.uint8_1:
-                        writer.write_uint8(attribute[label])
-                    case LMS_Types.float:
-                        writer.write_uint8(attribute[label])
-                    case LMS_Types.uint16_0:
-                        writer.write_uint16(attribute[label])
-                    case LMS_Types.uint16_1:
-                        writer.write_uint16(attribute[label])
-                    case LMS_Types.uint16_2:
-                        writer.write_uint16(attribute[label])
-                    case LMS_Types.uint32_0:
-                        writer.write_uint32(attribute[label])
-                    case LMS_Types.uint32_1:
-                        writer.write_uint32(attribute[label])
-                    case LMS_Types.string:
-                        string = attribute[label]
-                        strings.append(string)
-                        writer.write_uint32(string_offset)
-                        string_offset += (
-                            len(string.encode(writer.get_utf16_encoding())) + 2
-                        )
-                    case LMS_Types.list_index:
-                        writer.write_uint8(
-                            self.structure[label]["list_items"].index(attribute[label])
-                        )
+                if self.msbt.binary._8_bit_type(type):
+                    writer.write_uint8(attribute[label])
+                elif self.msbt.binary._16_bit_type(type):
+                    writer.write_uint16(attribute[label])
+                elif self.msbt.binary._32_bit_type(type):
+                    writer.write_uint32(attribute[label])
+                elif type is LMS_BinaryTypes.STRING:
+                    string = attribute[label]
+                    strings.append(string)
+                    writer.write_uint32(string_offset)
+                    string_offset += len(string.encode(writer.get_utf16_encoding())) + 2
+                else:
+                    writer.write_uint8(
+                        self.structure[label]["list_items"].index(attribute[label])
+                    )
 
         string_size = 8
         for string in strings:
