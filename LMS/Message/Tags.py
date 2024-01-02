@@ -266,6 +266,6 @@ class Tag_Utility:
         """Returns the parameters in a dictionary.
 
         :param `tag`: The tag to get the parameters for."""
-        soup = BeautifulSoup(tag, 'html.parser')
+        soup = BeautifulSoup(tag, 'xml')
         data = soup.find()
         return data.attrs
