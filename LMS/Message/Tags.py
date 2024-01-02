@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 class Tag_Utility:
     """Static class used to house most tag related functions."""
-
+    @staticmethod
     def get_group_and_tag_names(tag: str) -> tuple[str, str]:
         """Returns a list of the group and tag name given a tag.
 
