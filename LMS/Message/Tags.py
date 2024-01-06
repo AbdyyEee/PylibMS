@@ -193,7 +193,8 @@ class Tag_Utility:
         start = writer.tell()
 
         for parameter in structure[group_index]["tags"][tag_index]["parameters"]:
-            value = tag_info["parameters"][parameter["name"]]
+            value = tag_info["parameters"][parameter["name"].lower()]
+            
             if LMS_BinaryTypes._8_bit_type(parameter["type"]):
                 writer.write_uint8(int(value))
             elif LMS_BinaryTypes._16_bit_type(parameter["type"]):
@@ -257,6 +258,6 @@ class Tag_Utility:
         """Returns the parameters in a dictionary.
 
         :param `tag`: The tag to get the parameters for."""
-        soup = BeautifulSoup(tag, 'xml')
+        soup = BeautifulSoup(tag, 'html.parser')
         data = soup.find()
         return data.attrs
