@@ -28,7 +28,7 @@ base_structure = {0: {
 
 class Tag_Utility:
     """Static class used to house most tag related functions."""
-
+    @staticmethod
     def get_group_and_tag_names(tag: str) -> tuple[str, str]:
         """Returns a list of the group and tag name given a tag.
 
@@ -257,6 +257,6 @@ class Tag_Utility:
         """Returns the parameters in a dictionary.
 
         :param `tag`: The tag to get the parameters for."""
-        soup = BeautifulSoup(tag, 'html.parser')
+        soup = BeautifulSoup(tag, 'xml')
         data = soup.find()
         return data.attrs
