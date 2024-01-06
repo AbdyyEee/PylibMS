@@ -15,34 +15,6 @@ class LMS_Binary:
         self.block_count: int = None
         self.file_size: int = None
 
-    def _8_bit_type(self, value: int | LMS_BinaryTypes):
-        """Returns if a value or type is 8 bits.
-
-        :param `value`: A int or LMS_Type enum value."""
-        if isinstance(value, int):
-            value = LMS_BinaryTypes(value)
-        # Exlcude list type as it has special reading
-        return value in [LMS_BinaryTypes.UINT8_0, LMS_BinaryTypes.UINT8_1, LMS_BinaryTypes.FLOAT]
-
-    def _16_bit_type(self, value: int | LMS_BinaryTypes):
-        """Returns if a value or type is 16 bits.
-
-        :param `value`: A int or LMS_Type enum value."""
-        if isinstance(value, int):
-            value = LMS_BinaryTypes(value)
-
-        return value in [LMS_BinaryTypes.UINT16_0, LMS_BinaryTypes.UINT16_1, LMS_BinaryTypes.UINT16_2]
-
-    def _32_bit_type(self, value: int | LMS_BinaryTypes):
-        """Returns if a value or type is 32 bits.
-
-        :param `value`: A int or LMS_Type enum value."""
-        if isinstance(value, int):
-            value = LMS_BinaryTypes(value)
-
-        # Exlcude String type as it has special reading
-        return value in [LMS_BinaryTypes.UINT32_0, LMS_BinaryTypes.UINT32_1]
-
     def read_header(self, reader: Reader) -> None:
         """Reads the header from the stream.
 

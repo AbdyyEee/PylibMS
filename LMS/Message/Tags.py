@@ -5,6 +5,26 @@ from LMS.Common.LMS_Enum import LMS_BinaryTypes
 import re
 from bs4 import BeautifulSoup
 
+base_structure = {0: {
+    "name": "System",
+    "tags": [
+        {"name": "Ruby", "parameters": [
+            {"name": "rt", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
+        {"name": "Font", "parameters": [
+            {"name": "face", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
+        {"name": "Size", "parameters": [
+            {"name": "percent", "type": LMS_BinaryTypes.UINT16_0}]},
+        {"name": "Color", "parameters": [
+            {"name": "r", "type": LMS_BinaryTypes.UINT8_0},
+            {"name": "g", "type": LMS_BinaryTypes.UINT8_0},
+            {"name": "b", "type": LMS_BinaryTypes.UINT8_0},
+            {"name": "a", "type": LMS_BinaryTypes.UINT8_0}
+        ]},
+        {"name": "PageBreak", "parameters": []}
+    ]
+}
+}
+
 
 class Tag_Utility:
     """Static class used to house most tag related functions."""
@@ -36,11 +56,11 @@ class Tag_Utility:
         return False
 
     @staticmethod
-    def split_message_by_tag(message: str) -> list[str]:
+    def split_message_by_tag(message: str) -> tuple[str]:
         """Splits a message by the control tags.
 
         :param `message`: The message to split."""
-        return re.split(r"(<[^>]+>)", message)
+        return tuple(re.split(r"(<[^>]+>)", message))
 
     @staticmethod
     def tag_encoded(tag: str) -> bool:
@@ -55,23 +75,12 @@ class Tag_Utility:
 
         :param `reader`: A Reader object."""
         group_index = reader.read_uint16()
-        tag_index = reader.read_uint16()
 
-        # As the system group is excluded when reading a MSBP, read it here so it can be caught.
         if group_index == 0:
-            match tag_index:
-                case 0:
-                    return f'<System::Ruby rt="{reader.read_len_prefixed_utf16_string()}">'
-                case 1:
-                    return f'<System::Font face="{reader.read_len_prefixed_utf16_string()}">'
-                case 2:
-                    return f'<System::Size percent="{reader.read_uint16()}">'
-                case 3:
-                    return f'<System::Color r="{reader.read_uint8()}" g="{reader.read_uint8()}" b="{reader.read_uint8()}" a="{reader.read_uint8()}">'
-                case 4:
-                    reader.skip(2)
-                    return f'<System::PageBreak>'
+            reader.seek(reader.tell() - 2)
+            return Tag_Utility.read_decoded_tag(reader)
 
+        tag_index = reader.read_uint16()
         parameter_size = reader.read_uint16()
         hex_parameters = reader.read_bytes(parameter_size).hex()
         encoded_parameters = "-".join(
@@ -83,14 +92,15 @@ class Tag_Utility:
         return f"<n{group_index}.{tag_index}:{encoded_parameters}>"
 
     @staticmethod
-    def read_decoded_tag(reader: Reader, msbp: MSBP) -> str:
+    def read_decoded_tag(reader: Reader, msbp: MSBP = None) -> str:
         """Reads a decoded tag from a stream given a MSBP.
 
         :param `reader`: A Reader object.
         :param `msbp`: A MSBP object."""
         encoding = "UTF-16-LE" if reader.byte_order == "little" else "UTF-16-BE"
         parsed_parameters = {}
-        structure = msbp.get_tag_structure()
+
+        structure = base_structure if msbp is None else msbp.get_tag_structure()
 
         group_index = reader.read_uint16()
         tag_index = reader.read_uint16()
@@ -102,11 +112,11 @@ class Tag_Utility:
         tag = group["tags"][tag_index]
 
         for parameter in tag["parameters"]:
-            if msbp.binary._8_bit_type(parameter["type"]):
+            if LMS_BinaryTypes._8_bit_type(parameter["type"]):
                 parsed_parameters[parameter["name"]] = reader.read_uint8()
-            elif msbp.binary._16_bit_type(parameter["type"]):
+            elif LMS_BinaryTypes._16_bit_type(parameter["type"]):
                 parsed_parameters[parameter["name"]] = reader.read_uint16()
-            elif msbp.binary._32_bit_type(parameter["type"]):
+            elif LMS_BinaryTypes._32_bit_type(parameter["type"]):
                 parsed_parameters[parameter["name"]] = reader.read_uint32()
             elif parameter["type"] is LMS_BinaryTypes.STRING:
                 # Check for the 0xCD byte that often prefixes strings for certain parameters
@@ -144,12 +154,11 @@ class Tag_Utility:
 
         :param `reader`: A Reader object.
         :param `tag_data`: The tag."""
-        group_index = tag[2: tag.index(".")]
+        group_index = int(tag[2: tag.index(".")])
         tag_index = int(tag[tag.index(".") + 1: tag.index(":")])
 
         parameters = tag[tag.rindex(":") + 1: len(tag) - 1].split("-")
         parameter_size = len(parameters)
-
         # 1 indicates empty parameters due to split function returning an empty list
         if parameter_size == 1:
             parameter_size = 0
@@ -163,32 +172,14 @@ class Tag_Utility:
                 writer.write_bytes(bytes.fromhex(parameter))
 
     @staticmethod
-    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP) -> None:
+    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP = None) -> None:
         """Writes a decoded control tag to a stream.
 
         :param `writer`: A Writer object.
         :param `tag`: The tag."""
-        
+
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
-        if msbp is None:
-            structure = {0: {
-                    "name": "System",
-                    "tags": [
-                        {"name": "Ruby", "parameters": [{"name": "rt", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
-                        {"name": "Font", "parameters": [{"name": "face", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
-                        {"name": "Size", "parameters": [{"name": "percent", "type": LMS_BinaryTypes.UINT16_0}]},
-                        {"name": "Color", "parameters": [
-                            {"name": "r", "type": LMS_BinaryTypes.UINT8_0},
-                            {"name": "g", "type": LMS_BinaryTypes.UINT8_0},
-                            {"name": "b", "type": LMS_BinaryTypes.UINT8_0},
-                            {"name": "a", "type": LMS_BinaryTypes.UINT8_0}
-                        ]},
-                        {"name": "PageBreak", "parameters": []}
-                    ]
-                }
-            }
-        else:
-            structure = msbp.get_tag_structure()
+        structure = base_structure if msbp is None else msbp.get_tag_structure()
 
         group_index = [structure[group]["name"]
                        for group in structure].index(tag_info["group_name"])
@@ -203,11 +194,11 @@ class Tag_Utility:
 
         for parameter in structure[group_index]["tags"][tag_index]["parameters"]:
             value = tag_info["parameters"][parameter["name"]]
-            if msbp.binary._8_bit_type(parameter["type"]):
+            if LMS_BinaryTypes._8_bit_type(parameter["type"]):
                 writer.write_uint8(int(value))
-            elif msbp.binary._16_bit_type(parameter["type"]):
+            elif LMS_BinaryTypes._16_bit_type(parameter["type"]):
                 writer.write_uint16(int(value))
-            elif msbp.binary._32_bit_type(parameter["type"]):
+            elif LMS_BinaryTypes._32_bit_type(parameter["type"]):
                 writer.write_uint32(int(value))
             elif parameter["type"] is LMS_BinaryTypes.STRING:
                 if parameter["cd_prefix"]:

@@ -80,7 +80,6 @@ class TXT2:
         for message in self.messages:
             split_message = Tag_Utility.split_message_by_tag(message)
             # Use a writer object to simplfy the encoding process
-
             message_writer = Writer(b"", writer.byte_order)
 
             for part in split_message:
@@ -90,9 +89,11 @@ class TXT2:
                     if Tag_Utility.tag_encoded(part):
                         Tag_Utility.write_encoded_tag(
                             message_writer, part)
+
                         continue
-                    Tag_Utility.write_decoded_tag(
-                        message_writer, part, msbp)
+
+                    Tag_Utility.write_decoded_tag(message_writer, part, msbp)
+
                 else:
                     message_writer.write_utf16_string(part)
 

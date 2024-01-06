@@ -22,3 +22,35 @@ class LMS_BinaryTypes(Enum):
     UINT32_1 = 5
     STRING = 8
     LIST_INDEX = 9
+
+    @classmethod
+    def _8_bit_type(self, value: "LMS_BinaryTypes" or int):
+        """Returns if a value or type is 8 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
+        if isinstance(value, int):
+            value = self(value)
+
+        # Exlcude list type as it has special reading
+        return value in [self.UINT8_0, self.UINT8_1, self.FLOAT]
+
+    @classmethod
+    def _16_bit_type(self, value: "LMS_BinaryTypes" or int):
+        """Returns if a value or type is 16 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
+        if isinstance(value, int):
+            value = LMS_BinaryTypes(value)
+
+        return value in [self.UINT16_0, self.UINT16_1, self.UINT16_2]
+
+    @classmethod
+    def _32_bit_type(self, value: "LMS_BinaryTypes" or int):
+        """Returns if a value or type is 32 bits.
+
+        :param `value`: A int or LMS_Type enum value."""
+        if isinstance(value, int):
+            value = self(value)
+
+        # Exlcude String type as it has special reading
+        return value in [self.UINT32_0, self.UINT32_1]
