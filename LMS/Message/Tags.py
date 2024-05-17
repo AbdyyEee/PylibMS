@@ -50,7 +50,7 @@ class Tag_Utility:
         """Returns if a message is a tag.
 
         :param `message`: The message to check."""
-        if message.startswith("<") and message.endswith(">"):
+        if not message.startswith("<\\") and message.startswith("<") and message.endswith(">"):
             return True
 
         return False
