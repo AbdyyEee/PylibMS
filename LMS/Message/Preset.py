@@ -20,7 +20,7 @@ def filter_attribute_access(obj, attr_name, is_setting):
 
 class Preset:
     """A static class for loading and storing a preset."""
-    def __init__(self):
+    def __init__(self, globals: list[str] = None):
         self.lua_runtime = LuaRuntime(attribute_filter=filter_attribute_access)
 
         self.stream_functions: dict[str:Callable] = {}
@@ -30,9 +30,13 @@ class Preset:
         
         globals = self.lua_runtime.globals()
 
-        for name in RESTRICTED_GLOBALS:
-            globals[name] = None 
-    
+        if globals is not None:
+            for name in globals:
+                globals[name] = None
+        else:
+            for name in RESTRICTED_GLOBALS:
+                globals[name] = None 
+        
     def load_preset_file(self, file_name: str) -> None:
         with open(file_name, "r+") as file:
             self.stream_functions.update(dict(self.lua_runtime.execute(file.read())))
