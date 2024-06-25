@@ -34,12 +34,11 @@ class Tag_Utility:
         """Returns if a message is a tag.
 
         :param `message`: The message to check."""
-        return (
-            not message.startswith("<\\")
-            and message.startswith("<")
-            and message.endswith(">")
-        )
+        if not message.startswith("<\\") and message.startswith("<") and message.endswith(">"):
+            return True
 
+        return False	      
+    
     @staticmethod
     def split_message_by_tag(message: str) -> tuple[str]:
         """Splits a message by the control tags.
