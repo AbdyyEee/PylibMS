@@ -10,7 +10,8 @@ types = {
 class Reader:
     """A class utilized for reading binary files into a stream object."""
 
-    def __init__(self, data: bytes, byte_order: str = "little"):
+    def __init__(self, data: bytes, byte_order: str = "little", lua_indexes: bool = False):
+        self.lua_indexes = lua_indexes
         self.data = BytesIO(data)
         self.byte_order = byte_order
 
@@ -42,9 +43,10 @@ class Reader:
         """Returns the current position in the stream."""
         return self.data.tell()
 
-    def read_uint8(self) -> int:
+    def read_uint8(self, lua_index: bool = False) -> int:
         """Reads a UInt8 from the stream."""
-        return struct.unpack(types[self.byte_order]["uint8"], self.data.read(1))[0]
+        value = struct.unpack(types[self.byte_order]["uint8"], self.data.read(1))[0]
+        return value if not lua_index else value + 1
 
     def read_uint16(self) -> int:
         """Reads a UInt16 from the stream."""

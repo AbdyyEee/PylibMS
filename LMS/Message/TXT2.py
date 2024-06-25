@@ -2,10 +2,8 @@ from LMS.Common.LMS_Block import LMS_Block
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 from LMS.Project.MSBP import MSBP
-from LMS.Common.LMS_Enum import LMS_BinaryTypes
 
 from LMS.Message.Tags import Tag_Utility
-import re
 
 
 class TXT2:
@@ -15,12 +13,13 @@ class TXT2:
 
     def __init__(self, msbt=None):
         from LMS.Message.MSBT import MSBT
+
         self.msbt: MSBT = None
 
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
 
-    def read(self, reader: Reader, msbp: MSBP = None) -> None:
+    def read(self, reader: Reader, preset, msbp: MSBP = None) -> None:
         """Reads the TXT2 block from a stream.
 
         :param `reader`: A Reader object.
@@ -32,7 +31,6 @@ class TXT2:
         encoding = reader.get_utf16_encoding()
         tag_indicator = b"\x0E\x00" if reader.byte_order == "little" else b"\x00\x0E"
 
-        # Read the messages
         offsets = self.block.get_item_offsets(reader, message_count)
 
         for i, offset in enumerate(offsets):
@@ -42,25 +40,17 @@ class TXT2:
                 next_offset = self.block.data_start + self.block.size
 
             reader.seek(offset)
-            message = b""
 
+            message = b""
             while reader.tell() < next_offset:
                 bytes = reader.read_bytes(2)
-                if bytes == tag_indicator:
-                    if msbp is None:
-                        message += Tag_Utility.read_encoded_tag(
-                            reader).encode(encoding)
-                        continue
-                    message += Tag_Utility.read_decoded_tag(
-                        reader, msbp).encode(encoding)
-                else:
-                    message += bytes
-
+                message += Tag_Utility.read_tag(reader, preset, msbp).encode(encoding) if bytes == tag_indicator else bytes 
+            
             self.messages.append(message.decode(encoding))
 
         self.block.seek_to_end(reader)
 
-    def write(self, writer: Writer, msbp: MSBP = None) -> None:
+    def write(self, writer: Writer, preset, msbp: MSBP = None) -> None:
         """Writes the TXT2 block to a stream.
 
         :param `writer`: A Writer object.
@@ -85,15 +75,7 @@ class TXT2:
             for part in split_message:
                 if Tag_Utility.is_tag(part):
                     message_writer.write_bytes(tag_indicator)
-
-                    if Tag_Utility.tag_encoded(part):
-                        Tag_Utility.write_encoded_tag(
-                            message_writer, part)
-
-                        continue
-
-                    Tag_Utility.write_decoded_tag(message_writer, part, msbp)
-
+                    Tag_Utility.write_tag(message_writer, part, preset, msbp)
                 else:
                     message_writer.write_utf16_string(part)
 

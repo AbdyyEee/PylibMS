@@ -1,8 +1,7 @@
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 
-from LMS.Common.LMS_Enum import LMS_MessageEncoding, LMS_BinaryTypes
-
+from LMS.Common.LMS_Enum import LMS_MessageEncoding
 
 class LMS_Binary:
     """A class that represents common data and functions shared betweeen all LMS files."""

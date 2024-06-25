@@ -1,6 +1,7 @@
 from LMS.Common.LMS_Block import LMS_Block
 from LMS.Stream.Reader import Reader
 from LMS.Common.LMS_Enum import LMS_BinaryTypes
+from LMS.Project.Structure import TagParameter
 
 
 class TGP2:
@@ -22,26 +23,9 @@ class TGP2:
         reader.skip(2)
         # Read the parameters
         for offset in self.block.get_item_offsets(reader, parameter_count):
-            parameter = {}
+            parameter = TagParameter()
             reader.seek(offset)
-            type = LMS_BinaryTypes(reader.read_uint8())
-            parameter["type"] = type
-
-            if type is not LMS_BinaryTypes.LIST_INDEX:
-                parameter["name"] = reader.read_string_nt()
-                self.parameters.append(parameter)
-
-                if type is LMS_BinaryTypes.STRING:
-                    parameter["cd_prefix"] = False
-                continue
-
-            reader.skip(1)
-            list_count = reader.read_uint16()
-            parameter["item_indexes"] = [
-                reader.read_uint16() for _ in range(list_count)
-            ]
-            parameter["name"] = reader.read_string_nt()
-
+            parameter.read(reader)
             self.parameters.append(parameter)
 
         self.block.seek_to_end(reader)

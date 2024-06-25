@@ -23,8 +23,11 @@ class Writer:
         """Skips `length` amount of bytes."""
         self.data.read(length)
 
-    def write_bytes(self, data: bytes) -> None:
+    def write_bytes(self, data: bytes | int) -> None:
         """Writes specifc bytes to the stream."""
+        if isinstance(data, int):
+            data = data.to_bytes(1, "little")
+
         self.data.write(data)
 
     def seek(self, offset: int, whence: int = 0) -> None:
@@ -64,9 +67,12 @@ class Writer:
 
     def write_len_prefixed_utf16_string(self, string: str):
         """Writes a length prefixed UTF-16 string to a stream."""
+       
         encoding = "UTF-16-LE" if self.byte_order == "little" else "UTF-16-BE"
         string = string.encode(encoding)
+  
         self.write_uint16(len(string))
+
         self.write_bytes(string)
 
     def get_data(self) -> bytes:

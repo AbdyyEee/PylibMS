@@ -3,16 +3,15 @@ from LMS.Common.LMS_HashTable import LMS_HashTable
 from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Stream.Reader import Reader
 
+from LMS.Project.BaseBlock import ProjectBlock
+from LMS.Project.Structure import TagGroup, Tag, TagParameter, AttributeStructure
+
 from LMS.Project.CLR1 import CLR1
 from LMS.Project.CTI1 import CTI1
 
 from LMS.Project.ALI2 import ALI2
-from LMS.Project.ATI2 import ATI2
 
 from LMS.Project.TGL2 import TGL2
-from LMS.Project.TGP2 import TGP2
-from LMS.Project.TAG2 import TAG2
-from LMS.Project.TGG2 import TGG2
 
 from LMS.Project.SYL3 import SYL3
 
@@ -26,88 +25,47 @@ class MSBP:
         self.binary: LMS_Binary = LMS_Binary()
         self.CLR1: CLR1 = CLR1()
         self.CLB1: LMS_HashTable = LMS_HashTable()
-        self.ATI2: ATI2 = ATI2()
+        self.ATI2 = ProjectBlock(AttributeStructure)
         self.ALB1: LMS_HashTable = LMS_HashTable()
-        self.ALI2: ALI2 = ALI2()
-        self.TGG2: TGG2 = TGG2()
-        self.TAG2: TAG2 = TAG2()
-        self.TGP2: TGP2 = TGP2()
-        self.TGL2: TGL2 = TGL2()
-        self.SYL3: SYL3 = SYL3()
+        self.ALI2 = ALI2()
+        self.TGG2 = ProjectBlock(TagGroup)
+        self.TAG2 = ProjectBlock(Tag)
+        self.TGP2 = ProjectBlock(TagParameter)
+        self.TGL2 = TGL2()
+        self.SYL3 = SYL3()
         self.SLB1: LMS_HashTable = LMS_HashTable()
-        self.CTI1: CTI1 = CTI1()
+        self.CTI1 = CTI1()
 
-    def get_attribute_structure(self) -> dict:
+    def get_attribute_structure(self) -> dict[str,AttributeStructure]:
         """Returns a formatted dictionary of all the data in the ATI2, ALB1, ALI2 blocks."""
-        structure = {}
-
         if self.ALB1 is None:
             return {}
+        
+        structure = {self.ALB1.labels[i]: self.ATI2.data[i] for i in self.ALB1.labels}
 
-        for index in self.ALB1.labels:
-            label = self.ALB1.labels[index]
-            type = self.ATI2.attributes[index]["type"]
-            offset = self.ATI2.attributes[index]["offset"]
-            list_index = self.ATI2.attributes[index]["list_index"]
-
-            structure[label] = {
-                "type": type,
-                "offset": offset,
-                "list_index": list_index,
-            }
-
-            if type == LMS_BinaryTypes.LIST_INDEX:
-                structure[label]["list_items"] = self.ALI2.attribute_lists[list_index]
+        for label in structure:
+            attribute: AttributeStructure = structure[label]
+            if attribute.type is LMS_BinaryTypes.LIST_INDEX:
+                attribute.list_items = self.ALI2.attribute_lists[attribute.list_index]
 
         return structure
 
-    def get_tag_structure(self) -> dict:
+    def get_tag_structure(self) -> list[TagGroup]:
         """Returns a formatted dictionary of all the data in the TGG2, TAG2, TGP2, AND TGL2 blocks."""
-        structure = {}
+        structure: list[TagGroup] = [group for group in self.TGG2.data]
+        
+        for group in structure:
+            for i in group.tag_indexes:
+                tag: Tag = self.TAG2.data[i]
+                group.tags.append(tag)
 
-        for group_index, group in enumerate(self.TGG2.groups):
-            structure[group_index] = {}
-            structure[group_index]["name"] = group["name"]
-            structure[group_index]["tags"] = []
+                tag.parameters = [self.TGP2.data[i] for i in tag.parameter_indexes]
 
-            for relative_index, absolute_index in enumerate(group["tag_indexes"]):
-                tag = self.TAG2.tags[absolute_index]
-                structure[group_index]["tags"].append(
-                    {"name": tag["name"], "parameters": []}
-                )
+        list_parameters: list[TagParameter] = [parameter for parameter in self.TGP2.data if parameter.type is LMS_BinaryTypes.LIST_INDEX]
 
-                for parameter_index in tag["parameter_indexes"]:
-                    parameter = self.TGP2.parameters[parameter_index]
+        for parameter in list_parameters:
+            parameter.list_items = [self.TGL2.items[i] for i in parameter.list_indexes]
 
-                    parameter_name = parameter["name"]
-                    parameter_type = parameter["type"]
-
-                    if parameter_type is LMS_BinaryTypes.LIST_INDEX:
-                        structure[group_index]["tags"][relative_index][
-                            "parameters"
-                        ].append(
-                            {
-                                "name": parameter_name,
-                                "type": parameter_type,
-                                "list_items": [
-                                    self.TGL2.items[i]
-                                    for i in parameter["item_indexes"]
-                                ],
-                            }
-                        )
-                    elif parameter_type is LMS_BinaryTypes.STRING:
-                        structure[group_index]["tags"][relative_index][
-                            "parameters"
-                        ].append({"name": parameter_name, "type": parameter_type, "cd_prefix": parameter["cd_prefix"]})
-                    else:
-                        structure[group_index]["tags"][relative_index][
-                            "parameters"
-                        ].append({"name": parameter_name, "type": parameter_type})
-
-        # Delete the name attribute of the color tag in system to prevent errors when used in TXT2
-        # games often just use rgba and not name
-        # TODO: Perhaps add an option to exclude this
-        del structure[0]["tags"][3]["parameters"][4]
         return structure
 
     def read(self, reader: Reader) -> None:
@@ -154,7 +112,7 @@ class MSBP:
         # Read ATI2
         if ati2_valid:
             reader.seek(ati2_offset)
-            self.ATI2.read(reader)
+            self.ATI2.read(reader, contains_offsets=False)
 
         # Read ALB1
         if alb1_valid:

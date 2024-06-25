@@ -1,47 +1,31 @@
+import re
+import struct
+from bs4 import BeautifulSoup
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 from LMS.Project.MSBP import MSBP
-from LMS.Common.LMS_Enum import LMS_BinaryTypes
-import re
-from bs4 import BeautifulSoup
+from LMS.Message.Preset import Preset
 
-base_structure = {0: {
-    "name": "System",
-    "tags": [
-        {"name": "Ruby", "parameters": [
-            {"name": "rt", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
-        {"name": "Font", "parameters": [
-            {"name": "face", "type": LMS_BinaryTypes.STRING, "cd_prefix": False}]},
-        {"name": "Size", "parameters": [
-            {"name": "percent", "type": LMS_BinaryTypes.UINT16_0}]},
-        {"name": "Color", "parameters": [
-            {"name": "r", "type": LMS_BinaryTypes.UINT8_0},
-            {"name": "g", "type": LMS_BinaryTypes.UINT8_0},
-            {"name": "b", "type": LMS_BinaryTypes.UINT8_0},
-            {"name": "a", "type": LMS_BinaryTypes.UINT8_0}
-        ]},
-        {"name": "PageBreak", "parameters": []}
-    ]
-}
-}
+system_names = {0: "Ruby", 1: "Font", 2: "Size", 3: "Color", 4: "PageBreak"}
 
 
 class Tag_Utility:
     """Static class used to house most tag related functions."""
+
     @staticmethod
     def get_group_and_tag_names(tag: str) -> tuple[str, str]:
         """Returns a list of the group and tag name given a tag.
 
         :param `tag`: The tag to get the information for."""
-        soup = BeautifulSoup(tag, "xml")
-        return soup.find().name.split("::")
+        result = re.search(r"<([^:]+)::([^ >]+)[^>]*>", tag)
+        return (result.group(1), result.group(2))
 
     @staticmethod
     def has_parameters(tag: str) -> bool:
         """Returns if a tag has parameters or not.
 
         :param `tag`: The tag to check."""
-        soup = BeautifulSoup(tag, 'html.parser')
+        soup = BeautifulSoup(tag, "html.parser")
         data = soup.find()
         return len(data.attrs) > 0
 
@@ -50,10 +34,11 @@ class Tag_Utility:
         """Returns if a message is a tag.
 
         :param `message`: The message to check."""
-        if message.startswith("<") and message.endswith(">"):
-            return True
-
-        return False
+        return (
+            not message.startswith("<\\")
+            and message.startswith("<")
+            and message.endswith(">")
+        )
 
     @staticmethod
     def split_message_by_tag(message: str) -> tuple[str]:
@@ -70,17 +55,31 @@ class Tag_Utility:
         return "." in tag[: tag.find(":")]
 
     @staticmethod
-    def read_encoded_tag(reader: Reader) -> str:
+    def read_tag(reader: Reader, preset: Preset, msbp: MSBP = None) -> str:
+        """Reads a tag from a stream, encoded or decoded.
+
+        :param `reader`: a Reader object.
+        :param `preset`: a Preset object.
+        :param `msbp`: a MSBP object"""
+        group_index = reader.read_uint16()
+        tag_index = reader.read_uint16()
+
+        # 'System' tags should always be decoded, checking the group index > 0 forces decoding.
+        if msbp is None and group_index:
+            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index)
+
+        return Tag_Utility.read_decoded_tag(
+            reader, preset, msbp, group_index, tag_index
+        )
+
+    @staticmethod
+    def read_encoded_tag(reader: Reader, group_index: int, tag_index: int) -> str:
         """Reads an encoded tag from a stream.
 
-        :param `reader`: A Reader object."""
-        group_index = reader.read_uint16()
-
-        if group_index == 0:
-            reader.seek(reader.tell() - 2)
-            return Tag_Utility.read_decoded_tag(reader)
-
-        tag_index = reader.read_uint16()
+        :param `reader`: a Reader object.
+        :param `group_index`: the index of the tag group.
+        :param `tag_index`: the index of the tag in the group.
+        """
         parameter_size = reader.read_uint16()
         hex_parameters = reader.read_bytes(parameter_size).hex()
         encoded_parameters = "-".join(
@@ -92,76 +91,75 @@ class Tag_Utility:
         return f"<n{group_index}.{tag_index}:{encoded_parameters}>"
 
     @staticmethod
-    def read_decoded_tag(reader: Reader, msbp: MSBP = None) -> str:
-        """Reads a decoded tag from a stream given a MSBP.
+    def read_decoded_tag(
+        reader: Reader, preset: Preset, msbp: MSBP, group_index: int, tag_index: int
+    ) -> str:
+        """Reads an encoded tag from a stream.
 
-        :param `reader`: A Reader object.
-        :param `msbp`: A MSBP object."""
-        encoding = "UTF-16-LE" if reader.byte_order == "little" else "UTF-16-BE"
-        parsed_parameters = {}
+        :param `reader`: a Reader object.
+        :param `preset`: a Preset object.
+        :param `msbp`: a MSBP object
+        :param `group_index`: the index of the tag group.
+        :param `tag_index`: the index of the tag in the group.
+        """
+        parameters = {}
+        structure = msbp.get_tag_structure()
 
-        structure = base_structure if msbp is None else msbp.get_tag_structure()
+        group_name = structure[group_index].name
+        tag_name = structure[group_index].tags[tag_index].name
+        function_name = f"{group_name.lower()}_{tag_name.lower()}"
 
-        group_index = reader.read_uint16()
-        tag_index = reader.read_uint16()
+        start = reader.tell()
+        parameter_size = reader.read_uint16()
+        end = reader.tell() + parameter_size
 
-        size = reader.read_uint16()
-        end = reader.tell() + size
+        read_function = preset.stream_functions[function_name]()[1]
+        try:
+            read_function(parameters, reader)
+        # UnicodeDecodeErrors and struct errors tend to occur in tags that read wrong.
+        except (UnicodeDecodeError, struct.error) as error:
+            print(f"An error occurred while reading the tag in the function {function_name} at start offset {start}. {error}")
+            reader.seek(start)
+            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index)
 
-        group = structure[group_index]
-        tag = group["tags"][tag_index]
-
-        for parameter in tag["parameters"]:
-            if LMS_BinaryTypes._8_bit_type(parameter["type"]):
-                parsed_parameters[parameter["name"]] = reader.read_uint8()
-            elif LMS_BinaryTypes._16_bit_type(parameter["type"]):
-                parsed_parameters[parameter["name"]] = reader.read_uint16()
-            elif LMS_BinaryTypes._32_bit_type(parameter["type"]):
-                parsed_parameters[parameter["name"]] = reader.read_uint32()
-            elif parameter["type"] is LMS_BinaryTypes.STRING:
-                # Check for the 0xCD byte that often prefixes strings for certain parameters
-                if reader.read_bytes(1) == b"\xCD":
-                    # Set the cd_predix value accordingly so when writing later on, it is accurate.
-                    parameter_index = [parameter["name"] for parameter in msbp.TGP2.parameters].index(
-                        parameter["name"])
-                    msbp.TGP2.parameters[parameter_index]["cd_prefix"] = True
-                else:
-                    reader.seek(reader.tell() - 1)
-
-                length = reader.read_uint16()
-                string = reader.read_bytes(length)
-
-                parsed_parameters[parameter["name"]] = string.decode(encoding)
-                continue
-
-            if parameter["type"] is LMS_BinaryTypes.LIST_INDEX:
-                parsed_parameters[parameter["name"]
-                                  ] = parameter["list_items"][reader.read_uint8()]
-
-        # Skip CD padding
-        if size % 2 == 1:
+        if parameter_size % 2 == 1:
             end += 1
 
         reader.seek(end)
-        string_parameters = Tag_Utility.get_str_parameter_representation(
-            parsed_parameters)
-        tag = f"<{group["name"]}::{tag["name"]} {string_parameters}>"
-        return tag
+
+        if not parameters:
+            return f"<{group_name}::{tag_name}>"
+
+        string_parameters = Tag_Utility.get_str_parameter_representation(parameters)
+        return f"<{group_name}::{tag_name} {string_parameters.strip()}>"
+
+    @staticmethod
+    def write_tag(writer: Writer, tag: str, preset: Preset, msbp: MSBP = None) -> None:
+        """Writes both encoded and decoded tags to a stream.
+
+        :param `writer`: a Writer object.
+        :param `tag`: the tag to write.
+        :param `preset`: a Preset object.
+        :param `msbp`: a MSBP object."""
+
+        if Tag_Utility.tag_encoded(tag):
+            Tag_Utility.write_encoded_tag(writer, tag)
+            return
+
+        Tag_Utility.write_decoded_tag(writer, tag, msbp, preset)
 
     @staticmethod
     def write_encoded_tag(writer: Writer, tag: str) -> None:
-        """Writes an encoded control tag to a stream.
+        """Writes an encoded tag to a stream.
 
-        :param `reader`: A Reader object.
-        :param `tag_data`: The tag."""
-        group_index = int(tag[2: tag.index(".")])
-        tag_index = int(tag[tag.index(".") + 1: tag.index(":")])
+        :param `writer`: a Writer object.
+        :param `tag`: the tag to write."""
 
-        parameters = tag[tag.rindex(":") + 1: len(tag) - 1].split("-")
+        group_index = int(tag[2 : tag.index(".")])
+        tag_index = int(tag[tag.index(".") + 1 : tag.index(":")])
+
+        parameters = tag[tag.rindex(":") + 1 : len(tag) - 1].split("-")
         parameter_size = len(parameters)
-        # 1 indicates empty parameters due to split function returning an empty list
-        if parameter_size == 1:
-            parameter_size = 0
 
         writer.write_uint16(int(group_index))
         writer.write_uint16(int(tag_index))
@@ -172,19 +170,23 @@ class Tag_Utility:
                 writer.write_bytes(bytes.fromhex(parameter))
 
     @staticmethod
-    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP = None) -> None:
-        """Writes a decoded control tag to a stream.
+    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP, preset: Preset) -> None:
+        """Writes a decoded tag to a stream.
 
-        :param `writer`: A Writer object.
-        :param `tag`: The tag."""
-
+        :param `writer`: a Writer object.
+        :param `tag`: the tag to write.
+        :param `msbp`: a MSBP object.
+        :param `preset`: a Preset object."""
+        structure = msbp.get_tag_structure()
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
-        structure = base_structure if msbp is None else msbp.get_tag_structure()
 
-        group_index = [structure[group]["name"]
-                       for group in structure].index(tag_info["group_name"])
-        tag_index = [tag["name"] for tag in structure[group_index]
-                     ["tags"]].index(tag_info["tag_name"])
+        group_index = [group.name for group in structure].index(tag_info["group_name"])
+        tag_index = [tag.name for tag in structure[group_index].tags].index(
+            tag_info["tag_name"]
+        )
+        function_name = (
+            f"{tag_info['group_name'].lower()}_{tag_info['tag_name'].lower()}"
+        )
 
         writer.write_uint16(group_index)
         writer.write_uint16(tag_index)
@@ -192,28 +194,17 @@ class Tag_Utility:
         writer.write_uint16(0)
         start = writer.tell()
 
-        for parameter in structure[group_index]["tags"][tag_index]["parameters"]:
-            value = tag_info["parameters"][parameter["name"].lower()]
-            
-            if LMS_BinaryTypes._8_bit_type(parameter["type"]):
-                writer.write_uint8(int(value))
-            elif LMS_BinaryTypes._16_bit_type(parameter["type"]):
-                writer.write_uint16(int(value))
-            elif LMS_BinaryTypes._32_bit_type(parameter["type"]):
-                writer.write_uint32(int(value))
-            elif parameter["type"] is LMS_BinaryTypes.STRING:
-                if parameter["cd_prefix"]:
-                    writer.write_bytes(b"\xCD")
-
-                writer.write_len_prefixed_utf16_string(value)
-                continue
-            else:
-                index = parameter["list_items"].index(value)
-                writer.write_uint8(index)
-                continue
+        write_function = preset.stream_functions[function_name]()[2]
+        try:
+            write_function(tag_info["parameters"], writer)
+        except Exception:
+            print(
+                f"An error occurred while writing the tag in the function {function_name} at start offset {start}."
+            )
+            return
 
         size = writer.tell() - start
-        # Write the padding
+
         if size % 2 == 1:
             size += 1
             writer.write_bytes(b"\xCD")
@@ -230,34 +221,29 @@ class Tag_Utility:
         group_name, tag_name = Tag_Utility.get_group_and_tag_names(tag)
 
         if not Tag_Utility.has_parameters(tag):
-            return {
-                "group_name": group_name,
-                "tag_name": tag_name,
-                "parameters": {}
-            }
+            return {"group_name": group_name, "tag_name": tag_name, "parameters": {}}
 
         parameters = Tag_Utility.get_dict_parameter_representation(tag)
         return {
             "group_name": group_name,
             "tag_name": tag_name,
-            "parameters": parameters
+            "parameters": parameters,
         }
 
     @staticmethod
-    def get_str_parameter_representation(parameters: dict):
+    def get_str_parameter_representation(parameters: dict) -> str:
         """Returns the parameters in a dictionary as the formatted part of a tag.
 
-        :param `parameters`: The parameters with key being the name and the values being what is enclosed."""
+        :param `parameters`: The parameters with key being the name and the values being what is enclosed.
+        """
         result = ""
         for parameter in parameters:
             result += f'{parameter}="{parameters[parameter]}" '
         return result.strip()
 
     @staticmethod
-    def get_dict_parameter_representation(tag: str):
+    def get_dict_parameter_representation(tag: str) -> dict:
         """Returns the parameters in a dictionary.
 
         :param `tag`: The tag to get the parameters for."""
-        soup = BeautifulSoup(tag, 'html.parser')
-        data = soup.find()
-        return data.attrs
+        return dict(re.findall(r'(\w+)="([^"]+)"', tag))

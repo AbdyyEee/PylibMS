@@ -98,7 +98,8 @@ class LMS_HashTable:
         :param `label`: The label.
         :param `num_slots`: The amount of hash table slots.
 
-        https://github.com/kinnay/Nintendo-File-Formats/wiki/LMS-File-Format#hash-tables"""
+        https://github.com/kinnay/Nintendo-File-Formats/wiki/LMS-File-Format#hash-tables
+        """
         hash = 0
         for char in label:
             hash = hash * 0x492 + ord(char)
@@ -108,7 +109,8 @@ class LMS_HashTable:
         """Writes the hash table block to a stream.
 
         :param `writer`: A Writer object.
-        :param `slot_count`: The hash table slot count. 101 for MSBT, 29 for MSBP and 59 for MSBF."""
+        :param `slot_count`: The hash table slot count. 101 for MSBT, 29 for MSBP and 59 for MSBF.
+        """
         self.block.write_header(writer)
         self.block.data_start = writer.tell()
         writer.write_uint32(slot_count)
@@ -126,8 +128,7 @@ class LMS_HashTable:
         label_offsets = slot_count * 8 + 4
         size += label_offsets
 
-        hash_slots = dict(
-            sorted(hash_slots.items(), key=lambda x: x[0]))
+        hash_slots = dict(sorted(hash_slots.items(), key=lambda x: x[0]))
 
         # Write the slots
         for i in range(slot_count):

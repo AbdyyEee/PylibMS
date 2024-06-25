@@ -11,6 +11,8 @@ from LMS.Message.TXT2 import TXT2
 from LMS.Message.ATR1 import ATR1
 from LMS.Message.TSY1 import TSY1
 
+from LMS.Message.Preset import Preset
+
 
 class MSBT:
     """A class that represents a Message Studio Binary Text file.
@@ -42,22 +44,21 @@ class MSBT:
             for i in self.LBL1.labels
         }
 
-    def read(self, reader: Reader, msbp: MSBP = None):
+    def read(self, reader: Reader, preset: Preset, msbp: MSBP = None):
         """Reads a MSBT file from a stream.
 
         :param `reader`: A Reader object.
         :param `msbp`: A MSBP object. Used for decoding of attributes and tags
         """
+        if preset is None:
+            preset = Preset()
+
         self.binary.read_header(reader)
 
-        lbl1_valid, lbl1_offset = self.binary.search_block_by_name(
-            reader, "LBL1")
-        atr1_valid, atr1_offset = self.binary.search_block_by_name(
-            reader, "ATR1")
-        tsy1_valid, tsy1_offset = self.binary.search_block_by_name(
-            reader, "TSY1")
-        txt2_valid, txt2_offset = self.binary.search_block_by_name(
-            reader, "TXT2")
+        lbl1_valid, lbl1_offset = self.binary.search_block_by_name(reader, "LBL1")
+        atr1_valid, atr1_offset = self.binary.search_block_by_name(reader, "ATR1")
+        tsy1_valid, tsy1_offset = self.binary.search_block_by_name(reader, "TSY1")
+        txt2_valid, txt2_offset = self.binary.search_block_by_name(reader, "TXT2")
 
         # Read LBL1
         if lbl1_valid:
@@ -66,7 +67,6 @@ class MSBT:
         else:
             self.LBL1 = None
 
-        # Read ATR1
         if atr1_valid:
             reader.seek(atr1_offset)
             self.ATR1.read(reader, msbp)
@@ -82,14 +82,17 @@ class MSBT:
         # Read TXT2
         if txt2_valid:
             reader.seek(txt2_offset)
-            self.TXT2.read(reader, msbp)
+            self.TXT2.read(reader, preset, msbp)
         else:
             self.TXT2 = None
 
-    def write(self, writer: Writer, msbp: MSBP = None) -> None:
+    def write(self, writer: Writer, preset: Preset = None, msbp: MSBP = None) -> None:
         """Writes a MSBT file to a stream.
 
         :param `reader`: A Reader object."""
+        if preset is None:
+            preset = Preset()
+
         writer.byte_order = self.binary.bom
 
         block_count = 0
@@ -123,7 +126,7 @@ class MSBT:
             self.TSY1.write(writer)
 
         if self.TXT2 is not None:
-            self.TXT2.write(writer, msbp)
+            self.TXT2.write(writer, preset, msbp)
 
         writer.seek(0, 2)
         size = writer.tell()
