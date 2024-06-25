@@ -103,10 +103,14 @@ class Tag_Utility:
         :param `tag_index`: the index of the tag in the group.
         """
         parameters = {}
-        structure = msbp.get_tag_structure()
+        if not group_index:
+            group_name = "System"
+            tag_name = system_names[tag_index]
+        else:
+            structure = msbp.get_tag_structure()
+            group_name = structure[group_index].name
+            tag_name = structure[group_index].tags[tag_index].name
 
-        group_name = structure[group_index].name
-        tag_name = structure[group_index].tags[tag_index].name
         function_name = f"{group_name.lower()}_{tag_name.lower()}"
 
         start = reader.tell()
@@ -177,13 +181,21 @@ class Tag_Utility:
         :param `tag`: the tag to write.
         :param `msbp`: a MSBP object.
         :param `preset`: a Preset object."""
-        structure = msbp.get_tag_structure()
+        
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
 
-        group_index = [group.name for group in structure].index(tag_info["group_name"])
-        tag_index = [tag.name for tag in structure[group_index].tags].index(
-            tag_info["tag_name"]
-        )
+        if tag_info["group_name"] == "System":
+            group_index = 0 
+            for i in system_names: 
+                if system_names[i] == tag_info["tag_name"]:
+                    tag_index = i
+        else:
+            structure = msbp.get_tag_structure()
+            group_index = [group.name for group in structure].index(tag_info["group_name"])
+            tag_index = [tag.name for tag in structure[group_index].tags].index(
+                tag_info["tag_name"]
+            )
+            
         function_name = (
             f"{tag_info['group_name'].lower()}_{tag_info['tag_name'].lower()}"
         )

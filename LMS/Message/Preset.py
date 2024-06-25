@@ -8,6 +8,7 @@ from LMS.Message.Preset_Constants import RESTRICTED_GLOBALS, ALLOWED_ATTRIBUTES
 from lupa.lua54 import LuaRuntime
 from typing_extensions import Callable
 
+import importlib.resources 
 
 def filter_attribute_access(obj, attr_name, is_setting):
      if not isinstance(obj, (Reader, Writer)):
@@ -25,7 +26,7 @@ class Preset:
 
         self.stream_functions: dict[str:Callable] = {}
 
-        with open("LMS/Message/System.lua", "r") as file:
+        with importlib.resources.open_text("LMS.Message", "System.lua") as file:
             self.stream_functions = dict(self.lua_runtime.execute(file.read()))
         
         globals = self.lua_runtime.globals()
@@ -37,8 +38,8 @@ class Preset:
             for name in RESTRICTED_GLOBALS:
                 globals[name] = None 
         
-    def load_preset_file(self, file_name: str) -> None:
-        with open(file_name, "r+") as file:
+    def load_preset_file(self, file_path: str) -> None:
+        with open(file_path, "r+") as file:
             self.stream_functions.update(dict(self.lua_runtime.execute(file.read())))
 
     @staticmethod

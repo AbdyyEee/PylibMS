@@ -44,7 +44,7 @@ class MSBT:
             for i in self.LBL1.labels
         }
 
-    def read(self, reader: Reader, preset: Preset, msbp: MSBP = None):
+    def read(self, reader: Reader, preset: Preset = None, msbp: MSBP = None):
         """Reads a MSBT file from a stream.
 
         :param `reader`: A Reader object.

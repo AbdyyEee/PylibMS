@@ -59,7 +59,6 @@ class ATR1:
                         attribute[label] = utf16_string
                         reader.seek(last_position)
                     else:
-
                         index = reader.read_uint8()
                         attribute[label] = self.structure[label].list_items[index]
 
