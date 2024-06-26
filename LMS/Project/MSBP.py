@@ -25,15 +25,19 @@ class MSBP:
         self.binary: LMS_Binary = LMS_Binary()
         self.CLR1: CLR1 = CLR1()
         self.CLB1: LMS_HashTable = LMS_HashTable()
+
         self.ATI2 = ProjectBlock(AttributeStructure)
         self.ALB1: LMS_HashTable = LMS_HashTable()
         self.ALI2 = ALI2()
+
         self.TGG2 = ProjectBlock(TagGroup)
         self.TAG2 = ProjectBlock(Tag)
         self.TGP2 = ProjectBlock(TagParameter)
         self.TGL2 = TGL2()
+
         self.SYL3 = SYL3()
         self.SLB1: LMS_HashTable = LMS_HashTable()
+
         self.CTI1 = CTI1()
 
     def get_attribute_structure(self) -> dict[str,AttributeStructure]:
@@ -127,17 +131,17 @@ class MSBP:
         # Read TGG2
         if tgg2_valid:
             reader.seek(tgg2_offset)
-            self.TGG2.read(reader)
+            self.TGG2.read(reader, uint32_count=False)
 
         # Read TAG2
         if tag2_valid:
             reader.seek(tag2_offset)
-            self.TAG2.read(reader)
+            self.TAG2.read(reader, uint32_count=False)
 
         # Read TGP2
         if tgp2_valid:
             reader.seek(tgp2_offset)
-            self.TGP2.read(reader)
+            self.TGP2.read(reader, uint32_count=False)
 
         # Read TGL2
         if tgl2_valid:
