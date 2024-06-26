@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="PylibMS",
-    version="0.6.2",
+    version="0.6.3",
     author="AbdyyEee",
     packages=find_packages(),
     description="Library for Nintendo's LMS file formats (MSBT, MSBP) for Nintendo 3DS and Wii U and Switch.",
@@ -19,4 +19,7 @@ setup(
     package_data={
         'LMS.Message': ['System.lua'],
     },
+    install_requires=[
+        "lupa>=2.2"
+    ]
 )
