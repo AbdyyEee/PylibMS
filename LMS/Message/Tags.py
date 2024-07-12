@@ -1,5 +1,6 @@
 import re
 import struct
+
 from bs4 import BeautifulSoup
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
@@ -7,7 +8,6 @@ from LMS.Project.MSBP import MSBP
 from LMS.Message.Preset import Preset
 
 system_names = {0: "Ruby", 1: "Font", 2: "Size", 3: "Color", 4: "PageBreak"}
-
 
 class Tag_Utility:
     """Static class used to house most tag related functions."""
@@ -55,7 +55,7 @@ class Tag_Utility:
         return "." in tag[: tag.find(":")]
 
     @staticmethod
-    def read_tag(reader: Reader, preset: Preset, msbp: MSBP = None) -> str:
+    def read_tag(reader: Reader, preset: Preset) -> str:
         """Reads a tag from a stream, encoded or decoded.
 
         :param `reader`: a Reader object.
@@ -64,12 +64,13 @@ class Tag_Utility:
         group_index = reader.read_uint16()
         tag_index = reader.read_uint16()
 
-        # 'System' tags should always be decoded, checking the group index > 0 forces decoding.
-        if msbp is None and group_index:
+        # When the structure is a length of 1 it means that a preset was never loaded and it
+        # contains just the 'System' functions. Using this check prevents reading from it
+        if len(preset.structure) == 1 and group_index:
             return Tag_Utility.read_encoded_tag(reader, group_index, tag_index)
 
         return Tag_Utility.read_decoded_tag(
-            reader, preset, msbp, group_index, tag_index
+            reader, preset, group_index, tag_index
         )
 
     @staticmethod
@@ -92,7 +93,7 @@ class Tag_Utility:
 
     @staticmethod
     def read_decoded_tag(
-        reader: Reader, preset: Preset, msbp: MSBP, group_index: int, tag_index: int
+        reader: Reader, preset: Preset, group_index: int, tag_index: int
     ) -> str:
         """Reads an encoded tag from a stream.
 
@@ -102,21 +103,19 @@ class Tag_Utility:
         :param `group_index`: the index of the tag group.
         :param `tag_index`: the index of the tag in the group.
         """
+   
         parameters = {}
-        if not group_index:
-            group_name = "System"
-            tag_name = system_names[tag_index]
-        else:
-            structure = msbp.get_tag_structure()
-            group_name = structure[group_index].name
-            tag_name = structure[group_index].tags[tag_index].name
+        structure = preset.structure
+        
+        group_name = structure[group_index]["name"]
+        tag_name = structure[group_index]["tags"][tag_index]["name"]
 
         function_name = f"{group_name.lower()}_{tag_name.lower()}"
 
         start = reader.tell()
         parameter_size = reader.read_uint16()
         end = reader.tell() + parameter_size
-
+        
         read_function = preset.stream_functions[function_name]()[1]
         try:
             read_function(parameters, reader)
@@ -138,7 +137,7 @@ class Tag_Utility:
         return f"<{group_name}::{tag_name} {string_parameters.strip()}>"
 
     @staticmethod
-    def write_tag(writer: Writer, tag: str, preset: Preset, msbp: MSBP = None) -> None:
+    def write_tag(writer: Writer, tag: str, preset: Preset) -> None:
         """Writes both encoded and decoded tags to a stream.
 
         :param `writer`: a Writer object.
@@ -150,7 +149,7 @@ class Tag_Utility:
             Tag_Utility.write_encoded_tag(writer, tag)
             return
 
-        Tag_Utility.write_decoded_tag(writer, tag, msbp, preset)
+        Tag_Utility.write_decoded_tag(writer, tag, preset)
 
     @staticmethod
     def write_encoded_tag(writer: Writer, tag: str) -> None:
@@ -174,7 +173,7 @@ class Tag_Utility:
                 writer.write_bytes(bytes.fromhex(parameter))
 
     @staticmethod
-    def write_decoded_tag(writer: Writer, tag: str, msbp: MSBP, preset: Preset) -> None:
+    def write_decoded_tag(writer: Writer, tag: str, preset: Preset) -> None:
         """Writes a decoded tag to a stream.
 
         :param `writer`: a Writer object.
@@ -184,17 +183,11 @@ class Tag_Utility:
         
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
 
-        if tag_info["group_name"] == "System":
-            group_index = 0 
-            for i in system_names: 
-                if system_names[i] == tag_info["tag_name"]:
-                    tag_index = i
-        else:
-            structure = msbp.get_tag_structure()
-            group_index = [group.name for group in structure].index(tag_info["group_name"])
-            tag_index = [tag.name for tag in structure[group_index].tags].index(
-                tag_info["tag_name"]
-            )
+        
+        structure = preset.structure
+
+        group_index = [group["name"] for group in structure].index(tag_info["group_name"])
+        tag_index = [tag["name"] for tag in structure[group_index]["tags"]].index(tag_info["tag_name"])
             
         function_name = (
             f"{tag_info['group_name'].lower()}_{tag_info['tag_name'].lower()}"
@@ -209,7 +202,7 @@ class Tag_Utility:
         write_function = preset.stream_functions[function_name]()[2]
         try:
             write_function(tag_info["parameters"], writer)
-        except Exception:
+        except Exception as e:
             print(
                 f"An error occurred while writing the tag in the function {function_name} at start offset {start}."
             )
@@ -258,4 +251,4 @@ class Tag_Utility:
         """Returns the parameters in a dictionary.
 
         :param `tag`: The tag to get the parameters for."""
-        return dict(re.findall(r'(\w+)="([^"]+)"', tag))
+        return dict(re.findall(r'(\w+)="([^"]*)"', tag))

@@ -1,5 +1,6 @@
 from LMS.Common.LMS_Block import LMS_Block
 from LMS.Stream.Reader import Reader
+from LMS.Project.Structure import TagGroup
 
 class ProjectBlock:
     """A class that represents all blocks in a MSBP file"""
@@ -9,7 +10,7 @@ class ProjectBlock:
         self.item_type = item_type
         self.data: list[item_type] = []
 
-    def read(self, reader: Reader, contains_offsets: bool = True, uint32_count: bool = True) -> None:
+    def read(self, reader: Reader, contains_offsets: bool = True, uint32_count: bool = True, version_4=False) -> None:
         """Reads the block from a stream.
 
         :param `reader`: A Reader object.
@@ -27,7 +28,12 @@ class ProjectBlock:
                 reader.seek(offset)
 
                 type = self.item_type()
-                type.read(reader)
+
+                if isinstance(type, TagGroup):
+                    type.read(reader, version_4)
+                else:
+                    type.read(reader)
+                    
                 self.data.append(type)
         else:
             for _ in range(item_count):

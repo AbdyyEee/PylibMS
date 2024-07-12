@@ -3,8 +3,8 @@ from io import BytesIO
 
 
 types = {
-    "little": {"uint8": "<B", "uint16": "<H", "uint32": "<I"},
-    "big": {"uint8": ">B", "uint16": ">H", "uint32": ">I"},
+    "little": {"uint8": "<B", "uint16": "<H", "uint32": "<I", "float": "<f"},
+    "big": {"uint8": ">B", "uint16": ">H", "uint32": ">I", "float": ">f"},
 }
 
 
@@ -58,6 +58,10 @@ class Writer:
         """Writes a UInt32 to the stream."""
         self.data.write(struct.pack(types[self.byte_order]["uint32"], num))
 
+    def write_float(self, num: float):
+        """Writes a Float to the stream."""
+        self.data.write(struct.pack(types[self.byte_order]["float"], num))
+        
     def write_utf16_string(self, string: str, use_double: bool = False):
         """Writes a  UTF-16 string to a stream."""
         encoding = "UTF-16-LE" if self.byte_order == "little" else "UTF-16-BE"

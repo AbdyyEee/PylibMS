@@ -95,6 +95,7 @@ class ATR1:
         for string in self.strings:
             writer.write_utf16_string(string, use_double=True)
             string_size += len(string.encode(writer.get_utf16_encoding())) + 2
+            
         self.block.size = self.attribute_count * self.bytes_per_attribute + string_size
         self.block.write_end_data(writer)
 
@@ -175,6 +176,7 @@ class ATR1:
         self.bytes_per_attribute = self.get_bytes_per_attribute()
 
         writer.write_uint32(self.bytes_per_attribute)
+
         if not self.attributes_decoded():
             self.write_encoded_attributes(writer)
             return

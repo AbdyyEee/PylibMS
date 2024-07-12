@@ -40,11 +40,11 @@ class MSBP:
 
         self.CTI1 = CTI1()
 
-    def get_attribute_structure(self) -> dict[str,AttributeStructure]:
+    def get_attribute_structure(self) -> dict[str, AttributeStructure]:
         """Returns a formatted dictionary of all the data in the ATI2, ALB1, ALI2 blocks."""
         if self.ALB1 is None:
             return {}
-        
+
         structure = {self.ALB1.labels[i]: self.ATI2.data[i] for i in self.ALB1.labels}
 
         for label in structure:
@@ -56,16 +56,21 @@ class MSBP:
 
     def get_tag_structure(self) -> list[TagGroup]:
         """Returns a formatted dictionary of all the data in the TGG2, TAG2, TGP2, AND TGL2 blocks."""
-        structure: list[TagGroup] = [group for group in self.TGG2.data]
-        
-        for group in structure:
-            for i in group.tag_indexes:
-                tag: Tag = self.TAG2.data[i]
-                group.tags.append(tag)
+        structure: list[TagGroup] = []
 
+        for group in self.TGG2.data:
+            group.tags = [self.TAG2.data[i] for i in group.tag_indexes]
+
+            for tag in group.tags:
                 tag.parameters = [self.TGP2.data[i] for i in tag.parameter_indexes]
 
-        list_parameters: list[TagParameter] = [parameter for parameter in self.TGP2.data if parameter.type is LMS_BinaryTypes.LIST_INDEX]
+            structure.append(group)
+
+        list_parameters: list[TagParameter] = [
+            parameter
+            for parameter in self.TGP2.data
+            if parameter.type is LMS_BinaryTypes.LIST_INDEX
+        ]
 
         for parameter in list_parameters:
             parameter.list_items = [self.TGL2.items[i] for i in parameter.list_indexes]
@@ -78,30 +83,18 @@ class MSBP:
         :param `reader`: A Reader object."""
         self.binary.read_header(reader)
 
-        clr1_valid, clr1_offset = self.binary.search_block_by_name(
-            reader, "CLR1")
-        clb1_valid, clb1_offset = self.binary.search_block_by_name(
-            reader, "CLB1")
-        ati2_valid, ati2_offset = self.binary.search_block_by_name(
-            reader, "ATI2")
-        alb1_valid, alb1_offset = self.binary.search_block_by_name(
-            reader, "ALB1")
-        ali2_valid, ali2_offset = self.binary.search_block_by_name(
-            reader, "ALI2")
-        tgg2_valid, tgg2_offset = self.binary.search_block_by_name(
-            reader, "TGG2")
-        tag2_valid, tag2_offset = self.binary.search_block_by_name(
-            reader, "TAG2")
-        tgp2_valid, tgp2_offset = self.binary.search_block_by_name(
-            reader, "TGP2")
-        tgl2_valid, tgl2_offset = self.binary.search_block_by_name(
-            reader, "TGL2")
-        syl3_valid, syl3_offset = self.binary.search_block_by_name(
-            reader, "SYL3")
-        slb1_valid, slb1_offset = self.binary.search_block_by_name(
-            reader, "SLB1")
-        cti1_valid, cti1_offset = self.binary.search_block_by_name(
-            reader, "CTI1")
+        clr1_valid, clr1_offset = self.binary.search_block_by_name(reader, "CLR1")
+        clb1_valid, clb1_offset = self.binary.search_block_by_name(reader, "CLB1")
+        ati2_valid, ati2_offset = self.binary.search_block_by_name(reader, "ATI2")
+        alb1_valid, alb1_offset = self.binary.search_block_by_name(reader, "ALB1")
+        ali2_valid, ali2_offset = self.binary.search_block_by_name(reader, "ALI2")
+        tgg2_valid, tgg2_offset = self.binary.search_block_by_name(reader, "TGG2")
+        tag2_valid, tag2_offset = self.binary.search_block_by_name(reader, "TAG2")
+        tgp2_valid, tgp2_offset = self.binary.search_block_by_name(reader, "TGP2")
+        tgl2_valid, tgl2_offset = self.binary.search_block_by_name(reader, "TGL2")
+        syl3_valid, syl3_offset = self.binary.search_block_by_name(reader, "SYL3")
+        slb1_valid, slb1_offset = self.binary.search_block_by_name(reader, "SLB1")
+        cti1_valid, cti1_offset = self.binary.search_block_by_name(reader, "CTI1")
 
         # Read CLR1
         if clr1_valid:
@@ -131,7 +124,7 @@ class MSBP:
         # Read TGG2
         if tgg2_valid:
             reader.seek(tgg2_offset)
-            self.TGG2.read(reader, uint32_count=False)
+            self.TGG2.read(reader, version_4=self.binary.revision == 4)
 
         # Read TAG2
         if tag2_valid:

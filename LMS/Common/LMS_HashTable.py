@@ -26,7 +26,7 @@ class LMS_HashTable:
         param `label`: The label to add."""
         for index in self.labels:
             if self.labels[index] == label:
-                raise Exception("This label is already in the block.")
+                raise ValueError("This label is already in the block.")
 
         index = len(self.labels)
         self.labels[index] = label

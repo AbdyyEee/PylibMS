@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 
@@ -9,10 +9,10 @@ class LMS_MessageEncoding(Enum):
     UTF16 = 1
     UTF32 = 2
 
-
 class LMS_BinaryTypes(Enum):
     """A class that represents binary types utilized in attributes and tags."""
 
+    
     UINT8_0 = 0
     UINT8_1 = 3
     FLOAT = 6
@@ -23,6 +23,10 @@ class LMS_BinaryTypes(Enum):
     UINT32_1 = 5
     STRING = 8
     LIST_INDEX = 9
+    
+    # Define a new str method to simplfy the string returned as the enum member name 
+    def __str__(self) -> str:
+        return self.name
     
     @classmethod
     def action_based_value(self, stream: Reader | Writer, value: "LMS_BinaryTypes", parameter = None, action: str = "read" or "write") -> None:
@@ -42,19 +46,6 @@ class LMS_BinaryTypes(Enum):
                 stream.write_uint16(parameter)
             elif bit_type == "32":
                 stream.write_uint32(parameter)
-
-    @classmethod
-    def _int_type(self, value: "LMS_BinaryTypes") -> bool:
-        return value in [
-            self.UINT8_0,
-            self.UINT8_1,
-            self.FLOAT,
-            self.UINT16_0,
-            self.UINT16_1,
-            self.UINT16_2,
-            self.UINT32_0,
-            self.UINT32_1
-        ]
 
     @classmethod
     def _int_type(self, value: "LMS_BinaryTypes") -> bool:

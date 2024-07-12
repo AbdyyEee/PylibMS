@@ -3,17 +3,14 @@ from LMS.Common.LMS_Enum import LMS_BinaryTypes
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 
-from LMS.Message.Preset_Constants import RESTRICTED_GLOBALS, ALLOWED_ATTRIBUTES
+from LMS.Message.Preset_Constants import RESTRICTED_GLOBALS, ALLOWED_ATTRIBUTES, SYSTEM_STRUCTURE
 
 from lupa.lua54 import LuaRuntime
-from typing_extensions import Callable
 
-import importlib.resources 
+import importlib.resources
+import json  
 
-def filter_attribute_access(obj, attr_name, is_setting):
-     if not isinstance(obj, (Reader, Writer)):
-         raise AttributeError("Object is not a Reader or Writer!")
-     
+def filter_attribute_access(obj, attr_name, is_setting):  
      if isinstance(attr_name, str):
         if attr_name not in ALLOWED_ATTRIBUTES:
             raise AttributeError('You cannot access this attribute.')
@@ -21,29 +18,59 @@ def filter_attribute_access(obj, attr_name, is_setting):
 
 class Preset:
     """A static class for loading and storing a preset."""
-    def __init__(self, globals: list[str] = None):
+    def __init__(self, global_list: list[str] = None):
         self.lua_runtime = LuaRuntime(attribute_filter=filter_attribute_access)
-
-        self.stream_functions: dict[str:Callable] = {}
+        self.stream_functions: dict[str:function] = {}
+        self.structure: list[dict] = [SYSTEM_STRUCTURE]
 
         with importlib.resources.open_text("LMS.Message", "System.lua") as file:
-            self.stream_functions = dict(self.lua_runtime.execute(file.read()))
+            self.base_preset = dict(self.lua_runtime.execute(file.read()))
+            self.stream_functions = self.base_preset
         
         globals = self.lua_runtime.globals()
 
-        if globals is not None:
-            for name in globals:
-                globals[name] = None
+        if global_list is not None:
+            for name in global_list:
+                globals[name] = None 
         else:
             for name in RESTRICTED_GLOBALS:
-                globals[name] = None 
-        
-    def load_preset_file(self, file_path: str) -> None:
-        with open(file_path, "r+") as file:
+                globals[name] = None
+       
+    @staticmethod
+    def msbp_structure_to_dict(msbp: MSBP):
+        # Skip System
+        structure = msbp.get_tag_structure()[1:]
+
+        result = []
+        for group in structure:
+            group_dict =  {"name": group.name, "tags": []}
+            
+            for i, tag in enumerate(group.tags):
+                group_dict["tags"].append({"name": tag.name, "parameters": []})
+
+                for parameter in tag.parameters:
+                    group_dict["tags"][i]["parameters"].append({
+                        "name": parameter.name,
+                        "type": parameter.type.value,
+                        "list_items": parameter.list_items
+                    })
+
+            result.append(group_dict)
+
+        return result
+             
+    def load_preset_file(self, preset_path: str, structure_path: str) -> None:
+        self.structure = [SYSTEM_STRUCTURE]
+        self.stream_functions = self.base_preset
+
+        with open(preset_path, "r") as file:
             self.stream_functions.update(dict(self.lua_runtime.execute(file.read())))
 
+        with open(structure_path, "r") as file:
+            self.structure += json.load(file)
+
     @staticmethod
-    def create_preset_file(file_name: str, msbp: MSBP) -> None:
+    def create_preset_file(preset_path: str, json_path: str, msbp: MSBP) -> None:
         structure = msbp.get_tag_structure()
 
         function_template = """
@@ -72,7 +99,7 @@ end
    Make sure you peserve parameter names when editing a function.
 --]]
 """
-        with open(file_name, "a") as file:
+        with open(f"{preset_path}", "a+") as file:
             file.write(comment_message)
             file.truncate()
 
@@ -92,6 +119,9 @@ end
                             list_body += f"\tlocal {parameter.name}_items = {set(list_items)}\n"
 
                         match parameter.type:
+                            case LMS_BinaryTypes.FLOAT:
+                                read_body += f"\t\t\tdata['{parameter.name}'] = reader.read_float()\n"
+                                write_body += f"\t\t\twriter.write_float(tonumber(data['{parameter.name}']))\n"
                             case LMS_BinaryTypes.LIST_INDEX:
                                 read_body += f"\t\t\tdata['{parameter.name}'] = {parameter.name}_items[reader.read_uint8({{lua_index=true}})]\n"
                                 write_body += f"\t\twriter.write_uint8(index({parameter.name}_items, data['{parameter.name}']))\n"
@@ -113,6 +143,13 @@ end
             file.write("}\n\n")
             
             file.write("return stream_functions")
+            
+            with open(json_path, "w+") as file:
+                json.dump(Preset.msbp_structure_to_dict(msbp), file, indent=2)
+
+      
+
+
 
 
             

@@ -2,8 +2,8 @@ import struct
 from io import BytesIO
 
 types = {
-    "little": {"uint8": "<B", "uint16": "<H", "uint32": "<I"},
-    "big": {"uint8": ">B", "uint16": ">H", "uint32": ">I"},
+    "little": {"uint8": "<B", "uint16": "<H", "uint32": "<I", "float": "<f"},
+    "big": {"uint8": ">B", "uint16": ">H", "uint32": ">I", "float": ">f"},
 }
 
 
@@ -52,12 +52,13 @@ class Reader:
         """Reads a UInt16 from the stream."""
         return struct.unpack(types[self.byte_order]["uint16"], self.data.read(2))[0]
 
-    def read_float16(self) -> int:
-        return struct.unpack("<e", self.data.read(2))[0]
-
     def read_uint32(self) -> int:
         """Reads a UInt32 from the stream."""
         return struct.unpack(types[self.byte_order]["uint32"], self.data.read(4))[0]
+    
+    def read_float(self) -> float:
+        """Reads a Float from the stream."""
+        return struct.unpack(types[self.byte_order]["float"], self.data.read(4))[0]
 
     def read_string_len(self, length: int) -> str:
         """Reads a string that is length bytes long from the stream."""

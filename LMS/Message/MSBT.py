@@ -82,11 +82,11 @@ class MSBT:
         # Read TXT2
         if txt2_valid:
             reader.seek(txt2_offset)
-            self.TXT2.read(reader, preset, msbp)
+            self.TXT2.read(reader, preset)
         else:
             self.TXT2 = None
 
-    def write(self, writer: Writer, preset: Preset = None, msbp: MSBP = None) -> None:
+    def write(self, writer: Writer, preset: Preset = None) -> None:
         """Writes a MSBT file to a stream.
 
         :param `reader`: A Reader object."""
@@ -126,7 +126,7 @@ class MSBT:
             self.TSY1.write(writer)
 
         if self.TXT2 is not None:
-            self.TXT2.write(writer, preset, msbp)
+            self.TXT2.write(writer, preset)
 
         writer.seek(0, 2)
         size = writer.tell()

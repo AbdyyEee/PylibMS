@@ -19,7 +19,7 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
 
-    def read(self, reader: Reader, preset, msbp: MSBP = None) -> None:
+    def read(self, reader: Reader, preset) -> None:
         """Reads the TXT2 block from a stream.
 
         :param `reader`: A Reader object.
@@ -44,7 +44,7 @@ class TXT2:
             message = b""
             while reader.tell() < next_offset:
                 bytes = reader.read_bytes(2)
-                message += Tag_Utility.read_tag(reader, preset, msbp).encode(encoding) if bytes == tag_indicator else bytes 
+                message += Tag_Utility.read_tag(reader, preset).encode(encoding) if bytes == tag_indicator else bytes 
             
             self.messages.append(message.decode(encoding))
 
@@ -75,7 +75,7 @@ class TXT2:
             for part in split_message:
                 if Tag_Utility.is_tag(part):
                     message_writer.write_bytes(tag_indicator)
-                    Tag_Utility.write_tag(message_writer, part, preset, msbp)
+                    Tag_Utility.write_tag(message_writer, part, preset)
                 else:
                     message_writer.write_utf16_string(part)
 
