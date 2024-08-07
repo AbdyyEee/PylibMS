@@ -38,9 +38,7 @@ class TSY1:
         """Writes the TSY1 block to a stream.
 
         :param `writer`: A Writer object."""
-        self.block.magic = "TSY1"
-        self.block.size = 0
-        self.block.write_header(writer)
+        self.block.write_initial_data(writer)
 
         for index in self.style_indexes:
             writer.write_uint32(index)

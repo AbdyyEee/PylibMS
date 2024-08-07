@@ -12,7 +12,6 @@ class LMS_MessageEncoding(Enum):
 class LMS_BinaryTypes(Enum):
     """A class that represents binary types utilized in attributes and tags."""
 
-    
     UINT8_0 = 0
     UINT8_1 = 3
     FLOAT = 6

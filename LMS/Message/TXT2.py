@@ -11,7 +11,7 @@ class TXT2:
 
     https://github.com/kinnay/Nintendo-File-Formats/wiki/MSBT-File-Format#txt2-block"""
 
-    def __init__(self, msbt=None):
+    def __init__(self):
         from LMS.Message.MSBT import MSBT
 
         self.msbt: MSBT = None
@@ -19,11 +19,14 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
 
-    def read(self, reader: Reader, preset) -> None:
+        self.errors: dict[str:list] = {}
+
+    def read(self, reader: Reader, preset, lbl1) -> None:
         """Reads the TXT2 block from a stream.
 
         :param `reader`: A Reader object.
         :param `msbp`: A MSBP object used for decoding attributes and tags
+        :param `ignore_exceptions`: ignore exceptions when reading decoded tags
         """
         self.block.read_header(reader)
         message_count = reader.read_uint32()
@@ -44,9 +47,21 @@ class TXT2:
             message = b""
             while reader.tell() < next_offset:
                 bytes = reader.read_bytes(2)
-                message += Tag_Utility.read_tag(reader, preset).encode(encoding) if bytes == tag_indicator else bytes 
-            
+                if bytes == tag_indicator:
+                    tag, error = Tag_Utility.read_tag(reader, preset)
+                    
+                    if error:
+                        label = lbl1.labels[i]
+                        self.errors[label].append(error)
+                        message += tag.encode(encoding)
+                    else:
+                        message += tag.encode(encoding)
+                else:
+                    message += bytes 
+
             self.messages.append(message.decode(encoding))
+
+        
 
         self.block.seek_to_end(reader)
 
@@ -56,12 +71,8 @@ class TXT2:
         :param `writer`: A Writer object.
         :param `msbp`: A MSBP object used for writing decoded attributes and tags.
         """
-        self.block.magic = "TXT2"
-        self.block.size = 0
-        self.block.write_header(writer)
-        self.block.data_start = writer.tell()
         message_count = len(self.messages)
-        writer.write_uint32(message_count)
+        self.block.write_initial_data(writer, message_count)
         message_offset = message_count * 4 + 4
 
         tag_indicator = b"\x0E\x00" if writer.byte_order == "little" else b"\x00\x0E"

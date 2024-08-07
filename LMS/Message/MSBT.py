@@ -26,6 +26,30 @@ class MSBT:
         self.TSY1: TSY1 = TSY1()
         self.TXT2: TXT2 = TXT2(self)
 
+        # Set the magic for each block
+        self.LBL1.block.magic = "LBL1"
+        self.ATR1.block.magic = "ATR1"
+        self.TSY1.block.magic = "TSY1"
+        self.TXT2.block.magic = "TXT2"
+
+    def add_data(self, label: str, ignore_atr1=False, ignore_tsy1=False) -> None:
+        """Adds a new instance of every type to each block.
+
+        :param `label`: the label for the LBL1 block.
+        :param `ignore_atr1`: bool to add an attribute to ATR1 or to ignore it.
+        :param `ignore_tsy1`: bool to add an attribute to TSY1 or to ignore it."""
+        self.LBL1.add_label(label)
+
+        # Add the default values for each block
+        self.TXT2.messages.append("")
+
+        if self.ATR1 is not None and not ignore_atr1:
+            attribute = self.ATR1.create_attribute()
+            self.ATR1.attributes.append(attribute)
+
+        if self.TSY1 is not None and not ignore_tsy1:
+            self.TSY1.style_indexes.append(0)
+
     def combine_messages(self) -> dict:
         """Returns a dictionary of every label mapped to a message."""
         return {self.LBL1.labels[i]: self.TXT2.messages[i] for i in self.LBL1.labels}
@@ -37,21 +61,22 @@ class MSBT:
     def combine_styles(self, msbp: MSBP) -> dict:
         """Returns a dictionary of every label mapped to a style.
 
-
         :param `msbp`: A MSBP object."""
         return {
             self.LBL1.labels[i]: msbp.SLB1.labels[self.TSY1.style_indexes[i]]
             for i in self.LBL1.labels
         }
 
-    def read(self, reader: Reader, preset: Preset = None, msbp: MSBP = None):
+    def read(self, reader: Reader, preset: Preset = None, msbp: MSBP = None, ignore_exceptions: bool = False):
         """Reads a MSBT file from a stream.
 
         :param `reader`: A Reader object.
         :param `msbp`: A MSBP object. Used for decoding of attributes and tags
+        
         """
         if preset is None:
             preset = Preset()
+
 
         self.binary.read_header(reader)
 
@@ -66,6 +91,12 @@ class MSBT:
             self.LBL1.read(reader)
         else:
             self.LBL1 = None
+
+        # Add all the labels to the TXT2 errors dictionary 
+        # the errors are set in TXT2
+        preset.errors = {}
+        for i in self.LBL1.labels:
+            self.TXT2.errors[self.LBL1.labels[i]] = []
 
         if atr1_valid:
             reader.seek(atr1_offset)
@@ -82,7 +113,7 @@ class MSBT:
         # Read TXT2
         if txt2_valid:
             reader.seek(txt2_offset)
-            self.TXT2.read(reader, preset)
+            self.TXT2.read(reader, preset, self.LBL1)
         else:
             self.TXT2 = None
 

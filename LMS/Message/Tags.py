@@ -1,7 +1,7 @@
 import re
 import struct
+import logging
 
-from bs4 import BeautifulSoup
 from LMS.Stream.Reader import Reader
 from LMS.Stream.Writer import Writer
 from LMS.Project.MSBP import MSBP
@@ -9,9 +9,21 @@ from LMS.Message.Preset import Preset
 
 system_names = {0: "Ruby", 1: "Font", 2: "Size", 3: "Color", 4: "PageBreak"}
 
+
+
 class Tag_Utility:
     """Static class used to house most tag related functions."""
 
+    @staticmethod
+    def create_tag(group_name: str, tag_name: str, parameters: str | dict | None = None) -> str:
+        if isinstance(parameters, dict):
+            parameters = Tag_Utility.get_str_parameter_representation(parameters)
+        
+        if parameters:
+            return f"<{group_name}::{tag_name} {parameters}>"
+        
+        return f"<{group_name}::{tag_name}>"
+    
     @staticmethod
     def get_group_and_tag_names(tag: str) -> tuple[str, str]:
         """Returns a list of the group and tag name given a tag.
@@ -25,9 +37,7 @@ class Tag_Utility:
         """Returns if a tag has parameters or not.
 
         :param `tag`: The tag to check."""
-        soup = BeautifulSoup(tag, "html.parser")
-        data = soup.find()
-        return len(data.attrs) > 0
+        return True if Tag_Utility.get_dict_parameter_representation(tag) else False
 
     @staticmethod
     def is_tag(message: str) -> bool:
@@ -55,7 +65,7 @@ class Tag_Utility:
         return "." in tag[: tag.find(":")]
 
     @staticmethod
-    def read_tag(reader: Reader, preset: Preset) -> str:
+    def read_tag(reader: Reader, preset: Preset) -> tuple:
         """Reads a tag from a stream, encoded or decoded.
 
         :param `reader`: a Reader object.
@@ -67,7 +77,7 @@ class Tag_Utility:
         # When the structure is a length of 1 it means that a preset was never loaded and it
         # contains just the 'System' functions. Using this check prevents reading from it
         if len(preset.structure) == 1 and group_index:
-            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index)
+            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index), None
 
         return Tag_Utility.read_decoded_tag(
             reader, preset, group_index, tag_index
@@ -89,12 +99,13 @@ class Tag_Utility:
                 for i in range(0, len(hex_parameters), 2)
             ]
         )
+        if parameter_size == 1:
+            parameter_size = 0
+            
         return f"<n{group_index}.{tag_index}:{encoded_parameters}>"
 
     @staticmethod
-    def read_decoded_tag(
-        reader: Reader, preset: Preset, group_index: int, tag_index: int
-    ) -> str:
+    def read_decoded_tag(reader: Reader, preset: Preset, group_index: int, tag_index: int) -> tuple:
         """Reads an encoded tag from a stream.
 
         :param `reader`: a Reader object.
@@ -103,7 +114,6 @@ class Tag_Utility:
         :param `group_index`: the index of the tag group.
         :param `tag_index`: the index of the tag in the group.
         """
-   
         parameters = {}
         structure = preset.structure
         
@@ -117,25 +127,24 @@ class Tag_Utility:
         end = reader.tell() + parameter_size
         
         read_function = preset.stream_functions[function_name]()[1]
+        
         try:
             read_function(parameters, reader)
-        # UnicodeDecodeErrors and struct errors tend to occur in tags that read wrong.
-        except (UnicodeDecodeError, struct.error) as error:
-            print(f"An error occurred while reading the tag in the function {function_name} at start offset {start}. {error}")
+        except Exception as error:
+            structure_parameters = structure[group_index]["tags"][tag_index]["parameters"]
+
+            # Get the index of the current parameter being read, which is the one that is not in the dictionary 
+            parameter = structure_parameters[len(parameters)]["name"]
+            
+            error = f"An error occurred in the function '{function_name}', reading the parameter '{parameter}' at start offset {start}. {error}"
             reader.seek(start)
-            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index)
-
-        if parameter_size % 2 == 1:
-            end += 1
-
-        reader.seek(end)
-
-        if not parameters:
-            return f"<{group_name}::{tag_name}>"
-
-        string_parameters = Tag_Utility.get_str_parameter_representation(parameters)
-        return f"<{group_name}::{tag_name} {string_parameters.strip()}>"
-
+            return Tag_Utility.read_encoded_tag(reader, group_index, tag_index), error
+        
+        
+        # Account for 0xCD padding 
+        reader.seek(end + 1 if parameter_size % 2 == 1 else end)
+        return Tag_Utility.create_tag(group_name, tag_name, parameters), None
+    
     @staticmethod
     def write_tag(writer: Writer, tag: str, preset: Preset) -> None:
         """Writes both encoded and decoded tags to a stream.
@@ -164,12 +173,15 @@ class Tag_Utility:
         parameters = tag[tag.rindex(":") + 1 : len(tag) - 1].split("-")
         parameter_size = len(parameters)
 
+        if parameter_size == 1:
+            parameter_size = 0
+
         writer.write_uint16(int(group_index))
         writer.write_uint16(int(tag_index))
         writer.write_uint16(parameter_size)
 
         for parameter in parameters:
-            if parameter != "":
+            if parameter:
                 writer.write_bytes(bytes.fromhex(parameter))
 
     @staticmethod
@@ -182,8 +194,6 @@ class Tag_Utility:
         :param `preset`: a Preset object."""
         
         tag_info = Tag_Utility.get_decoded_tag_information(tag)
-
-        
         structure = preset.structure
 
         group_index = [group["name"] for group in structure].index(tag_info["group_name"])

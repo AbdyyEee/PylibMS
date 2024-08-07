@@ -12,15 +12,18 @@ class ATR1:
 
     def __init__(self):
         self.block: LMS_Block = LMS_Block()
+        
+        self.bytes_per_attribute = 0
         self.attributes: list[dict | bytes] = []
         self.structure: dict = {}
 
-        # Define a string table attribute for when attributes arent decoded
+        # Define a string table attribute for when attributes arent decoded.
+        # When attributes decoded a string table isn't needed. 
         self.strings: list[str] = []
 
     def attributes_decoded(self) -> bool:
         """Checks if the attributes are decoded and valid, as in they are not type bytes or are empty."""
-        if len(self.attributes):
+        if self.attributes:
             return not isinstance(self.attributes[0], bytes)
         return False
 
@@ -33,6 +36,7 @@ class ATR1:
             for _ in range(self.attribute_count)
         ]
 
+        # Verify ATR1 has a string table by verifying the size is bigger than the attributes
         if self.block.size > self.attribute_count * self.bytes_per_attribute:
             while reader.tell() != self.block.data_start + self.block.size:
                 self.strings.append(reader.read_utf16_string())
@@ -47,9 +51,7 @@ class ATR1:
                 attribute_type = self.structure[label].type
 
                 if LMS_BinaryTypes._int_type(attribute_type):
-                    attribute[label] = LMS_BinaryTypes.action_based_value(
-                        reader, attribute_type, action="read"
-                    )
+                    attribute[label] = LMS_BinaryTypes.action_based_value(reader, attribute_type, None, "read")
                 else:
                     if attribute_type is LMS_BinaryTypes.STRING:
                         offset = self.block.data_start + reader.read_uint32()
@@ -127,17 +129,21 @@ class ATR1:
                             self.structure[label].list_items.index(value)
                         )
 
-    def create_decoded_attribute(self) -> dict:
-        """Adds an attribute, setting each value to the default for each type."""
-        attribute = {}
-        for label in self.structure:
-            type = self.structure[label].type
-            if LMS_BinaryTypes._get_bits(type) is not None:
-                attribute[label] = 0
-            elif type is LMS_BinaryTypes.STRING:
-                attribute[label] = ""
-            else:
-                attribute[label] = self.structure[label].list_items[0]
+    def create_attribute(self) -> dict:
+        """Creates an attribute, decoded or encoded."""
+        if self.structure:
+            attribute = {}
+            for label in self.structure:
+                type = self.structure[label].type
+                if LMS_BinaryTypes._get_bits(type) is not None:
+                    attribute[label] = 0
+                elif type is LMS_BinaryTypes.STRING:
+                    attribute[label] = ""
+                else:
+                    attribute[label] = self.structure[label].list_items[0]
+        else:
+            attribute = b"\x00" * self.bytes_per_attribute
+        return attribute
 
     def read(self, reader: Reader, msbp: MSBP = None) -> None:
         """Reads the ATR1 block from a stream.
@@ -150,7 +156,7 @@ class ATR1:
         self.bytes_per_attribute = reader.read_uint32()
 
         # Read the attributes
-        if msbp is None or not len(msbp.ALB1.labels):
+        if msbp is None or not msbp.ALB1.labels:
             self.read_encoded_attributes(reader)
             self.block.seek_to_end(reader)
             return
@@ -160,21 +166,15 @@ class ATR1:
 
         self.block.seek_to_end(reader)
 
-    def write(self, writer: Writer):
+    def write(self, writer: Writer) -> None:
         """Writes the ATR1 block to a stream.
 
         :param `writer`: a Writer object.
         """
-        self.block.magic = "ATR1"
-        self.block.write_header(writer)
-        self.block.data_start = writer.tell()
-
-        self.bytes_per_attribute = 0
         self.attribute_count = len(self.attributes)
-        writer.write_uint32(self.attribute_count)
+        self.block.write_initial_data(writer, self.attribute_count)
 
         self.bytes_per_attribute = self.get_bytes_per_attribute()
-
         writer.write_uint32(self.bytes_per_attribute)
 
         if not self.attributes_decoded():

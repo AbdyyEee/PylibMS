@@ -30,11 +30,11 @@ class Reader:
     def skip(self, length: int) -> None:
         """Skips `length` amount of bytes."""
         self.data.read(length)
-
+    
     def read_bytes(self, length: int) -> bytes:
         """Reads `length` amount of bytes."""
         return self.data.read(length)
-
+    
     def seek(self, offset: int, whence: int = 0) -> None:
         """Seeks to an offset with whence."""
         self.data.seek(offset, whence)
@@ -42,7 +42,7 @@ class Reader:
     def tell(self) -> int:
         """Returns the current position in the stream."""
         return self.data.tell()
-
+    
     def read_uint8(self, lua_index: bool = False) -> int:
         """Reads a UInt8 from the stream."""
         value = struct.unpack(types[self.byte_order]["uint8"], self.data.read(1))[0]
@@ -63,7 +63,7 @@ class Reader:
     def read_string_len(self, length: int) -> str:
         """Reads a string that is length bytes long from the stream."""
         return self.data.read(length).decode("UTF-8")
-
+    
     def read_string_nt(self) -> str:
         """Reads a null terminated string from the stream."""
         result = b""
@@ -86,7 +86,7 @@ class Reader:
             byte = self.data.read(2)
 
         return message.decode(mode)
-
+    
     def read_len_prefixed_utf16_string(self):
         """Reads a UTF-16 string from the stream."""
         length = self.read_uint16()

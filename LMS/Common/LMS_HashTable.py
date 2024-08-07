@@ -111,10 +111,8 @@ class LMS_HashTable:
         :param `writer`: A Writer object.
         :param `slot_count`: The hash table slot count. 101 for MSBT, 29 for MSBP and 59 for MSBF.
         """
-        self.block.write_header(writer)
-        self.block.data_start = writer.tell()
-        writer.write_uint32(slot_count)
-
+        self.block.write_initial_data(writer, slot_count)
+      
         hash_slots = {}
         # Add each label to each hash slot
         for index in self.labels:

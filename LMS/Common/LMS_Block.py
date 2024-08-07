@@ -7,8 +7,8 @@ class LMS_Block:
 
     def __init__(self):
         self.magic: str = None
-        self.size: int = None
-        self.data_start: int = None
+        self.size: int = 0
+        self.data_start: int = 0
 
     def read_header(self, reader: Reader) -> None:
         """Reads the block header from a stream
@@ -33,6 +33,17 @@ class LMS_Block:
         stream.seek(self.data_start)
         end = self.size + 16 - self.size % 16
         stream.seek(end, 1)
+
+    def write_initial_data(self, writer: Writer, item_count: int | None = None) -> None:
+        """Sets and writes the initial data for a block.
+        
+        :param `writer`: a Writer object.
+        :param `magic`: the magic name of the block."""
+        self.write_header(writer)
+        self.data_start = writer.tell()
+
+        if item_count:
+            writer.write_uint32(item_count)
 
     def write_header(self, writer: Writer) -> None:
         """Writes the block to a stream.

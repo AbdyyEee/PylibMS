@@ -13,8 +13,9 @@ class ProjectBlock:
     def read(self, reader: Reader, contains_offsets: bool = True, uint32_count: bool = True, version_4=False) -> None:
         """Reads the block from a stream.
 
-        :param `reader`: A Reader object.
-        :param `uint32_count`: Determines weather the item count is a uint32. """
+        :param `reader`: a Reader object.
+        :param `uint32_count`: determines weather the item count is a uint32. 
+        :param `version_4`: determines if the block should be written for version 4 of a format. This is only used for `TagGroup`."""
         self.block.read_header(reader)
 
         if uint32_count:
