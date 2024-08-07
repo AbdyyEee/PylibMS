@@ -26,7 +26,6 @@ class TXT2:
 
         :param `reader`: A Reader object.
         :param `msbp`: A MSBP object used for decoding attributes and tags
-        :param `ignore_exceptions`: ignore exceptions when reading decoded tags
         """
         self.block.read_header(reader)
         message_count = reader.read_uint32()
