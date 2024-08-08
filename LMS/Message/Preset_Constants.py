@@ -16,6 +16,7 @@ ALLOWED_ATTRIBUTES = [
     "write_uint8",
     "write_uint16",
     "write_uint32",
+    "write_float",
     "write_len_prefixed_utf16_string",
     "write_utf16_string",
     "write_bytes",

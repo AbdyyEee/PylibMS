@@ -16,10 +16,10 @@ import json
 
 
 def filter_attribute_access(obj, attr_name, is_setting):
-    if isinstance(attr_name, str):
-        if attr_name not in ALLOWED_ATTRIBUTES:
-            raise AttributeError("You cannot access this attribute.")
-        return attr_name
+    if isinstance(attr_name, str) and attr_name not in ALLOWED_ATTRIBUTES:
+        raise AttributeError("You cannot access this attribute.")
+    return attr_name
+
 
 class Preset:
     """A static class for loading and storing a preset."""
@@ -28,51 +28,46 @@ class Preset:
         self.lua_runtime = LuaRuntime(attribute_filter=filter_attribute_access)
         self.structure: list[dict] = [SYSTEM_STRUCTURE]
 
+        # Load the base Preset
         with importlib.resources.open_text("LMS.Message", "System.lua") as file:
             self.base_preset = dict(self.lua_runtime.execute(file.read()))
             self.stream_functions = self.base_preset
 
+        self._initialize_globals(global_list)
+
+    def _initialize_globals(self, global_list):
         globals = self.lua_runtime.globals()
 
-        if global_list is not None:
-            for name in global_list:
-                globals[name] = None
-        else:
-            for name in RESTRICTED_GLOBALS:
-                globals[name] = None
+        restricted_globals = global_list if global_list else RESTRICTED_GLOBALS
+        for name in restricted_globals:
+            globals[name] = None
 
     @staticmethod
-    def msbp_structure_to_dict(msbp: MSBP):
+    def msbp_structure_to_dict(msbp: MSBP) -> dict:
         # Skip System
         structure = msbp.get_tag_structure()[1:]
 
-        result = []
-        for group in structure:
-            group_dict = {"name": group.name, "tags": []}
+        def parameter_to_dict(parameter):
+            return {
+                "name": parameter.name,
+                "type": parameter.type.value,
+                "list_items": parameter.list_items,
+            }
 
-            for i, tag in enumerate(group.tags):
-                group_dict["tags"].append({"name": tag.name, "parameters": []})
+        def tag_to_dict(tag):
+            return {
+                "name": tag.name,
+                "parameters": [parameter_to_dict(param) for param in tag.parameters],
+            }
 
-                for parameter in tag.parameters:
-                    group_dict["tags"][i]["parameters"].append(
-                        {
-                            "name": parameter.name,
-                            "type": parameter.type.value,
-                            "list_items": parameter.list_items,
-                        }
-                    )
-
-            result.append(group_dict)
-
-        return result
+        return [{"name": group.name, "tags": [tag_to_dict(tag) for tag in group.tags]} for group in structure]
 
     def load_preset_file(self, preset_path: str, structure_path: str) -> None:
         """Loads a preset file.
-
-        :param `preset_path`: The path to of the lua preset.
-        :param `structure_path`: The path to of the json structure.
+        
+        :param `preset_path`: the path of the .lua Preset.
+        :param `preset_path`: the path of the JSON structure.
         """
-        # Reset the structure and stream_functions to just include System definitions
         self.structure = [SYSTEM_STRUCTURE]
         self.stream_functions = self.base_preset
 
@@ -84,14 +79,15 @@ class Preset:
 
     @staticmethod
     def create_preset_file(preset_path: str, structure_path: str, msbp: MSBP) -> None:
-        """Loads a preset file.
-
-        :param `preset_path`: the path to create the lua preset.
-        :param `structure_path`: the path to create the json structure.
-        :param `msbp`: project object associated with a game.
-        """
-        structure = msbp.get_tag_structure()
+        """Creates a lua Preset.
         
+        :param `preset_path`: the path to generate the Lua preset.
+        :param `structure_path`: the path to generate the JSON structure.
+        :param `msbp`: a project object for a specifc game.
+        """
+        """Creates a preset file."""
+        structure = msbp.get_tag_structure()
+
         function_template = """
 local function {name}()
 {list_items}
@@ -102,79 +98,76 @@ local function {name}()
     return {{read, write}}
 end
 """
-        # Lua lacks a .index function for tables, so define a table.index method for use with list items
-        # Define it without function_template as its a one liner
+        # Index function for writing the index of list ltems
         index_function = "local function index(table, value) for i, v in ipairs(table) do if v == value then return i - 1 end end end\n"
 
-        # Tags can use special characters like paranthesis which lua dislikes
-        # Instead, set the functions in a list so that function names can be edited
-        # and still indexed properly with the raw name
         function_names = []
+        lua_code = ["local stream_functions = {}\n\n", index_function]
 
-        with open(f"{preset_path}", "a+") as file:
-            file.write("""
---[[ 
+        # Slice by 1 to avoid the System group
+        for group in structure[1:]:
+            for tag in group.tags:
+                name = f"{group.name.lower()}_{tag.name.lower()}"
+                function_names.append(name)
+
+                list_body, read_body, write_body = Preset._generate_function_bodies(tag)
+
+                lua_code.append(function_template.format(
+                    name=name,
+                    list_items=list_body,
+                    read_body=read_body,
+                    write_body=write_body,
+                ))
+
+        # Add the function table 
+        lua_code.append("\nstream_functions = {\n")
+        lua_code.extend(f"\t['{name}'] = {name},\n" for name in function_names)
+        lua_code.append("}\n\nreturn stream_functions")
+
+        lua_code.insert(0, """--[[ 
    This is a preset used for parsing tags. 
    DO NOT edit any variable which are list items (tables that appear at the top of a tag function). It will lead to errors.
    Make sure you peserve parameter names when editing a function.
---]]
-"""
-            )
+--]]\n\n""")
+        
+        with open(preset_path, "w+") as file:
             file.truncate()
+            file.write("".join(lua_code))
 
-            file.write("local stream_functions = {}\n\n")
-            file.write(index_function)
+        with open(structure_path, "w+") as file:
+            json.dump(Preset.msbp_structure_to_dict(msbp), file, indent=2)
 
-            # Slice the structure, ignoring the "System" group as it has already been defined.
-            for group in structure[1:]:
-                for tag in group.tags:
-                    read_body = ""
-                    write_body = ""
-                    list_body = ""
+    @staticmethod
+    def _generate_function_bodies(tag):
+        list_body = ""
+        read_body = ""
+        write_body = ""
 
-                    name = f"{group.name.lower()}_{tag.name.lower()}"
-                    function_names.append(name)
+        body_template = {
+                LMS_BinaryTypes.FLOAT: (
+                    "\t\t\t\tdata['{parameter_name}'] = reader.read_float()\n",
+                    "\t\t\t\twriter.write_float(tonumber(data['{parameter_name}']))\n"
+                ),
+                LMS_BinaryTypes.LIST_INDEX: (
+                    "\t\t\t\tdata['{parameter_name}'] = {parameter_name}_items[reader.read_uint8({{lua_index=true}})]\n",
+                    "\t\t\t\twriter.write_uint8(index({parameter_name}_items, data['{parameter_name}']))\n"
+                ),
+                LMS_BinaryTypes.STRING: (
+                    "\t\t\t\tdata['{parameter_name}'] = reader.read_len_prefixed_utf16_string()\n",
+                    "\t\t\t\twriter.write_len_prefixed_utf16_string(data['{parameter_name}'])\n"
+                )
+            }
+        
+        for parameter in tag.parameters:
+            if parameter.list_items:
+                list_body += f"\t\tlocal {parameter.name}_items = {set(parameter.list_items)}\n"
 
-                    for parameter in tag.parameters:
-                        list_items = parameter.list_items
-                        if list_items:
-                            list_body += (
-                                f"\tlocal {parameter.name}_items = {set(list_items)}\n"
-                            )
+            if parameter.type not in body_template:
+                read_body += f"\t\t\t\tdata['{parameter.name}'] = reader.read_uint{LMS_BinaryTypes._get_bits(parameter.type)}()\n"
+                write_body += f"\t\t\t\twriter.write_uint{LMS_BinaryTypes._get_bits(parameter.type)}(tonumber(data['{parameter.name}']))\n"
+            else:
+                read, write = body_template[parameter.type]
+                read_body += read.format(parameter_name=parameter.name)
+                write_body += write.format(parameter_name=parameter.name)
 
-                        # Determine the action
-                        match parameter.type:
-                            case LMS_BinaryTypes.FLOAT:
-                                read_body += f"\t\t\tdata['{parameter.name}'] = reader.read_float()\n"
-                                write_body += f"\t\t\twriter.write_float(tonumber(data['{parameter.name}']))\n"
-                            case LMS_BinaryTypes.LIST_INDEX:
-                                read_body += f"\t\t\tdata['{parameter.name}'] = {parameter.name}_items[reader.read_uint8({{lua_index=true}})]\n"
-                                write_body += f"\t\twriter.write_uint8(index({parameter.name}_items, data['{parameter.name}']))\n"
-                            case LMS_BinaryTypes.STRING:
-                                read_body += f"\t\t\tdata['{parameter.name}'] = reader.read_len_prefixed_utf16_string()\n"
-                                write_body += f"\t\t\twriter.write_len_prefixed_utf16_string(data['{parameter.name}'])\n"
-                            # UInt8, UInt16, UInt32 handling here
-                            case _:
-                                bit_value = LMS_BinaryTypes._get_bits(parameter.type)
-                                read_body += f"\t\t\tdata['{parameter.name}'] = reader.read_uint{bit_value}()\n"
-                                write_body += f"\t\t\twriter.write_uint{bit_value}(tonumber(data['{parameter.name}']))\n"
-
-                    file.write(
-                        function_template.format(
-                            name=name,
-                            list_items=list_body,
-                            read_body=read_body,
-                            write_body=write_body,
-                        )
-                    )
-
-            file.write("\nstream_functions = {\n")
-
-            for name in function_names:
-                file.write(f"\t['{name}'] = {name},\n")
-            file.write("}\n\n")
-
-            file.write("return stream_functions")
-
-            with open(structure_path, "w+") as file:
-                json.dump(Preset.msbp_structure_to_dict(msbp), file, indent=2)
+        return list_body, read_body, write_body

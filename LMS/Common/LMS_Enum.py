@@ -72,7 +72,7 @@ class LMS_BinaryTypes(Enum):
             value = self(value)
 
         # Exlcude list type as it has special reading
-        return value in (self.UINT8_0, self.UINT8_1, self.FLOAT)
+        return value in (self.UINT8_0, self.UINT8_1)
 
     @classmethod
     def _16_bit_type(self, value: "LMS_BinaryTypes" or int):

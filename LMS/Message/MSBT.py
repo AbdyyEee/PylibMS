@@ -24,7 +24,7 @@ class MSBT:
         self.LBL1: LMS_HashTable = LMS_HashTable()
         self.ATR1: ATR1 = ATR1()
         self.TSY1: TSY1 = TSY1()
-        self.TXT2: TXT2 = TXT2(self)
+        self.TXT2: TXT2 = TXT2()
 
         # Set the magic for each block
         self.LBL1.block.magic = "LBL1"
@@ -93,9 +93,10 @@ class MSBT:
 
         # Add all the labels to the TXT2 errors dictionary 
         # the errors are set in TXT2
-        preset.errors = {}
         for i in self.LBL1.labels:
-            self.TXT2.errors[self.LBL1.labels[i]] = []
+            self.TXT2.errors[self.LBL1.labels[i]] = {}
+            self.TXT2.errors[self.LBL1.labels[i]]["read"] = []
+            self.TXT2.errors[self.LBL1.labels[i]]["write"] = []
 
         if atr1_valid:
             reader.seek(atr1_offset)
@@ -156,7 +157,7 @@ class MSBT:
             self.TSY1.write(writer)
 
         if self.TXT2 is not None:
-            self.TXT2.write(writer, preset)
+            self.TXT2.write(writer, preset, self.LBL1)
 
         writer.seek(0, 2)
         size = writer.tell()

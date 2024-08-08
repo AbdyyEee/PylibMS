@@ -19,7 +19,7 @@ class TXT2:
         self.block: LMS_Block = LMS_Block()
         self.messages: list[str] = []
 
-        self.errors: dict[str:list] = {}
+        self.errors: dict[str:dict] = {}
 
     def read(self, reader: Reader, preset, lbl1) -> None:
         """Reads the TXT2 block from a stream.
@@ -51,7 +51,7 @@ class TXT2:
                     
                     if error:
                         label = lbl1.labels[i]
-                        self.errors[label].append(error)
+                        self.errors[label]["read"].append(error)
                         message += tag.encode(encoding)
                     else:
                         message += tag.encode(encoding)
@@ -64,11 +64,12 @@ class TXT2:
 
         self.block.seek_to_end(reader)
 
-    def write(self, writer: Writer, preset, msbp: MSBP = None) -> None:
+    def write(self, writer: Writer, preset, lbl1) -> None:
         """Writes the TXT2 block to a stream.
 
         :param `writer`: A Writer object.
-        :param `msbp`: A MSBP object used for writing decoded attributes and tags.
+        :param `msbp`: a MSBP object used for writing decoded attributes and tags.
+        :param `lbl1`: a LBL1 object used for preset errors.
         """
         message_count = len(self.messages)
         self.block.write_initial_data(writer, message_count)
@@ -77,7 +78,7 @@ class TXT2:
         tag_indicator = b"\x0E\x00" if writer.byte_order == "little" else b"\x00\x0E"
 
         encoded_messages = []
-        for message in self.messages:
+        for i, message in enumerate(self.messages):
             split_message = Tag_Utility.split_message_by_tag(message)
             # Use a writer object to simplfy the encoding process
             message_writer = Writer(b"", writer.byte_order)
@@ -85,7 +86,11 @@ class TXT2:
             for part in split_message:
                 if Tag_Utility.is_tag(part):
                     message_writer.write_bytes(tag_indicator)
-                    Tag_Utility.write_tag(message_writer, part, preset)
+                    error = Tag_Utility.write_tag(message_writer, part, preset)
+                    print(error)
+                    if error:
+                        label = lbl1.labels[i]
+                        self.errors[label]["write"].append(error)
                 else:
                     message_writer.write_utf16_string(part)
 

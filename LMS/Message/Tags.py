@@ -140,13 +140,12 @@ class Tag_Utility:
             reader.seek(start)
             return Tag_Utility.read_encoded_tag(reader, group_index, tag_index), error
         
-        
         # Account for 0xCD padding 
         reader.seek(end + 1 if parameter_size % 2 == 1 else end)
         return Tag_Utility.create_tag(group_name, tag_name, parameters), None
     
     @staticmethod
-    def write_tag(writer: Writer, tag: str, preset: Preset) -> None:
+    def write_tag(writer: Writer, tag: str, preset: Preset) -> None | str:
         """Writes both encoded and decoded tags to a stream.
 
         :param `writer`: a Writer object.
@@ -155,10 +154,9 @@ class Tag_Utility:
         :param `msbp`: a MSBP object."""
 
         if Tag_Utility.tag_encoded(tag):
-            Tag_Utility.write_encoded_tag(writer, tag)
-            return
+            return Tag_Utility.write_encoded_tag(writer, tag)
 
-        Tag_Utility.write_decoded_tag(writer, tag, preset)
+        return Tag_Utility.write_decoded_tag(writer, tag, preset)
 
     @staticmethod
     def write_encoded_tag(writer: Writer, tag: str) -> None:
@@ -183,9 +181,10 @@ class Tag_Utility:
         for parameter in parameters:
             if parameter:
                 writer.write_bytes(bytes.fromhex(parameter))
-
+        
     @staticmethod
-    def write_decoded_tag(writer: Writer, tag: str, preset: Preset) -> None:
+    # It is simple to handle errors by returning a string when reading decoded tags
+    def write_decoded_tag(writer: Writer, tag: str, preset: Preset) -> str | None:
         """Writes a decoded tag to a stream.
 
         :param `writer`: a Writer object.
@@ -212,12 +211,9 @@ class Tag_Utility:
         write_function = preset.stream_functions[function_name]()[2]
         try:
             write_function(tag_info["parameters"], writer)
-        except Exception as e:
-            print(
-                f"An error occurred while writing the tag in the function {function_name} at start offset {start}."
-            )
-            return
-
+        except Exception as exception:
+            return f"An error occurred while writing the tag in the function {function_name} at start offset {start}. {exception}"
+            
         size = writer.tell() - start
 
         if size % 2 == 1:

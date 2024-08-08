@@ -30,7 +30,7 @@ class TagGroup:
     def __repr__(self):
         return self.name
     
-    def read(self, reader: Reader, version_4=False) -> None:
+    def read(self, reader: Reader, version_4: bool =False) -> None:
         # Version 4 MSBTS have a short before the tag count that is the 
         # index of the tag group.
         if version_4:
