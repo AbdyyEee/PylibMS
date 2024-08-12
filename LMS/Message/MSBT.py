@@ -141,7 +141,10 @@ class MSBT:
             block_count += 1
 
         self.binary.magic = "MsgStdBn"
-        self.binary.encoding = LMS_MessageEncoding(1)
+        
+        if not self.binary.encoding:
+            self.binary.encoding = LMS_MessageEncoding(1)
+
         self.binary.revision = 3
         self.binary.block_count = block_count
 

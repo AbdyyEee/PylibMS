@@ -87,7 +87,7 @@ class TXT2:
                 if Tag_Utility.is_tag(part):
                     message_writer.write_bytes(tag_indicator)
                     error = Tag_Utility.write_tag(message_writer, part, preset)
-                    print(error)
+                    
                     if error:
                         label = lbl1.labels[i]
                         self.errors[label]["write"].append(error)

@@ -17,7 +17,7 @@ class LMS_Binary:
     def read_header(self, reader: Reader) -> None:
         """Reads the header from the stream.
 
-        :param `reader`: A Reader object."""
+        :param `reader`: a Reader object."""
         self.magic = reader.read_string_len(8)
         self.bom = "little" if reader.read_bytes(2) == b"\xFF\xFE" else "big"
 
@@ -42,7 +42,7 @@ class LMS_Binary:
             raise Exception("The file size is misaligned!")
 
         reader.seek(end)
-
+    
     def write_header(self, writer: Writer) -> None:
         """Writes the header from the stream.
 

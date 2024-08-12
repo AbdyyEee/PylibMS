@@ -57,7 +57,7 @@ class MSBP:
     def get_tag_structure(self) -> list[TagGroup]:
         """Returns a formatted dictionary of all the data in the TGG2, TAG2, TGP2, AND TGL2 blocks."""
         structure: list[TagGroup] = []
-
+        
         for group in self.TGG2.data:
             group.tags = [self.TAG2.data[i] for i in group.tag_indexes]
 

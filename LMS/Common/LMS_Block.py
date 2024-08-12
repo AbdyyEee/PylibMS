@@ -39,52 +39,34 @@ class LMS_Block:
         
         :param `writer`: a Writer object.
         :param `magic`: the magic name of the block."""
-        self.write_header(writer)
-        self.data_start = writer.tell()
-
-        if item_count:
-            writer.write_uint32(item_count)
-
-    def write_header(self, writer: Writer) -> None:
-        """Writes the block to a stream.
-
-        `writer`: A Writer object."""
         writer.write_string(self.magic)
         writer.write_uint32(0)
         writer.write_bytes(b"\x00" * 8)
         self.data_start = writer.tell()
 
-    def write_ab_padding(self, writer: Writer) -> None:
-        """Writes the ab padding after a block.
-
-        `writer`: A Writer object."""
-
-        remainder = 16 - self.size % 16
-        if remainder == 16:
-            return 0
-
-        writer.write_bytes(b"\xAB" * remainder)
-        return remainder
-
-    def write_size(self, writer: Writer):
-        """Writes the size of the block.
-
-        `writer`: A Writer object."""
-        writer.seek(self.data_start - 12)
-        writer.write_uint32(self.size)
+        if item_count:
+            writer.write_uint32(item_count)
 
     def write_end_data(self, writer: Writer):
         """Writes the ab padding, size, and seeks to the end of a block.
 
         `writer`: A Writer object."""
         offset = writer.tell()
-        remainder = self.write_ab_padding(writer)
 
-        self.write_size(writer)
+        # 0xAB padding
+        remainder = 16 - self.size % 16
+        if remainder == 16:
+            return 0
+
+        writer.write_bytes(b"\xAB" * remainder)
+
+        # Size
+        writer.seek(self.data_start - 12)
+        writer.write_uint32(self.size)
         writer.seek(offset)
 
         if remainder == 0:
             return
 
         writer.write_bytes(b"\xAB" * remainder)
-        self.seek_to_end(writer)
+        self.seek_to_end(writer)#

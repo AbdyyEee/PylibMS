@@ -41,7 +41,7 @@ class LMS_HashTable:
                 found = True
 
         if not found:
-            raise Exception("This label does not exist in the block.")
+            raise ValueError("This label does not exist in the block.")
 
         index = self.get_index_by_label(label)
 
