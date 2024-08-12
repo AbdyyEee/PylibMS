@@ -89,10 +89,10 @@ class Tag_Utility:
         :param `msbp`: a MSBP object"""
         group_index = reader.read_uint16()
         tag_index = reader.read_uint16()
-
+        
         # When the structure is a length of 1 it means that a preset was never loaded and it
         # contains just the 'System' functions. Using this check prevents reading from it
-        if len(preset.structure) == 1 and group_index:
+        if len(preset.stream_functions) == 1 and group_index:
             return Tag_Utility.read_encoded_tag(reader, group_index, tag_index), None
 
         return Tag_Utility.read_decoded_tag(reader, preset, group_index, tag_index)

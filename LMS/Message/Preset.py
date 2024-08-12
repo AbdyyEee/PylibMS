@@ -78,7 +78,6 @@ class Preset:
 
         :param `preset_path`: the path of the .lua Preset.
         """
-        self.structure = [SYSTEM_STRUCTURE]
         self.stream_functions = self.base_preset
 
         with open(preset_path, "r") as file:
