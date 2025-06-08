@@ -1,0 +1,7363 @@
+tag_definitions:
+  groups:
+    1: Mii
+    2: MiiTalk
+    3: Date
+    4: Reference
+    5: Song
+    6: Fixed
+    7: Article
+    8: Gender
+    9: SingularPlural
+    10: GenderSingularPlural
+    11: Format
+    12: Nuance
+  tags:
+  - name: Nickname
+    group_index: 1
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Lastname
+    group_index: 1
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Firstname
+    group_index: 1
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Creator
+    group_index: 1
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Character
+    group_index: 1
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: suffix
+      description: ''
+      datatype: list
+      list_items:
+      - 'true'
+      - 'false'
+  - name: Character16
+    group_index: 1
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: suffix
+      description: ''
+      datatype: list
+      list_items:
+      - 'true'
+      - 'false'
+  - name: LongPhrase
+    group_index: 1
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: ShortPhrase
+    group_index: 1
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: situation
+      description: ''
+      datatype: list
+      list_items:
+      - Good
+      - Nerves
+      - Despond
+      - Worry
+  - name: FirstPerson
+    group_index: 1
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: FirstPersonW
+    group_index: 1
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: MyNickname
+    group_index: 1
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: BloodType
+    group_index: 1
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: FavoriteColor
+    group_index: 1
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: Speaker
+    group_index: 2
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: FriendA
+    group_index: 2
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: FriendB
+    group_index: 2
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: FriendC
+    group_index: 2
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: FriendD
+    group_index: 2
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Lovers
+    group_index: 2
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Couple
+    group_index: 2
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: BestFriend
+    group_index: 2
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Child
+    group_index: 2
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: ChildApart
+    group_index: 2
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Father
+    group_index: 2
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Mother
+    group_index: 2
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: ExLovers
+    group_index: 2
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: Divorce
+    group_index: 2
+    tag_index: 13
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: BrotherSister
+    group_index: 2
+    tag_index: 14
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: conversion
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - Kana
+  - name: N_Year
+    group_index: 3
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+    - name: format
+      description: ''
+      datatype: list
+      list_items:
+      - YYYY
+      - YY
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: N_Month
+    group_index: 3
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+  - name: N_Day
+    group_index: 3
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+  - name: N_Hour
+    group_index: 3
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+    - name: format
+      description: ''
+      datatype: list
+      list_items:
+      - 12-hour
+      - 24-hour
+  - name: N_Minute
+    group_index: 3
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+  - name: N_Second
+    group_index: 3
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: zero
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+  - name: S_Month
+    group_index: 3
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_MonthSh
+    group_index: 3
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_Day
+    group_index: 3
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_Hour
+    group_index: 3
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+    - name: format
+      description: ''
+      datatype: list
+      list_items:
+      - 12-hour
+      - 24-hour
+  - name: S_Week
+    group_index: 3
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_WeekSh
+    group_index: 3
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_Season
+    group_index: 3
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: S_AMPM
+    group_index: 3
+    tag_index: 13
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Text
+      - Voice
+  - name: Body
+    group_index: 4
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: set
+      description: ''
+      datatype: list
+      list_items:
+      - 'False'
+      - 'True'
+  - name: Headwear
+    group_index: 4
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Room
+    group_index: 4
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Food
+    group_index: 4
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Tool
+    group_index: 4
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Treasure
+    group_index: 4
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Equip
+    group_index: 4
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: SpecialProduct
+    group_index: 4
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Item
+    group_index: 4
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+  - name: Number
+    group_index: 4
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Num
+      - Price
+      - NoMark
+    - name: zero
+      description: ''
+      datatype: uint8
+  - name: News
+    group_index: 4
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Month
+      - Day
+      - Hour
+      - DateDiff
+  - name: Island
+    group_index: 4
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Mine
+      - Others
+  - name: Player
+    group_index: 4
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: int32
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Country
+  - name: Age
+    group_index: 4
+    tag_index: 13
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+  - name: SongGenre
+    group_index: 4
+    tag_index: 14
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+  - name: Counter(JP)
+    group_index: 4
+    tag_index: 15
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: counter
+      description: ''
+      datatype: list
+      list_items:
+      - None
+      - D_ConsonantEuphony
+      - Normal
+  - name: IslandAddress
+    group_index: 4
+    tag_index: 16
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Mine
+      - Others
+    - name: kind
+      description: ''
+      datatype: list
+      list_items:
+      - Sea
+      - Islands
+      - Num0
+      - Num1
+  - name: IslandSub
+    group_index: 4
+    tag_index: 17
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Name
+      - Voice
+    - name: info
+      description: ''
+      datatype: list
+      list_items:
+      - Mine
+      - Others
+  - name: Currency
+    group_index: 4
+    tag_index: 18
+    description: ''
+    parameters: []
+  - name: Note
+    group_index: 5
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: pitch
+      description: ''
+      datatype: list
+      list_items:
+      - G1
+      - G#1
+      - A1
+      - A#1
+      - B1
+      - C2
+      - C#2
+      - D2
+      - D#2
+      - E2
+      - F2
+      - F#2
+      - G2
+      - G#2
+      - A2
+      - A#2
+      - B2
+      - C3
+      - C#3
+      - D3
+      - D#3
+      - E3
+      - F3
+      - F#3
+      - G3
+      - G#3
+      - A3
+      - A#3
+      - B3
+      - C4
+      - C#4
+      - D4
+      - D#4
+      - E4
+      - F4
+      - F#4
+      - G4
+      - G#4
+      - A4
+      - A#4
+      - B4
+      - C5
+      - C#5
+      - D5
+      - D#5
+      - E5
+      - F5
+      - F#5
+      - G5
+      - G#5
+      - A5
+      - A#5
+      - B5
+      - C6
+    - name: length
+      description: ''
+      datatype: uint8
+  - name: Rest
+    group_index: 5
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: length
+      description: ''
+      datatype: uint8
+  - name: Text
+    group_index: 5
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+  - name: Pitch
+    group_index: 5
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: pitch
+      description: ''
+      datatype: list
+      list_items:
+      - G1
+      - G#1
+      - A1
+      - A#1
+      - B1
+      - C2
+      - C#2
+      - D2
+      - D#2
+      - E2
+      - F2
+      - F#2
+      - G2
+      - G#2
+      - A2
+      - A#2
+      - B2
+      - C3
+      - C#3
+      - D3
+      - D#3
+      - E3
+      - F3
+      - F#3
+      - G3
+      - G#3
+      - A3
+      - A#3
+      - B3
+      - C4
+      - C#4
+      - D4
+      - D#4
+      - E4
+      - F4
+      - F#4
+      - G4
+      - G#4
+      - A4
+      - A#4
+      - B4
+      - C5
+      - C#5
+      - D5
+      - D#5
+      - E5
+      - F5
+      - F#5
+      - G5
+      - G#5
+      - A5
+      - A#5
+      - B5
+      - C6
+  - name: Width
+    group_index: 6
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: pixel
+      description: ''
+      datatype: uint16
+  - name: Def
+    group_index: 7
+    tag_index: 0
+    description: ''
+    parameters: []
+  - name: Indef
+    group_index: 7
+    tag_index: 1
+    description: ''
+    parameters: []
+  - name: DefGE
+    group_index: 7
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: case
+      description: ''
+      datatype: uint8
+  - name: IndefGE
+    group_index: 7
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: case
+      description: ''
+      datatype: uint8
+  - name: Mii
+    group_index: 8
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: male
+      description: ''
+      datatype: string
+    - name: female
+      description: ''
+      datatype: string
+  - name: MyMii
+    group_index: 8
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: male
+      description: ''
+      datatype: string
+    - name: female
+      description: ''
+      datatype: string
+  - name: MiiTalk
+    group_index: 8
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - Speaker
+      - FriendA
+      - FriendB
+      - FriendC
+      - FriendD
+      - Lovers
+      - Couple
+      - BestFriend
+      - Child
+      - ChildApart
+      - ExLovers
+      - Divorce
+      - BrotherSister
+    - name: male
+      description: ''
+      datatype: string
+    - name: female
+      description: ''
+      datatype: string
+  - name: MiiSpeaker
+    group_index: 8
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: male
+      description: ''
+      datatype: string
+    - name: female
+      description: ''
+      datatype: string
+  - name: Body
+    group_index: 8
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Headwear
+    group_index: 8
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Room
+    group_index: 8
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Food
+    group_index: 8
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Tool
+    group_index: 8
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Treasure
+    group_index: 8
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Equip
+    group_index: 8
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: SpecialProduct
+    group_index: 8
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Item
+    group_index: 8
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: masculine
+      description: ''
+      datatype: string
+    - name: feminine
+      description: ''
+      datatype: string
+    - name: neuter
+      description: ''
+      datatype: string
+  - name: Body
+    group_index: 9
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Headwear
+    group_index: 9
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Room
+    group_index: 9
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Food
+    group_index: 9
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Tool
+    group_index: 9
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Treasure
+    group_index: 9
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Equip
+    group_index: 9
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: SpecialProduct
+    group_index: 9
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Item
+    group_index: 9
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Number
+    group_index: 9
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Hour
+    group_index: 9
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: singular
+      description: ''
+      datatype: string
+    - name: plural
+      description: ''
+      datatype: string
+  - name: Body
+    group_index: 10
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Headwear
+    group_index: 10
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Room
+    group_index: 10
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Food
+    group_index: 10
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Tool
+    group_index: 10
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Treasure
+    group_index: 10
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Equip
+    group_index: 10
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: SpecialProduct
+    group_index: 10
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: Item
+    group_index: 10
+    tag_index: 8
+    description: ''
+    parameters:
+    - name: buffer
+      description: ''
+      datatype: uint8
+    - name: sp
+      description: ''
+      datatype: list
+      list_items:
+      - Singular
+      - Plural
+    - name: masculineSingular
+      description: ''
+      datatype: string
+    - name: masculinePlural
+      description: ''
+      datatype: string
+    - name: feminineSingular
+      description: ''
+      datatype: string
+    - name: femininePlural
+      description: ''
+      datatype: string
+    - name: neuterSingular
+      description: ''
+      datatype: string
+    - name: neuterPlural
+      description: ''
+      datatype: string
+  - name: InitialCap
+    group_index: 11
+    tag_index: 0
+    description: ''
+    parameters: []
+  - name: InitialCapSP
+    group_index: 11
+    tag_index: 1
+    description: ''
+    parameters: []
+  - name: Elision
+    group_index: 11
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: normal
+      description: ''
+      datatype: string
+    - name: elision
+      description: ''
+      datatype: string
+  - name: Particle
+    group_index: 11
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: char
+      description: ''
+      datatype: list
+      list_items:
+      - none
+      - ha
+      - wo
+      - ga
+      - to
+      - ni
+      - ya
+      - san
+  - name: Patchim
+    group_index: 11
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: patchim
+      description: ''
+      datatype: string
+    - name: nopatchim
+      description: ''
+      datatype: string
+  - name: AndSP
+    group_index: 11
+    tag_index: 5
+    description: ''
+    parameters: []
+  - name: CS_Rate
+    group_index: 12
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: rate
+      description: ''
+      datatype: uint16
+  - name: CS_Vol
+    group_index: 12
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: Vol
+      description: ''
+      datatype: uint8
+  - name: CS_Pause
+    group_index: 12
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: len
+      description: ''
+      datatype: uint16
+  - name: CS_Reset
+    group_index: 12
+    tag_index: 3
+    description: ''
+    parameters: []
+  - name: Echo
+    group_index: 12
+    tag_index: 4
+    description: ''
+    parameters:
+    - name: gain
+      description: ''
+      datatype: uint8
+    - name: delay
+      description: ''
+      datatype: uint16
+  - name: Preset
+    group_index: 12
+    tag_index: 5
+    description: ''
+    parameters:
+    - name: param
+      description: ''
+      datatype: list
+      list_items:
+      - Default
+      - Idol
+      - Scream
+      - No_Intonation
+      - Subdued_Voice
+  - name: Song_Chorus
+    group_index: 12
+    tag_index: 6
+    description: ''
+    parameters:
+    - name: target
+      description: ''
+      datatype: list
+      list_items:
+      - '0'
+      - '1'
+      - '2'
+    - name: ratio
+      description: ''
+      datatype: int32
+  - name: CS_Toi
+    group_index: 12
+    tag_index: 7
+    description: ''
+    parameters:
+    - name: type
+      description: ''
+      datatype: list
+      list_items:
+      - orth
+      - lhp
+      - nts
+      - pyt
+      - diacritized
+    - name: orth_text
+      description: ''
+      datatype: string
+  - name: CS_Mw
+    group_index: 12
+    tag_index: 8
+    description: ''
+    parameters: []
+  - name: CS_Tn
+    group_index: 12
+    tag_index: 9
+    description: ''
+    parameters:
+    - name: tn
+      description: ''
+      datatype: list
+      list_items:
+      - normal
+      - spell
+      - address
+      - sms
+  - name: CS_Wait
+    group_index: 12
+    tag_index: 10
+    description: ''
+    parameters:
+    - name: time
+      description: ''
+      datatype: uint8
+  - name: CS_Spell
+    group_index: 12
+    tag_index: 11
+    description: ''
+    parameters:
+    - name: time
+      description: ''
+      datatype: uint16
+  - name: CS_Eos
+    group_index: 12
+    tag_index: 12
+    description: ''
+    parameters:
+    - name: eos
+      description: ''
+      datatype: list
+      list_items:
+      - 'false'
+      - 'true'
+  - name: CS_ReadMode
+    group_index: 12
+    tag_index: 13
+    description: ''
+    parameters:
+    - name: mode
+      description: ''
+      datatype: list
+      list_items:
+      - sentence
+      - character
+      - word
+      - line
+      - explicit
+  - name: Song_WordStretch
+    group_index: 12
+    tag_index: 14
+    description: ''
+    parameters:
+    - name: mode
+      description: ''
+      datatype: list
+      list_items:
+      - Only_Vowel
+      - Only_Top
+      - Only_Last
+      - Whole_Word
+  - name: LenAdjust_First
+    group_index: 12
+    tag_index: 15
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: int8
+  - name: LenAdjust_Second
+    group_index: 12
+    tag_index: 16
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: int8
+  - name: LenAdjust_SecondLast
+    group_index: 12
+    tag_index: 17
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: int8
+  - name: LenAdjust_Last
+    group_index: 12
+    tag_index: 18
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: int8
+  - name: Pitch_Smooth
+    group_index: 12
+    tag_index: 19
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: uint8
+  - name: Pitch_Mod_Width
+    group_index: 12
+    tag_index: 20
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: uint8
+  - name: Pitch_Mod_Rate
+    group_index: 12
+    tag_index: 21
+    description: ''
+    parameters:
+    - name: val
+      description: ''
+      datatype: uint8
+attributes:
+- name: ActivityCategory
+  description: ''
+  definitions:
+  - name: Limit
+    description: ''
+    datatype: uint16
+  - name: Rate00h
+    description: ''
+    datatype: uint8
+  - name: Rate01h
+    description: ''
+    datatype: uint8
+  - name: Rate02h
+    description: ''
+    datatype: uint8
+  - name: Rate03h
+    description: ''
+    datatype: uint8
+  - name: Rate04h
+    description: ''
+    datatype: uint8
+  - name: Rate05h
+    description: ''
+    datatype: uint8
+  - name: Rate06h
+    description: ''
+    datatype: uint8
+  - name: Rate07h
+    description: ''
+    datatype: uint8
+  - name: Rate08h
+    description: ''
+    datatype: uint8
+  - name: Rate09h
+    description: ''
+    datatype: uint8
+  - name: Rate10h
+    description: ''
+    datatype: uint8
+  - name: Rate11h
+    description: ''
+    datatype: uint8
+  - name: Rate12h
+    description: ''
+    datatype: uint8
+  - name: Rate13h
+    description: ''
+    datatype: uint8
+  - name: Rate14h
+    description: ''
+    datatype: uint8
+  - name: Rate15h
+    description: ''
+    datatype: uint8
+  - name: Rate16h
+    description: ''
+    datatype: uint8
+  - name: Rate17h
+    description: ''
+    datatype: uint8
+  - name: Rate18h
+    description: ''
+    datatype: uint8
+  - name: Rate19h
+    description: ''
+    datatype: uint8
+  - name: Rate20h
+    description: ''
+    datatype: uint8
+  - name: Rate21h
+    description: ''
+    datatype: uint8
+  - name: Rate22h
+    description: ''
+    datatype: uint8
+  - name: Rate23h
+    description: ''
+    datatype: uint8
+- name: ActivityLong
+  description: ''
+  definitions:
+  - name: Rate
+    description: ''
+    datatype: uint8
+  - name: BeginH
+    description: ''
+    datatype: uint8
+  - name: BeginM
+    description: ''
+    datatype: uint8
+  - name: EndH
+    description: ''
+    datatype: uint8
+  - name: EndM
+    description: ''
+    datatype: uint8
+  - name: Limit
+    description: ''
+    datatype: uint16
+  - name: Priority
+    description: ''
+    datatype: uint8
+  - name: MiiNormal
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: MiiCouple
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: MiiChildCare
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: MiiWanderer
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharCool
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharDry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNagomi
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNori
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNormal
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelGood
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNervous
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelDespond
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelWorry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Number1
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Number2
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Number3
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Number4
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ChildHold
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ChildCrawl
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ChildStand
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ChildToddle
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ChildWalk
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Item
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Phone
+    - 3DS
+    - Study
+    - PC
+    - CD
+    - Book
+    - WiiU
+    - Yoga
+    - Treadmill
+    - Mirror
+    - Guitar
+    - Maracas
+    - Cat
+    - Cosmetics
+    - Scales
+    - Ballet
+    - Hula
+    - Soccer
+    - Fishing
+    - Bat
+    - Bubble
+    - Racket
+    - Golf
+    - Sandbag
+    - Dog
+    - Skateboard
+    - Kite
+    - MetalDetector
+  - name: ItemFlag
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Owner
+    - All
+  - name: OnlyMyRoom
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FixedMember
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Extend
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationOthers
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationFriend
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationLovers
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationExLovers
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationCouple
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationChildCare
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationDivorce
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationParentChild
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationBrotherSister
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationFightFriend
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationFightLovers
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationFightCouple
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: RelationBestFriend
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: PositionType
+    description: ''
+    datatype: list
+    list_items:
+    - Apartment
+    - House
+    - Location
+    - Shop
+  - name: PositionIndex
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Park
+    - Seaside
+    - Roof
+    - Cafe
+    - Fountain
+    - Amusement
+    - Observatory
+    - LDK
+    - Washroom
+    - Bath
+    - Bedroom
+    - ShopFood
+    - ShopBody
+    - ShopHeadwear
+    - ShopRoom
+    - ShopTreasure
+    - ShopImport
+  - name: PositionSpot
+    description: ''
+    datatype: uint8
+  - name: MarriedFlag
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: WandererFlag
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: WindowType
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Dark
+    - Sleep
+    - Minigame
+  - name: ShortLabel
+    description: ''
+    datatype: string
+  - name: ScriptLabel
+    description: ''
+    datatype: string
+  - name: ScriptLabelKR
+    description: ''
+    datatype: string
+  - name: HouseBgm
+    description: ''
+    datatype: uint8
+- name: ActivityShort
+  description: ''
+  definitions:
+  - name: Limit
+    description: ''
+    datatype: uint16
+  - name: Sync
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharCool
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharDry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNagomi
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNori
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNormal
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelGood
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNervous
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelDespond
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelWorry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Next01_Name
+    description: ''
+    datatype: string
+  - name: Next01_Rate
+    description: ''
+    datatype: uint8
+  - name: Next02_Name
+    description: ''
+    datatype: string
+  - name: Next02_Rate
+    description: ''
+    datatype: uint8
+  - name: Next03_Name
+    description: ''
+    datatype: string
+  - name: Next03_Rate
+    description: ''
+    datatype: uint8
+  - name: Next04_Name
+    description: ''
+    datatype: string
+  - name: Next04_Rate
+    description: ''
+    datatype: uint8
+  - name: Next05_Name
+    description: ''
+    datatype: string
+  - name: Next05_Rate
+    description: ''
+    datatype: uint8
+  - name: Next06_Name
+    description: ''
+    datatype: string
+  - name: Next06_Rate
+    description: ''
+    datatype: uint8
+  - name: Next07_Name
+    description: ''
+    datatype: string
+  - name: Next07_Rate
+    description: ''
+    datatype: uint8
+  - name: Next08_Name
+    description: ''
+    datatype: string
+  - name: Next08_Rate
+    description: ''
+    datatype: uint8
+- name: ActivityTalk
+  description: ''
+  definitions:
+  - name: ProbCharacter
+    description: ''
+    datatype: list
+    list_items:
+    - Normal
+    - AssertionHigh
+    - AssertionLow
+    - EmotionHigh
+    - EmotionLow
+  - name: ProbCompatibility
+    description: ''
+    datatype: list
+    list_items:
+    - Normal
+    - High
+    - Low
+  - name: CharCool
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharDry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNagomi
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: CharNori
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNormal
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelGood
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelNervous
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelDespond
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: FeelWorry
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: TalkEnd
+    description: ''
+    datatype: int8
+  - name: TalkNormal
+    description: ''
+    datatype: int8
+  - name: TalkEnjoy
+    description: ''
+    datatype: int8
+  - name: TalkAngry
+    description: ''
+    datatype: int8
+  - name: TalkApology
+    description: ''
+    datatype: int8
+  - name: TalkTear
+    description: ''
+    datatype: int8
+  - name: TalkComfort
+    description: ''
+    datatype: int8
+  - name: TalkFlatter
+    description: ''
+    datatype: int8
+  - name: TalkSad
+    description: ''
+    datatype: int8
+  - name: TalkGuffaw
+    description: ''
+    datatype: int8
+  - name: TalkChuckle
+    description: ''
+    datatype: int8
+  - name: TalkDogeza
+    description: ''
+    datatype: int8
+- name: Chat
+  description: ''
+  definitions:
+  - name: Item_A
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - Food
+    - Treasure
+    - Tool
+  - name: Item_B
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - Food
+    - Treasure
+    - Tool
+  - name: Item_C
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - Food
+    - Treasure
+    - Tool
+  - name: Clothes_A
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - Clothes
+    - Headwear
+  - name: Clothes_B
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - Clothes
+    - Headwear
+  - name: TalkAbout
+    description: ''
+    datatype: list
+    list_items:
+    - Common
+    - Citizen
+    - SameGender
+    - OppositeGender
+    - CheerupTarget
+    - Friend
+    - Friend_SameGender
+    - Friend_OppositeGender
+    - Couple
+    - OthersLove
+    - SelfLove
+  - name: Expression
+    description: ''
+    datatype: list
+    list_items:
+    - Normal
+    - Smile
+    - Anger
+    - Sorrow
+    - Surprise
+    - Blink
+    - Wink_L
+    - Wink_R
+  - name: SpeakerNeck
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - TopicStarter
+  - name: Question
+    description: ''
+    datatype: uint8
+  - name: Silent
+    description: ''
+    datatype: uint8
+  - name: Interrupt
+    description: ''
+    datatype: uint8
+  - name: Permutation
+    description: ''
+    datatype: uint8
+  - name: SameTopicLabelID
+    description: ''
+    datatype: int16
+- name: Clothes
+  description: ''
+  definitions:
+  - name: FileID
+    description: ''
+    datatype: int16
+  - name: RegionJP
+    description: 'Flag that determines if the item is enabled for Japenese regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionUS
+    description: 'Flag that determines if the item is enabled for US regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionEU
+    description: 'Flag that determines if the item is enabled for EU regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionKR
+    description: 'Flag that determines if the item is enabled for Korean regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: Price
+    description: ''
+    datatype: uint32
+  - name: Type
+    description: ''
+    datatype: list
+    list_items:
+    - Type_Male
+    - Type_Female
+    - Type_Unisex
+    - Type_Uniform
+    - Type_Special
+  - name: HeadwearType
+    description: ''
+    datatype: list
+    list_items:
+    - Hat
+    - Accessory
+    - Mask
+  - name: Sex
+    description: ''
+    datatype: list
+    list_items:
+    - Common
+    - Male
+    - Female
+  - name: SexGap
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Shop
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Mii
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Find
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Taste_Cool
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Taste_Dry
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Taste_Nagomi
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Taste_Nori
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: RatioA
+    description: ''
+    datatype: uint8
+  - name: RatioB
+    description: ''
+    datatype: uint8
+  - name: RatioC
+    description: ''
+    datatype: uint8
+  - name: RatioD
+    description: ''
+    datatype: uint8
+  - name: Season_Spring
+    description: ''
+    datatype: uint8
+  - name: Season_Summer
+    description: ''
+    datatype: uint8
+  - name: Season_Autumn
+    description: ''
+    datatype: uint8
+  - name: Season_Winter
+    description: ''
+    datatype: uint8
+  - name: Attr_Warm
+    description: ''
+    datatype: uint8
+  - name: Attr_Cold
+    description: ''
+    datatype: uint8
+  - name: Attr_Showy
+    description: ''
+    datatype: uint8
+  - name: Attr_Quiet
+    description: ''
+    datatype: uint8
+  - name: Attr_Formal
+    description: ''
+    datatype: uint8
+  - name: Attr_Casual
+    description: ''
+    datatype: uint8
+  - name: Attr_Cute
+    description: ''
+    datatype: uint8
+  - name: Attr_Sexy
+    description: ''
+    datatype: uint8
+  - name: Attr_Cool
+    description: ''
+    datatype: uint8
+  - name: Attr_Frumpy
+    description: ''
+    datatype: uint8
+  - name: Attr_Eccentric
+    description: ''
+    datatype: uint8
+  - name: Attr_Safe
+    description: ''
+    datatype: uint8
+  - name: Attr_Skirt
+    description: ''
+    datatype: uint8
+  - name: Attr_Work
+    description: ''
+    datatype: uint8
+  - name: Attr_Sports
+    description: ''
+    datatype: uint8
+  - name: Color1
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color2
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color3
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color4
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color5
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color6
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color7
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: Color8
+    description: ''
+    datatype: list
+    list_items:
+    - '-'
+    - Ivory
+    - LemonChiffon
+    - Khaki
+    - Light_brilliant_amber_yellow
+    - Yellow
+    - Gold
+    - PeachPuff
+    - Salmon
+    - Coral
+    - Tomato
+    - Orange
+    - Light_brilliant_amber
+    - Luminous_vivid_orange
+    - PaleVioletRed
+    - IndianRed
+    - Red
+    - OrangeRed
+    - Moderate_red
+    - DarkRed
+    - MistyRose
+    - Pink
+    - LightCoral
+    - Very_light_crimson
+    - HotPink
+    - Light_brilliant_crimson
+    - DeepPink
+    - Very_light_magenta
+    - Fuchsia
+    - MediumVioletRed
+    - Lavender
+    - Plum
+    - MediumPurple
+    - MediumSlateBlue
+    - Light_brilliant_violet
+    - DarkSlateBlue
+    - Indigo
+    - DarkMagenta
+    - Deep_magenta
+    - LightCyan
+    - LightSkyBlue
+    - DeepSkyBlue
+    - Luminous_vivid_azure
+    - RoyalBlue
+    - Moderate_blue
+    - Blue
+    - DarkBlue
+    - DarkBlue_2
+    - Deep_blue
+    - PaleTurquoise
+    - Aquamarine
+    - CadetBlue
+    - SteelBlue
+    - Cyan
+    - DarkTurquoise
+    - DarkCyan
+    - Deep_cyan_2
+    - PaleGreen
+    - YellowGreen
+    - Light_brilliant_yellow_lime
+    - GreenYellow
+    - Chartreuse
+    - Lime
+    - LimeGreen
+    - MediumSeaGreen
+    - OliveDrab
+    - Olive
+    - DarkOliveGreen
+    - DarkGreen
+    - Very_deep_green
+    - RosyBrown
+    - BurlyWood
+    - Tan
+    - Goldenrod
+    - DarkGoldenrod
+    - Moderate_amber
+    - Dark_amber
+    - Chocolate
+    - Brown
+    - SaddleBrown
+    - Deep_reddish_brown
+    - Deep_brown_red
+    - Dark_gamboge
+    - Very_dark_gamboge
+    - White
+    - LightGrey
+    - DarkGray
+    - Gray
+    - Dark_gray
+    - Very_dark_gray
+    - Very_dark_gray_2
+    - Black
+    - mii_skin_0
+    - mii_skin_1
+    - mii_skin_2
+    - mii_skin_3
+    - mii_skin_4
+    - mii_skin_5
+  - name: SpecialColorJP
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - CEC
+    - BOSS
+  - name: SpecialColorUS
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - CEC
+    - BOSS
+  - name: SpecialColorEU
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - CEC
+    - BOSS
+  - name: SpecialColorKR
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - CEC
+    - BOSS
+  - name: RGB
+    description: ''
+    datatype: uint32
+  - name: BodyLabel
+    description: ''
+    datatype: string
+  - name: HeadwearLabel
+    description: ''
+    datatype: string
+  - name: Catalog
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: ExportType1
+    description: ''
+    datatype: int8
+  - name: ExportType2
+    description: ''
+    datatype: int8
+- name: Drama
+  description: ''
+  definitions:
+  - name: Folder
+    description: ''
+    datatype: list
+    list_items:
+    - Confession
+    - Drama
+    - Dream
+    - External
+    - SnapShot
+    - StaffRoll
+    - Tool
+    - WandererWatch
+  - name: RequestedScene
+    description: ''
+    datatype: list
+    list_items:
+    - Drama
+    - Dream
+    - Tool
+    - Propose
+    - WandererWatch
+    - SnapShot
+    - StaffRoll
+    - Ar
+    - Etc
+  - name: bl_Label
+    description: ''
+    datatype: string
+  - name: bl_BinaryPass
+    description: ''
+    datatype: string
+  - name: bl_FileLabel
+    description: ''
+    datatype: string
+  - name: bl_DataName
+    description: ''
+    datatype: string
+  - name: bl_SceneLabel
+    description: ''
+    datatype: string
+  - name: bl_Screen
+    description: ''
+    datatype: list
+    list_items:
+    - Upper
+    - Lower
+    - None
+  - name: bl_LightSet
+    description: ''
+    datatype: string
+  - name: bl_SRTBone
+    description: ''
+    datatype: string
+  - name: bl_Pos
+    description: ''
+    datatype: string
+  - name: bl_Anim
+    description: ''
+    datatype: string
+  - name: bl_ExpFlag
+    description: ''
+    datatype: string
+  - name: bl_Body
+    description: ''
+    datatype: string
+  - name: bl_Headwear
+    description: ''
+    datatype: string
+  - name: bl_RoomID
+    description: ''
+    datatype: int8
+  - name: bl_ItemList
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Treasure
+    - Copy
+    - Fix
+    - CommonBuffer
+  - name: bl_Item
+    description: ''
+    datatype: string
+  - name: bl_LightParentCamera
+    description: ''
+    datatype: string
+  - name: bl_AnimController
+    description: ''
+    datatype: uint8
+  - name: bl_MiiResolution
+    description: ''
+    datatype: list
+    list_items:
+    - CFL_RESOLUTION_64
+    - CFL_RESOLUTION_128
+    - CFL_RESOLUTION_256
+    - CFL_RESOLUTION_64M
+    - CFL_RESOLUTION_128M
+    - CFL_RESOLUTION_256M
+  - name: bl_MiiNoMaskWhenHolding
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: bl_ItemEffect
+    description: ''
+    datatype: list
+    list_items:
+    - EffectOff
+    - EffectOn
+- name: House
+  description: ''
+  definitions:
+  - name: bl_Label
+    description: ''
+    datatype: string
+  - name: bl_BinaryPass
+    description: ''
+    datatype: string
+  - name: bl_FileLabel
+    description: ''
+    datatype: string
+  - name: bl_DataName
+    description: ''
+    datatype: string
+  - name: bl_SceneLabel
+    description: ''
+    datatype: string
+  - name: bl_Screen
+    description: ''
+    datatype: list
+    list_items:
+    - Upper
+    - Lower
+    - None
+  - name: bl_LightSet
+    description: ''
+    datatype: string
+  - name: bl_SRTBone
+    description: ''
+    datatype: string
+  - name: bl_Pos
+    description: ''
+    datatype: string
+  - name: bl_Anim
+    description: ''
+    datatype: string
+  - name: bl_ExpFlag
+    description: ''
+    datatype: string
+  - name: bl_Body
+    description: ''
+    datatype: string
+  - name: bl_Headwear
+    description: ''
+    datatype: string
+  - name: bl_Item
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Treasure
+    - Copy
+  - name: bl_RoomID
+    description: ''
+    datatype: int8
+  - name: bl_LightParentCamera
+    description: ''
+    datatype: string
+  - name: bl_MiiResolution
+    description: ''
+    datatype: list
+    list_items:
+    - CFL_RESOLUTION_64
+    - CFL_RESOLUTION_128
+    - CFL_RESOLUTION_256
+    - CFL_RESOLUTION_64M
+    - CFL_RESOLUTION_128M
+    - CFL_RESOLUTION_256M
+  - name: bl_MiiNoMaskWhenHolding
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+- name: Item
+  description: ''
+  definitions:
+  - name: FileID
+    description: ''
+    datatype: int16
+  - name: RegionJP
+    description: 'Flag that determines if the item is enabled for Japenese regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionUS
+    description: 'Flag that determines if the item is enabled for US regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionEU
+    description: 'Flag that determines if the item is enabled for EU regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionKR
+    description: 'Flag that determines if the item is enabled for Korean regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: Price
+    description: ''
+    datatype: uint32
+  - name: PriceUS
+    description: ''
+    datatype: uint32
+  - name: PriceEU
+    description: ''
+    datatype: uint32
+  - name: PriceKR
+    description: ''
+    datatype: uint32
+  - name: Shop
+    description: ''
+    datatype: uint8
+  - name: Mii
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily
+    description: ''
+    datatype: uint8
+  - name: BoxSize
+    description: ''
+    datatype: list
+    list_items:
+    - BoxSize_None
+    - BoxSize_Nomral
+    - BoxSize_Small
+    - BoxSize_Big
+  - name: Effect
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Steam00
+    - Steam01
+    - Steam02
+  - name: Food_Type_JP
+    description: ''
+    datatype: list
+    list_items:
+    - Japanese
+    - Western
+    - Alacarte
+    - Dessert
+    - Drink
+  - name: Food_Type_USEU
+    description: ''
+    datatype: list
+    list_items:
+    - MainDishes
+    - SmallDishes
+    - Refreshments
+    - Drinks
+  - name: Food_Type_KR
+    description: ''
+    datatype: list
+    list_items:
+    - Korean
+    - Foreign
+    - Refreshments
+    - Drink
+  - name: Food_Quantity
+    description: ''
+    datatype: list
+    list_items:
+    - Quantity_None
+    - Quantity_Low
+    - Quantity_Mid
+    - Quantity_High
+  - name: Food_Season
+    description: ''
+    datatype: list
+    list_items:
+    - Season_None
+    - Season_Spring
+    - Season_Summer
+    - Season_Autumn
+    - Season_Winter
+  - name: Food_Attr_Sweet
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Spicy
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Salty
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Sour
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Oily
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Cool
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Hot
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Awful
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Confectionery
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Fruit
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Vegetable
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Rice
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Bread
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Meat
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Fish
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Egg
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Japanese
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Western
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Chinese
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Italian
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Noodle
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Luxury
+    description: ''
+    datatype: bool
+  - name: Food_Attr_American
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Asian
+    description: ''
+    datatype: bool
+  - name: Food_Attr_British
+    description: ''
+    datatype: bool
+  - name: Food_Attr_French
+    description: ''
+    datatype: bool
+  - name: Food_Attr_German
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Spanish
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Junk
+    description: ''
+    datatype: bool
+  - name: Food_Attr_Korean
+    description: ''
+    datatype: bool
+  - name: Food_NTR_ID
+    description: ''
+    datatype: int16
+  - name: Food_Taste_A
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Food_Taste_B
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Food_Taste_C
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Food_Taste_D
+    description: ''
+    datatype: list
+    list_items:
+    - '00'
+    - '01'
+    - '02'
+    - '03'
+    - '04'
+    - '05'
+    - '06'
+    - '07'
+    - 08
+    - 09
+    - '10'
+    - '11'
+    - '12'
+    - '13'
+    - '14'
+    - '15'
+  - name: Food_Se_Type
+    description: ''
+    datatype: list
+    list_items:
+    - SE_MII_DRINK
+    - SE_MII_EAT_01
+    - SE_MII_EAT_02
+    - SE_MII_EAT_03
+    - SE_MII_EAT_04
+    - SE_MII_EAT_05
+    - SE_MII_EAT_06
+    - SE_MII_EAT_07
+  - name: RatioA
+    description: ''
+    datatype: uint8
+  - name: RatioB
+    description: ''
+    datatype: uint8
+  - name: RatioC
+    description: ''
+    datatype: uint8
+  - name: RatioD
+    description: ''
+    datatype: uint8
+  - name: Treasure_Type
+    description: ''
+    datatype: list
+    list_items:
+    - TreasureToken
+    - TreasureSouvenir
+    - TreasureDream
+    - TreasureRare
+  - name: Catalog
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Food_Date_Month_JP
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Day_JP
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Month_US
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Day_US
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Month_EU
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Day_EU
+    description: ''
+    datatype: int32
+  - name: Food_Date_Month_KR
+    description: ''
+    datatype: uint8
+  - name: Food_Date_Day_KR
+    description: ''
+    datatype: int32
+  - name: Food_FirstCatalog
+    description: ''
+    datatype: uint8
+  - name: ForIslanderOnly
+    description: ''
+    datatype: uint8
+  - name: FPriceEU_UK
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_AN
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_Other
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_FR
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_IT
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_GE
+    description: ''
+    datatype: uint32
+  - name: FPriceEU_SP
+    description: ''
+    datatype: uint32
+  - name: Food_FirstDaily_US_En
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_EU_En
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_EU_Fr
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_EU_Ge
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_EU_It
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_EU_Sp
+    description: ''
+    datatype: uint8
+  - name: Food_FirstDaily_KR_Kr
+    description: ''
+    datatype: uint8
+  - name: Throw_US
+    description: ''
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: Throw_EU
+    description: ''
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: Throw_KR
+    description: ''
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+- name: Location
+  description: ''
+  definitions:
+  - name: BinaryNo
+    description: ''
+    datatype: int32
+  - name: bl_Label
+    description: ''
+    datatype: string
+  - name: bl_BinaryPass
+    description: ''
+    datatype: string
+  - name: bl_FileLabel
+    description: ''
+    datatype: string
+  - name: bl_DataName
+    description: ''
+    datatype: string
+  - name: bl_SceneLabel
+    description: ''
+    datatype: string
+  - name: bl_Screen
+    description: ''
+    datatype: list
+    list_items:
+    - Upper
+    - Lower
+    - None
+  - name: bl_LightSet
+    description: ''
+    datatype: string
+  - name: bl_SRTBone
+    description: ''
+    datatype: string
+  - name: bl_Pos
+    description: ''
+    datatype: string
+  - name: bl_Anim
+    description: ''
+    datatype: string
+  - name: bl_ExpFlag
+    description: ''
+    datatype: string
+  - name: bl_LightParentCamera
+    description: ''
+    datatype: string
+  - name: bl_AnimController
+    description: ''
+    datatype: uint8
+  - name: bl_MiiResolution
+    description: ''
+    datatype: list
+    list_items:
+    - CFL_RESOLUTION_64
+    - CFL_RESOLUTION_128
+    - CFL_RESOLUTION_256
+    - CFL_RESOLUTION_64M
+    - CFL_RESOLUTION_128M
+    - CFL_RESOLUTION_256M
+  - name: bl_Body
+    description: ''
+    datatype: string
+  - name: bl_Headwear
+    description: ''
+    datatype: string
+  - name: bl_MiiNoMaskWhenHolding
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+- name: Material
+  description: ''
+  definitions:
+  - name: Filename
+    description: ''
+    datatype: string
+  - name: ShaderParameter
+    description: ''
+    datatype: uint8
+  - name: ShadingParameter
+    description: ''
+    datatype: uint8
+  - name: MaterialColor
+    description: ''
+    datatype: uint8
+  - name: Rasterization
+    description: ''
+    datatype: uint8
+  - name: TextureCoordinator
+    description: ''
+    datatype: uint8
+  - name: TextureMapper
+    description: ''
+    datatype: uint8
+  - name: FragmentLighting
+    description: ''
+    datatype: uint8
+  - name: FragmentLightingTable
+    description: ''
+    datatype: uint8
+  - name: TextureCombiner
+    description: ''
+    datatype: uint8
+  - name: AlphaTest
+    description: ''
+    datatype: uint8
+  - name: FragmentOperation
+    description: ''
+    datatype: uint8
+  - name: SceneEnvironment
+    description: ''
+    datatype: uint8
+  - name: ReplaceTexture
+    description: ''
+    datatype: int8
+- name: News
+  description: ''
+  definitions:
+  - name: NewsType
+    description: ''
+    datatype: list
+    list_items:
+    - Normal
+    - Sirious
+    - BreakingNews
+    - ProgramAssign
+  - name: Mii0_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii0_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii0_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii0_Material
+    description: ''
+    datatype: uint16
+  - name: Mii0_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii0_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii0_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii0_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii0_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii0_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii1_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii1_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii1_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii1_Material
+    description: ''
+    datatype: uint16
+  - name: Mii1_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii1_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii1_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii1_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii1_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii1_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii2_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii2_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii2_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii2_Material
+    description: ''
+    datatype: uint16
+  - name: Mii2_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii2_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii2_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii2_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii2_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii2_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii3_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii3_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii3_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii3_Material
+    description: ''
+    datatype: uint16
+  - name: Mii3_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii3_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii3_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii3_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii3_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii3_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii4_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii4_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii4_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii4_Material
+    description: ''
+    datatype: uint16
+  - name: Mii4_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii4_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii4_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii4_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii4_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii4_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii5_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii5_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii5_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii5_Material
+    description: ''
+    datatype: uint16
+  - name: Mii5_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii5_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii5_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii5_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii5_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii5_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii6_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii6_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii6_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii6_Material
+    description: ''
+    datatype: uint16
+  - name: Mii6_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii6_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii6_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii6_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii6_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii6_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii7_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii7_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii7_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii7_Material
+    description: ''
+    datatype: uint16
+  - name: Mii7_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii7_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii7_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii7_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii7_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii7_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii8_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii8_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii8_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii8_Material
+    description: ''
+    datatype: uint16
+  - name: Mii8_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii8_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii8_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii8_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii8_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii8_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Mii9_Use
+    description: ''
+    datatype: list
+    list_items:
+    - MiiUnuse
+    - MiiBody
+    - MiiHead
+    - MiiMsg
+  - name: Mii9_Select
+    description: ''
+    datatype: list
+    list_items:
+    - MiiAll
+    - MiiMale
+    - MiiFemale
+    - MiiSameMii0
+    - MiiMyMii
+    - MiiAssignProgram
+  - name: Mii9_Exp
+    description: ''
+    datatype: list
+    list_items:
+    - Cm_Normal
+    - Cm_Smile
+    - Cm_Anger
+    - Cm_Sorrow
+    - Cm_Surprise
+    - Cm_Blink
+    - Om_Normal
+    - Om_Smile
+    - Om_Anger
+    - Om_Sorrow
+    - Om_Surprise
+    - Om_Blink
+    - Cm_Wink_L
+    - Cm_Wink_R
+    - Om_Wink_L
+    - Om_Wink_R
+  - name: Mii9_Material
+    description: ''
+    datatype: uint16
+  - name: Mii9_HeadWear
+    description: ''
+    datatype: list
+    list_items:
+    - HeadWearUnuse
+    - HeadWearAssign
+    - HeadWearOwn
+    - HeadWearRandom
+    - HeadWearSameMii0
+    - HeadWearAssignProgram
+  - name: Mii9_HeadWearAssign
+    description: ''
+    datatype: uint16
+  - name: Mii9_Clothes
+    description: ''
+    datatype: list
+    list_items:
+    - ClothesOwn
+    - ClothesAssign
+    - ClothesRandom
+    - ClothesSameMii0
+    - ClothesAssignProgram
+  - name: Mii9_ClothesAssign
+    description: ''
+    datatype: uint16
+  - name: Mii9_Build
+    description: ''
+    datatype: list
+    list_items:
+    - BuildNoChange
+    - BuildStandardType
+  - name: Mii9_Shadow
+    description: ''
+    datatype: list
+    list_items:
+    - ShadowOn
+    - ShadowOff
+  - name: Item0_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item0_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item0_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item0_Assign
+    description: ''
+    datatype: uint16
+  - name: Item0_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item0_Material
+    description: ''
+    datatype: uint16
+  - name: Item0_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item0_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item1_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item1_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item1_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item1_Assign
+    description: ''
+    datatype: uint16
+  - name: Item1_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item1_Material
+    description: ''
+    datatype: uint16
+  - name: Item1_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item1_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item2_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item2_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item2_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item2_Assign
+    description: ''
+    datatype: uint16
+  - name: Item2_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item2_Material
+    description: ''
+    datatype: uint16
+  - name: Item2_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item2_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item3_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item3_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item3_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item3_Assign
+    description: ''
+    datatype: uint16
+  - name: Item3_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item3_Material
+    description: ''
+    datatype: uint16
+  - name: Item3_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item3_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item4_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item4_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item4_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item4_Assign
+    description: ''
+    datatype: uint16
+  - name: Item4_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item4_Material
+    description: ''
+    datatype: uint16
+  - name: Item4_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item4_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item5_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item5_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item5_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item5_Assign
+    description: ''
+    datatype: uint16
+  - name: Item5_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item5_Material
+    description: ''
+    datatype: uint16
+  - name: Item5_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item5_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item6_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item6_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item6_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item6_Assign
+    description: ''
+    datatype: uint16
+  - name: Item6_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item6_Material
+    description: ''
+    datatype: uint16
+  - name: Item6_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item6_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item7_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item7_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item7_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item7_Assign
+    description: ''
+    datatype: uint16
+  - name: Item7_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item7_Material
+    description: ''
+    datatype: uint16
+  - name: Item7_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item7_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item8_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item8_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item8_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item8_Assign
+    description: ''
+    datatype: uint16
+  - name: Item8_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item8_Material
+    description: ''
+    datatype: uint16
+  - name: Item8_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item8_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Item9_Use
+    description: ''
+    datatype: list
+    list_items:
+    - ItemUnuse
+    - ItemUse
+    - ItemMsg
+  - name: Item9_Category
+    description: ''
+    datatype: list
+    list_items:
+    - ItemFood
+    - ItemTreasure
+    - ItemTool
+    - ItemEquip
+  - name: Item9_Select
+    description: ''
+    datatype: list
+    list_items:
+    - ItemRandom
+    - ItemAssign
+    - ItemSameItem0
+  - name: Item9_Assign
+    description: ''
+    datatype: uint16
+  - name: Item9_FoodCategory
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Food
+    - Drink
+  - name: Item9_Material
+    description: ''
+    datatype: uint16
+  - name: Item9_ScaleNormalize
+    description: ''
+    datatype: list
+    list_items:
+    - ScaleNormalizeFalse
+    - ScaleNormalizeTrue
+  - name: Item9_Centering
+    description: ''
+    datatype: list
+    list_items:
+    - ItemCenteringFalse
+    - ItemCenteringTrue
+  - name: Room_Use
+    description: ''
+    datatype: list
+    list_items:
+    - RoomUnuse
+    - RoomUse
+    - RoomMsg
+  - name: Room_Select
+    description: ''
+    datatype: list
+    list_items:
+    - RoomAssign
+    - RoomRandom
+    - RoomMii0
+  - name: Room_Assign
+    description: ''
+    datatype: uint16
+  - name: Effect_Use
+    description: ''
+    datatype: list
+    list_items:
+    - EffectUnuse
+    - EffectUse
+  - name: TexRender_Use
+    description: ''
+    datatype: list
+    list_items:
+    - TexRenderUnuse
+    - TexRenderUseMii00
+    - TexRenderUseMii01
+    - TexRenderUseMii02
+    - TexRenderUseMii03
+    - TexRenderUseMii04
+    - TexRenderUseMii05
+    - TexRenderUseMii06
+    - TexRenderUseMii07
+    - TexRenderUseMii08
+    - TexRenderUseMii09
+    - TexRenderUseItem00
+    - TexRenderUseItem01
+    - TexRenderUseItem02
+    - TexRenderUseItem03
+    - TexRenderUseItem04
+    - TexRenderUseItem05
+    - TexRenderUseItem06
+    - TexRenderUseItem07
+    - TexRenderUseItem08
+    - TexRenderUseItem09
+  - name: ImageMiiSpeak_Use
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_1
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_2
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_3
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_4
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_5
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_6
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_7
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_8
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_9
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_10
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_11
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_12
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: RegionJP
+    description: 'Flag that determines if the item is enabled for Japenese regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionUS
+    description: 'Flag that determines if the item is enabled for US regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionEU
+    description: 'Flag that determines if the item is enabled for EU regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionKR
+    description: 'Flag that determines if the item is enabled for Korean regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+    - Enable
+  - name: UseEUExtResources
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+- name: PhotoStudio
+  description: ''
+  definitions:
+  - name: Hold
+    description: ''
+    datatype: uint8
+  - name: Crawl
+    description: ''
+    datatype: uint8
+  - name: Touch
+    description: ''
+    datatype: uint8
+  - name: Toddle
+    description: ''
+    datatype: uint8
+  - name: Walk
+    description: ''
+    datatype: uint8
+  - name: Parents
+    description: ''
+    datatype: list
+    list_items:
+    - 'Null'
+    - MotherHold
+    - MotherPiggyback
+    - FatherHold
+    - FatherPiggyback
+  - name: Mii_00_On
+    description: ''
+    datatype: int16
+  - name: Mii_01_On
+    description: ''
+    datatype: int16
+  - name: Mii_02_On
+    description: ''
+    datatype: int16
+  - name: Mii_03_On
+    description: ''
+    datatype: int16
+  - name: Mii_04_On
+    description: ''
+    datatype: int16
+  - name: Mii_05_On
+    description: ''
+    datatype: int16
+  - name: Mii_06_On
+    description: ''
+    datatype: int16
+  - name: Mii_07_On
+    description: ''
+    datatype: int16
+  - name: Mii_08_On
+    description: ''
+    datatype: int16
+  - name: ZoomMax
+    description: ''
+    datatype: float32
+- name: SnapShot
+  description: ''
+  definitions:
+  - name: ScriptType
+    description: ''
+    datatype: list
+    list_items:
+    - Location
+    - House
+    - Drama
+  - name: ScriptSpot
+    description: ''
+    datatype: list
+    list_items:
+    - Park
+    - Beach
+    - Roof
+    - Cafe
+    - Fountain
+    - ThemePark
+    - LDK
+    - Washroom
+    - Bath
+    - BedRoom
+    - Drama
+  - name: ScriptName
+    description: ''
+    datatype: string
+  - name: Mii00
+    description: ''
+    datatype: list
+    list_items:
+    - Islander
+    - Oneself
+    - Wanderer
+    - Program
+    - Islander_Male
+    - Islander_Female
+    - Wanderer_Male
+    - Wanderer_Female
+  - name: Mii01Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Anyone
+    - Other
+    - Friend
+    - Friend_Fight
+    - CloseFriend
+    - Lover
+    - Lover_Fight
+    - ExLover
+    - Partner
+    - Partner_Fight
+    - ExPartner
+    - PartnerWithChild
+    - Wanderer
+    - Program
+  - name: Mii01Gender
+    description: ''
+    datatype: list
+    list_items:
+    - Random
+    - Random_Male
+    - Random_Female
+  - name: Mii02Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Anyone
+    - Other
+    - Friend
+    - ExLover
+    - ExPartner
+    - Child
+    - Parent_Child
+    - Wanderer
+    - Program
+  - name: Mii02Gender
+    description: ''
+    datatype: list
+    list_items:
+    - Random
+    - Random_Male
+    - Random_Female
+  - name: Mii03Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Anyone
+    - Other
+    - Friend
+    - ExLover
+    - ExPartner
+    - Wanderer
+    - Program
+  - name: Mii03Gender
+    description: ''
+    datatype: list
+    list_items:
+    - Random
+    - Random_Male
+    - Random_Female
+  - name: Mii04Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Anyone
+    - Other
+    - Friend
+    - ExLover
+    - ExPartner
+    - Wanderer
+    - Program
+  - name: Mii04Gender
+    description: ''
+    datatype: list
+    list_items:
+    - Random
+    - Random_Male
+    - Random_Female
+  - name: Mii05Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Anyone
+    - Other
+    - Friend
+    - ExLover
+    - ExPartner
+    - Wanderer
+    - Program
+  - name: Mii05Gender
+    description: ''
+    datatype: list
+    list_items:
+    - Random
+    - Random_Male
+    - Random_Female
+- name: Song
+  description: ''
+  definitions:
+  - name: StartTick
+    description: ''
+    datatype: uint16
+  - name: OffsetTick
+    description: ''
+    datatype: int32
+  - name: Speed
+    description: ''
+    datatype: uint16
+  - name: WordNum
+    description: ''
+    datatype: uint8
+  - name: WordType0
+    description: ''
+    datatype: uint8
+  - name: WordType1
+    description: ''
+    datatype: uint8
+  - name: WordType2
+    description: ''
+    datatype: uint8
+  - name: WordType3
+    description: ''
+    datatype: uint8
+  - name: WordType4
+    description: ''
+    datatype: uint8
+  - name: WordType5
+    description: ''
+    datatype: uint8
+  - name: WordType6
+    description: ''
+    datatype: uint8
+  - name: WordType7
+    description: ''
+    datatype: uint8
+  - name: WordType8
+    description: ''
+    datatype: uint8
+  - name: WordType9
+    description: ''
+    datatype: uint8
+  - name: WordDefault0
+    description: ''
+    datatype: uint16
+  - name: WordDefault1
+    description: ''
+    datatype: uint16
+  - name: WordDefault2
+    description: ''
+    datatype: uint16
+  - name: WordDefault3
+    description: ''
+    datatype: uint16
+  - name: WordDefault4
+    description: ''
+    datatype: uint16
+  - name: WordDefault5
+    description: ''
+    datatype: uint16
+  - name: WordDefault6
+    description: ''
+    datatype: uint16
+  - name: WordDefault7
+    description: ''
+    datatype: uint16
+  - name: WordDefault8
+    description: ''
+    datatype: uint16
+  - name: WordDefault9
+    description: ''
+    datatype: uint16
+  - name: Line
+    description: ''
+    datatype: uint8
+  - name: Singer2
+    description: ''
+    datatype: string
+  - name: Singer3
+    description: ''
+    datatype: string
+  - name: Singer4
+    description: ''
+    datatype: string
+  - name: Singer5
+    description: ''
+    datatype: string
+  - name: Singer6
+    description: ''
+    datatype: string
+  - name: Singer7
+    description: ''
+    datatype: string
+  - name: PhraseLength
+    description: ''
+    datatype: uint16
+- name: SongDance
+  description: ''
+  definitions:
+  - name: MusicGenre
+    description: ''
+    datatype: list
+    list_items:
+    - Metal
+    - Jpop
+    - Rock
+    - Rap
+    - Enka
+    - Opera
+    - Techno
+    - Musical
+    - Ballad
+  - name: UseTestMusic
+    description: ''
+    datatype: int8
+  - name: UseVJ
+    description: ''
+    datatype: int8
+  - name: bl_Label
+    description: ''
+    datatype: string
+  - name: bl_BinaryPass
+    description: ''
+    datatype: string
+  - name: bl_FileLabel
+    description: ''
+    datatype: string
+  - name: bl_DataName
+    description: ''
+    datatype: string
+  - name: bl_SceneLabel
+    description: ''
+    datatype: string
+  - name: bl_Screen
+    description: ''
+    datatype: list
+    list_items:
+    - Upper
+    - Lower
+    - None
+  - name: bl_LightSet
+    description: ''
+    datatype: string
+  - name: bl_SRTBone
+    description: ''
+    datatype: string
+  - name: bl_Pos
+    description: ''
+    datatype: string
+  - name: bl_Anim
+    description: ''
+    datatype: string
+  - name: bl_ExpFlag
+    description: ''
+    datatype: string
+  - name: bl_Body
+    description: ''
+    datatype: string
+  - name: bl_Headwear
+    description: ''
+    datatype: string
+  - name: bl_LightParentCamera
+    description: ''
+    datatype: string
+  - name: PerformanceType
+    description: ''
+    datatype: list
+    list_items:
+    - Solo
+    - Group
+    - Band
+  - name: AllMiiNum
+    description: ''
+    datatype: int8
+  - name: bl_AnimController
+    description: ''
+    datatype: int32
+  - name: bl_MiiResolution
+    description: ''
+    datatype: list
+    list_items:
+    - CFL_RESOLUTION_64
+    - CFL_RESOLUTION_128
+    - CFL_RESOLUTION_256
+    - CFL_RESOLUTION_64M
+    - CFL_RESOLUTION_128M
+    - CFL_RESOLUTION_256M
+- name: Talk
+  description: ''
+  definitions:
+  - name: Sex
+    description: ''
+    datatype: list
+    list_items:
+    - Common
+    - Male
+    - Female
+  - name: Feel_Normal
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Feel_Good
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Feel_Nerves
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Feel_Despond
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Feel_Worry
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Gangan
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Kirakira
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Meramera
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Waiwai
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Bassari
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Sabasaba
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Baribari
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Tekipaki
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Fuwafuwa
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Nikoniko
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Honwaka
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Mattari
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Shiin
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Jikkuri
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Mojimoji
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Char_Kitchiri
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Time_05_11
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Time_11_18
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Time_18_00
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Time_00_05
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_01
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_02
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_03
+    description: ''
+    datatype: list
+    list_items:
+    - fasle
+    - 'true'
+  - name: Month_04
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_05
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_06
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_07
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_08
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_09
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_10
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_11
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Month_12
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Day
+    description: ''
+    datatype: uint8
+  - name: Week_Sun
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Mon
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Tue
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Wed
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Thu
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Fri
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Week_Sat
+    description: ''
+    datatype: list
+    list_items:
+    - 'false'
+    - 'true'
+  - name: Topic_Relation
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Friend
+    - Lover
+    - Partner
+    - BestFriend
+    - Child
+    - ChildApart
+    - Father
+    - Mother
+    - BrotherSister
+    - ExLover
+    - Divorce
+  - name: Topic_Equip
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Phone
+    - 3DS
+    - Study
+    - PC
+    - CD
+    - Book
+    - WiiU
+    - Yoga
+    - Treadmill
+    - Mirror
+    - Guitar
+    - Maracas
+    - Cat
+    - Cosmetics
+    - Scales
+    - Ballet
+    - Hula
+    - Soccer
+    - Fishing
+    - Bat
+    - Bubble
+    - Racket
+    - Golf
+    - Sandbag
+    - Dog
+    - Skateboard
+    - Kite
+    - MetalDetector
+  - name: Visitor_WndMale
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Visitor_WndFemale
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Past
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - day6
+    - week1
+    - week2
+    - week3
+    - month1
+    - month2
+    - month3
+    - month4
+  - name: MiiNormal
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: MiiWanderer
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Location
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Tent
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Wharf
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Level1
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Level2
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Level3
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Level4
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Level5
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Pre
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Fix
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_AM5
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Wanderer_Refered
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - A
+    - AB
+  - name: Wanderer_GenderA
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Male
+    - Female
+  - name: Wanderer_MarriedA
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Single
+    - Married
+  - name: Wanderer_AdultA
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Children
+    - Adult
+  - name: Wanderer_GenderB
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Male
+    - Female
+  - name: Wanderer_MarriedB
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Single
+    - Married
+  - name: Wanderer_AdultB
+    description: ''
+    datatype: list
+    list_items:
+    - All
+    - Children
+    - Adult
+  - name: Wanderer_Type
+    description: ''
+    datatype: list
+    list_items:
+    - Other
+    - MineStart
+    - MineBack
+- name: Touch
+  description: ''
+  definitions:
+  - name: Category
+    description: ''
+    datatype: list
+    list_items:
+    - Common
+    - TbRelation
+    - TbDepress
+    - TbFood
+    - TbBody
+    - TbHeadwear
+    - TbRoom
+    - TbTool
+    - TbContents
+    - TbPhrase
+    - TbQuestion
+    - TbReport
+    - TbWandererLow
+    - TbWandererHigh
+    - TbEtc
+  - name: SpAttr_TbQsPlayer
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Friend
+    - Lover
+    - Partner
+    - BestFriend
+    - Child
+    - Father
+    - Mother
+    - ExLovers
+    - Divorce
+- name: Trouble
+  description: ''
+  definitions:
+  - name: RegionJP
+    description: 'Flag that determines if the item is enabled for Japenese regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionUS
+    description: 'Flag that determines if the item is enabled for US regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionEU
+    description: 'Flag that determines if the item is enabled for EU regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: RegionKR
+    description: 'Flag that determines if the item is enabled for Korean regions of the game.'
+    datatype: list
+    list_items:
+    - Disable
+    - Enable
+  - name: Category
+    description: ''
+    datatype: list
+    list_items:
+    - Relation
+    - Depress
+    - Food
+    - Body
+    - Headwear
+    - Room
+    - Tool
+    - Contents
+    - Phrase
+    - Question
+    - Report
+    - WandererLow
+    - WandererHigh
+    - Etc
+  - name: Limit
+    description: ''
+    datatype: uint16
+  - name: Probability
+    description: ''
+    datatype: uint8
+  - name: Feel
+    description: ''
+    datatype: list
+    list_items:
+    - Normal
+    - Good
+    - Nerves
+    - Despond
+    - Worry
+  - name: LimitResolved
+    description: ''
+    datatype: uint16
+  - name: Target[0]
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Food
+    - Tool
+    - Treasure
+    - Special
+    - Body
+    - Headwear
+    - Room
+    - Mii
+  - name: Target[1]
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Food
+    - Tool
+    - Treasure
+    - Special
+    - Body
+    - Headwear
+    - Room
+    - Mii
+  - name: FoodProp
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Category1
+    - Category2
+    - Category3
+    - Dessert
+    - Drink
+    - Sweet
+    - Spicy
+    - Salty
+    - Sour
+    - Oily
+    - Cool
+    - Hot
+    - Awful
+    - Confectionery
+    - Fruit
+    - Vegetable
+    - Rice
+    - Bread
+    - Meat
+    - Fish
+    - Egg
+    - Japanese
+    - Western
+    - Chinese
+    - Italian
+    - Noodle
+    - Luxury
+    - American
+    - Asian
+    - British
+    - French
+    - German
+    - Spanish
+    - Junk
+    - Korean
+    - All
+  - name: ClothesProp
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Warm
+    - Cold
+    - Showy
+    - Quiet
+    - Formal
+    - Casual
+    - Cute
+    - Sexy
+    - Cool
+    - Frumpy
+    - Eccentric
+    - Safe
+    - Skirt
+    - Work
+    - Sports
+    - All
+  - name: HeadwearProp
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - All
+    - HeadGear
+    - Accessory
+  - name: Priority
+    description: ''
+    datatype: uint8
+  - name: ResolveSuccessA
+    description: ''
+    datatype: int8
+  - name: ResolveFailureA
+    description: ''
+    datatype: int8
+  - name: ResolveEtcetraA
+    description: ''
+    datatype: int8
+  - name: ResolveSuccessB
+    description: ''
+    datatype: int8
+  - name: ResolveFailureB
+    description: ''
+    datatype: int8
+  - name: ResolveEtcetraB
+    description: ''
+    datatype: int8
+  - name: ResolveSuccessC
+    description: ''
+    datatype: int8
+  - name: ResolveFailureC
+    description: ''
+    datatype: int8
+  - name: ResolveEtcetraC
+    description: ''
+    datatype: int8
+  - name: ActionBestFood
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolMusicBox
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolDigestive
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolCold
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolTravel
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolBath
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolCamera
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolHairdye
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolAdultSpray
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: ActionToolChildSpray
+    description: ''
+    datatype: list
+    list_items:
+    - 'False'
+    - 'True'
+  - name: Window
+    description: ''
+    datatype: list
+    list_items:
+    - None
+    - Trouble
+    - Love
+    - Depress
+    - Relation
+  - name: SolvedCount
+    description: ''
+    datatype: uint8

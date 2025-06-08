@@ -1,0 +1,3 @@
+include README.md LICENSE
+include LMS/Message/Tag/System.yaml
+recursive-include Preset *.yaml

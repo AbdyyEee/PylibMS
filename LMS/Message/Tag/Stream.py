@@ -1,0 +1,149 @@
+from LMS.Config.Definitions.Tags import TagConfig, TagDefinition
+from LMS.Field.LMS_DataType import LMS_DataType
+from LMS.Field.LMS_Field import LMS_Field
+from LMS.Field.Stream import read_field, write_field
+from LMS.FileIO.Stream import FileReader, FileWriter
+from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
+from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
+from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
+                                               LMS_TagWritingException)
+
+
+def read_tag(
+    reader: FileReader,
+    param_size: int,
+    group_index: int,
+    tag_index: int,
+    config: TagConfig | None,
+) -> LMS_EncodedTag | LMS_DecodedTag:
+    end = reader.tell() + param_size
+
+    if config is None:
+        parameters = _read_encoded_parameters(reader, param_size)
+
+        if parameters is None:
+            return LMS_EncodedTag(group_index, tag_index)
+
+        return LMS_EncodedTag(group_index, tag_index, parameters)
+
+    definition = config.get_definition_by_indexes(group_index, tag_index)
+
+    # If the parameters were omitted from the definition but the tag still has defined parameters, read them.
+    # This is to account for encoded tags that group have tag names attatched.
+    if definition.parameters is None and param_size:
+        parameters = _read_encoded_parameters(reader, param_size)
+        return LMS_EncodedTag(
+            group_index,
+            tag_index,
+            parameters,
+            definition.group_name,
+            definition.tag_name,
+        )
+    else:
+        parameters = _read_decoded_parameters(reader, definition)
+
+    reader.seek(end)
+    return LMS_DecodedTag(
+        group_index, tag_index, definition.group_name, definition.tag_name, parameters
+    )
+
+
+def write_tag(writer: FileWriter, tag: LMS_TagBase) -> None:
+    tag_indicator = b"\x0e" + (b"\x00" * (writer.encoding.width - 1))
+    if writer.big_endian:
+        tag_indicator = tag_indicator[::-1]
+
+    writer.write_bytes(tag_indicator)
+    writer.write_uint16(tag.group_index)
+    writer.write_uint16(tag.tag_index)
+
+    if tag.parameters is None:
+        writer.write_uint16(0)
+        return None
+
+    if isinstance(tag, LMS_EncodedTag):
+        _write_encoded_parameters(writer, tag.parameters)
+    else:
+        _write_decoded_parameters(writer, tag)
+
+    return None
+
+
+# --
+def _read_encoded_parameters(reader: FileReader, param_size: int) -> list[str] | None:
+    if param_size == 0:
+        return None
+
+    hex_parameters = reader.read_bytes(param_size).hex().upper()
+    encoded_parameters = [
+        hex_parameters[i : i + 2] for i in range(0, len(hex_parameters), 2)
+    ]
+    return encoded_parameters
+
+
+def _write_encoded_parameters(writer: FileWriter, parameters: list[str] | None) -> None:
+    writer.write_uint16(len(parameters))
+    for param in parameters:
+        writer.write_bytes(bytes.fromhex(param))
+
+
+def _read_decoded_parameters(
+    reader: FileReader, definition: TagDefinition
+) -> LMS_FieldMap:
+    parameters = {}
+    for param in definition.parameters:
+        param_offset = reader.tell()
+        try:
+            if param.datatype is LMS_DataType.STRING:
+                value = LMS_Field(reader.read_len_string_variable_encoding(), param)
+            else:
+                value = read_field(reader, param)
+        # There could be multiple errors related to reading, share the extra info but display the original exception
+        except Exception as e:
+            raise LMS_TagReadingError(
+                f"An error occured reading tag '[{definition.group_name}:{definition.tag_name}]', parameter '{param.name}' at offset {param_offset}"
+            ) from e
+
+        parameters[param.name] = value
+    return parameters
+
+
+def _write_decoded_parameters(writer: FileWriter, tag: LMS_DecodedTag) -> None:
+    param_size = 0
+
+    # Tags are padded by 0xCD if the size is not aligned to the encoding
+    # This can occur before a string parameter, or at the end of the tag.
+    # Set a flag in order to be able to pad the first string correctly
+    needs_padding = False
+    first_string = True
+
+    for field in tag.parameters.values():
+        if field.datatype is LMS_DataType.STRING:
+            param_size += 2 + len(field.value) * writer.encoding.width
+        else:
+            param_size += field.datatype.stream_size
+
+    if param_size % 2 == 1:
+        needs_padding = True
+        param_size += 1
+
+    writer.write_uint16(param_size)
+    for field in tag.parameters.values():
+        try:
+            if field.datatype is LMS_DataType.STRING:
+                if first_string and needs_padding:
+                    writer.write_bytes(b"\xcd")
+                    first_string = False
+                    needs_padding = False
+
+                writer.write_uint16(len(field.value) * writer.encoding.width)
+                writer.write_variable_encoding_string(field.value, False)
+            else:
+                write_field(writer, field)
+        except Exception as e:
+            raise LMS_TagWritingException(
+                f"An error occured writing tag '{tag}', parameter '{field.name}' at offset {writer.tell()}!"
+            ) from e
+
+    if needs_padding:
+        writer.write_bytes(b"\xcd")
