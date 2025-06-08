@@ -1,3 +1,2 @@
 include README.md LICENSE
-include LMS/Message/Tag/System.yaml
 recursive-include LMS/TitleConfig/Presets *.yaml
