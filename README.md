@@ -20,8 +20,7 @@ MSBT
 ```py
 from LMS.Message.MSBTStream import read_msbt
 
-# Create the MSBT object
-with open("Drama.msbt", "rb+") as f:
+with open("Game.msbt", "rb+") as f:
     msbt = read_msbt(f)
 ```
 ## Writing 
