@@ -23,8 +23,8 @@ class LMS_Field:
                 preview = self.list_items[:3] + ["..."]
             else:
                 preview = self.list_items
-            return f"LMS_Value(value={self._value}, options={preview})"
-        return f"LMS_Value(value={self._value!r}, type={typename})"
+            return f"LMS_Field(value={self._value}, options={preview})"
+        return f"LMS_Field(value={self._value!r}, type={typename})"
 
     @property
     def name(self) -> str:
