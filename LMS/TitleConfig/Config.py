@@ -1,5 +1,4 @@
-import importlib.resources as pkg_resources
-import os
+from importlib import resources
 from typing import Self
 
 import yaml
@@ -16,7 +15,9 @@ class TitleConfig:
 
     # Populate the preset list from the directory
     PRESET_LIST = [
-        name.removesuffix(".yaml") for name in pkg_resources.contents("LMS.Config.Presets") if name.endswith(".yaml")
+        name.removesuffix(".yaml") 
+        for name in resources.files("LMS.TitleConfig.Presets").iterdir() 
+        if name.name.endswith(".yaml")
     ]
 
     def __init__(self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig):
@@ -39,7 +40,7 @@ class TitleConfig:
         if game not in cls.PRESET_LIST:
             raise FileNotFoundError(f"Preset '{game}' not found.")
 
-        with pkg_resources.open_text("LMS.Config.Presets", f"{game}.yaml") as f:
+        with resources.open_text("LMS.TitleConfig.Presets", f"{game}.yaml") as f:
             return cls.load_config(f.read())
 
     @classmethod
@@ -64,7 +65,7 @@ class TitleConfig:
         tag_config = []
 
         # Add the System tag definitions to the config
-        with open(r"LMS\Message\Tag\System.yaml", "r") as f:
+        with resources.open_text("LMS.Message.Tag", "System.yaml") as f:
             system_tags = yaml.safe_load(f)
             tag_config = system_tags
 
