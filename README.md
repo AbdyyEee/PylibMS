@@ -2,7 +2,7 @@
 Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary file formats from Nintendo. Supports the following:
 
 * Full reading and writing of MSBT files.
-* * Full reading of MSBP files.
+* Full reading of MSBP files.
 * Supports encoded/decoded attributes and encoding/decoded tags.
 * Additonal tag manipulation.
 
