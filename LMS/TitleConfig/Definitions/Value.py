@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from LMS.Field.LMS_DataType import LMS_DataType
 
@@ -8,4 +8,4 @@ class ValueDefinition:
     name: str
     description: str
     datatype: LMS_DataType
-    list_items: dict[int, str]
+    list_items: dict[int, str] = field(default=None)

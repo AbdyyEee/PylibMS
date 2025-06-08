@@ -1,9 +1,9 @@
-from LMS.TitleConfig.Definitions.Tags import TagConfig
 from LMS.FileIO.Encoding import FileEncoding
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.Definitions.LMS_MessageText import LMS_MessageText
 from LMS.Message.Tag.LMS_Tag import LMS_TagBase
 from LMS.Message.Tag.Stream import read_tag, write_tag
+from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
 def read_txt2(

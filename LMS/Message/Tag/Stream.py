@@ -1,12 +1,15 @@
-from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Field.LMS_Field import LMS_Field
 from LMS.Field.Stream import read_field, write_field
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
-from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
-                                               LMS_TagWritingException)
+from LMS.Message.Tag.LMS_TagExceptions import (
+    LMS_TagReadingError,
+    LMS_TagWritingException,
+)
+from LMS.Message.Tag.System_Definition import SYSTEM_GROUP
+from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 
 
 def read_tag(
@@ -18,7 +21,8 @@ def read_tag(
 ) -> LMS_EncodedTag | LMS_DecodedTag:
     end = reader.tell() + param_size
 
-    if config is None:
+    # System tags of group 0 are always defined, ensure they are read like any other decoded tag by default
+    if config is None and group_index > 0:
         parameters = _read_encoded_parameters(reader, param_size)
 
         if parameters is None:
@@ -26,7 +30,10 @@ def read_tag(
 
         return LMS_EncodedTag(group_index, tag_index, parameters)
 
-    definition = config.get_definition_by_indexes(group_index, tag_index)
+    if group_index == 0:
+        definition = SYSTEM_GROUP[tag_index]
+    else:
+        definition = config.get_definition_by_indexes(group_index, tag_index)
 
     # If the parameters were omitted from the definition but the tag still has defined parameters, read them.
     # This is to account for encoded tags that group have tag names attatched.
@@ -59,20 +66,20 @@ def write_tag(writer: FileWriter, tag: LMS_TagBase) -> None:
 
     if tag.parameters is None:
         writer.write_uint16(0)
-        return None
+        return
 
     if isinstance(tag, LMS_EncodedTag):
         _write_encoded_parameters(writer, tag.parameters)
     else:
         _write_decoded_parameters(writer, tag)
 
-    return None
+    return
 
 
 # --
 def _read_encoded_parameters(reader: FileReader, param_size: int) -> list[str] | None:
     if param_size == 0:
-        return None
+        return
 
     hex_parameters = reader.read_bytes(param_size).hex().upper()
     encoded_parameters = [
@@ -88,8 +95,11 @@ def _write_encoded_parameters(writer: FileWriter, parameters: list[str] | None) 
 
 
 def _read_decoded_parameters(
-    reader: FileReader, definition: TagDefinition
-) -> LMS_FieldMap:
+    reader: FileReader, definition: TagDefinition | None
+) -> LMS_FieldMap | None:
+    if definition.parameters is None:
+        return
+
     parameters = {}
     for param in definition.parameters:
         param_offset = reader.tell()

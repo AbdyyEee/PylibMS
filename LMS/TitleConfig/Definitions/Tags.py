@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
 
@@ -14,7 +14,7 @@ class TagDefinition:
     tag_name: str
     tag_index: int
     description: str
-    parameters: list[ValueDefinition] | None
+    parameters: list[ValueDefinition] = field(default=None)
 
 
 @dataclass(frozen=True)

@@ -3,11 +3,11 @@ from typing import Self
 
 import yaml
 
+from LMS.Field.LMS_DataType import LMS_DataType
+from LMS.Project.MSBP import MSBP
 from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
-from LMS.Field.LMS_DataType import LMS_DataType
-from LMS.Project.MSBP import MSBP
 
 
 class TitleConfig:
@@ -15,12 +15,14 @@ class TitleConfig:
 
     # Populate the preset list from the directory
     PRESET_LIST = [
-        name.removesuffix(".yaml") 
-        for name in resources.files("LMS.TitleConfig.Presets").iterdir() 
-        if name.name.endswith(".yaml")
+        file.name.removesuffix(".yaml")
+        for file in resources.files("LMS.TitleConfig.Presets").iterdir()
+        if file.name.endswith(".yaml")
     ]
 
-    def __init__(self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig):
+    def __init__(
+        self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig
+    ):
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
 
@@ -61,22 +63,15 @@ class TitleConfig:
         else:
             parsed_content = content
 
-        group_map = {0: "System"}
-        tag_config = []
-
-        # Add the System tag definitions to the config
-        with resources.open_text("LMS.Message.Tag", "System.yaml") as f:
-            system_tags = yaml.safe_load(f)
-            tag_config = system_tags
-
+        raw_tag_config = []
         # Combine with the rest of the cofnig
-        group_map |= parsed_content["tag_definitions"]["groups"]
+        group_map = parsed_content["tag_definitions"]["groups"]
         for tag_def in parsed_content["tag_definitions"]["tags"]:
-            tag_config.append(tag_def)
+            raw_tag_config.append(tag_def)
 
         # Load tag definitions
         tag_definitions = []
-        for tag_def in tag_config:
+        for tag_def in raw_tag_config:
             tag_name = tag_def["name"]
             group_index, tag_index = tag_def["group_index"], tag_def["tag_index"]
             group_name = group_map[group_index]
@@ -92,7 +87,11 @@ class TitleConfig:
                     param_description = param_def["description"]
                     datatype = LMS_DataType.from_string(param_def["datatype"])
                     list_items = param_def.get("list_items")
-                    parameters.append(ValueDefinition(param_name, param_description, datatype, list_items))
+                    parameters.append(
+                        ValueDefinition(
+                            param_name, param_description, datatype, list_items
+                        )
+                    )
 
             tag_definitions.append(
                 TagDefinition(
@@ -121,7 +120,9 @@ class TitleConfig:
                 definition = ValueDefinition(name, description, datatype, list_items)
                 definitions.append(definition)
 
-            structure = AttributeConfig(structure_name, structure["description"], definitions)
+            structure = AttributeConfig(
+                structure_name, structure["description"], definitions
+            )
             attribute_config[structure_name] = structure
 
         return cls(attribute_config, tag_config)
@@ -151,7 +152,9 @@ class TitleConfig:
         # These files were generated from the source machine from the actual libMS tool
         # Shorten the filename with basname and replace the extension with .msbt for lookup later when reading a MSBT
         config[tag_key] = {
-            "groups": {i + 1: group.name for i, group in enumerate(project.tag_groups[1:])},
+            "groups": {
+                i + 1: group.name for i, group in enumerate(project.tag_groups[1:])
+            },
             "tags": [],
         }
 

@@ -1,9 +1,9 @@
-from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Field.LMS_Field import LMS_DataType, LMS_Field
 from LMS.Field.Stream import read_field, write_field
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
+from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 
 
 def read_encoded_atr1(

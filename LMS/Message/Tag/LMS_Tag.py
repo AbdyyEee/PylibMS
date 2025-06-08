@@ -1,12 +1,11 @@
 import re
 from abc import ABC, abstractmethod
 
-from LMS.TitleConfig.Definitions.Tags import TagConfig
 from LMS.Field.LMS_Field import LMS_Field, cast_value
 from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Tag.LMS_TagExceptions import LMS_InvalidTagFormatError
-from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
-                                         PARAMETER_FORMAT)
+from LMS.Message.Tag.Tag_Formats import DECODED_FORMAT, ENCODED_FORMAT, PARAMETER_FORMAT
+from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
 class LMS_TagBase(ABC):

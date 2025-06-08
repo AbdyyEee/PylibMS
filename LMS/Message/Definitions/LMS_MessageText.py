@@ -1,11 +1,10 @@
 import re
 from typing import overload
 
-from LMS.TitleConfig.Config import TagConfig
 from LMS.Field.LMS_Field import LMS_Field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
-from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
-                                         TAG_FORMAT)
+from LMS.Message.Tag.Tag_Formats import DECODED_FORMAT, ENCODED_FORMAT, TAG_FORMAT
+from LMS.TitleConfig.Config import TagConfig
 
 
 class LMS_MessageText:
