@@ -1,5 +1,12 @@
 # PylibMS
-Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary file formats from Nintendo. Supports MSBT, MSBP, and MSBF. Games that work with the library, including but not limited to:
+Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary file formats from Nintendo. Supports the following:
+
+* Full reading and writing of MSBT files.
+* * Full reading of MSBP files.
+* Supports encoded/decoded attributes and encoding/decoded tags.
+* Additonal tag manipulation.
+
+Games that work with the library, including but not limited to:
 * Tomodachi Life 
 * Nintendo Badge Arcade
 * The Legend of Zelda: A Link Between Worlds
@@ -7,6 +14,7 @@ Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary f
 * Super Mario 3D World
 * Super Mario 3D Land.
 # Features and Usage
+Simple preview of the library is below. See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for more explanations and examples.
 ## Reading 
 MSBT
 ```py
@@ -23,7 +31,6 @@ from LMS.Message.MSBTStream import write_msbt
 with open("Out.msbt", "wb") as f:
     write_msbt(f, msbt)
 ```
-See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for more explanations and examples on how to use the library.
 # Installation
 ```
 pip install PylibMS
