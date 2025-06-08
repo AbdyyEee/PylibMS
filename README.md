@@ -1,9 +1,5 @@
 # PylibMS
-PyLMS is a library built in Python3.10+ for Nintendo's LMS (libMessageStudio) file formats. Intended for games on the Nintendo 3DS and Wii U revisions of the file format. 
-> [!NOTE]  
-> PylibMS is being refactored in it's entirety, with MSBF support being added soon. Use at your own risk.
-
-Games that work with the library, including but not limited to:
+Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary file formats from Nintendo. Supports MSBT, MSBP, and MSBF. Games that work with the library, including but not limited to:
 * Tomodachi Life 
 * Nintendo Badge Arcade
 * The Legend of Zelda: A Link Between Worlds
@@ -16,4 +12,4 @@ See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for explanations and ex
 ```
 pip install PylibMS
 ```
-Python version must be >= 10.
+Python version must be `>=3.10.`
