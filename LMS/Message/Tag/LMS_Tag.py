@@ -1,7 +1,7 @@
 import re
 from abc import ABC, abstractmethod
 
-from LMS.Config.Definitions.Tags import TagConfig
+from LMS.TitleConfig.Definitions.Tags import TagConfig
 from LMS.Field.LMS_Field import LMS_Field, cast_value
 from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Tag.LMS_TagExceptions import LMS_InvalidTagFormatError

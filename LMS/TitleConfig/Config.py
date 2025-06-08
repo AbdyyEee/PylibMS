@@ -4,9 +4,9 @@ from typing import Self
 
 import yaml
 
-from LMS.Config.Definitions.Attributes import AttributeConfig
-from LMS.Config.Definitions.Tags import TagConfig, TagDefinition
-from LMS.Config.Definitions.Value import ValueDefinition
+from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
+from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
+from LMS.TitleConfig.Definitions.Value import ValueDefinition
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Project.MSBP import MSBP
 

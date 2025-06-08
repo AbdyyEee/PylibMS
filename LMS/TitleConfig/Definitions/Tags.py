@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from LMS.Config.Definitions.Value import ValueDefinition
+from LMS.TitleConfig.Definitions.Value import ValueDefinition
 
 
 @dataclass(frozen=True)

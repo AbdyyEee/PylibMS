@@ -5,7 +5,7 @@ from LMS.Common.Stream.FileInfo import read_file_info, write_file_info
 from LMS.Common.Stream.Hashtable import read_labels, write_labels
 from LMS.Common.Stream.Section import (read_section_data, write_section,
                                        write_unsupported_section)
-from LMS.Config.TitleConfig import AttributeConfig, TagConfig
+from LMS.TitleConfig.Config import AttributeConfig, TagConfig
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.MSBT import MSBT
 from LMS.Message.MSBTEntry import MSBTEntry

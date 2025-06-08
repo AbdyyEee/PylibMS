@@ -1,4 +1,4 @@
-from LMS.Config.Definitions.Value import ValueDefinition
+from LMS.TitleConfig.Definitions.Value import ValueDefinition
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Field.LMS_Field import LMS_Field
 from LMS.FileIO.Stream import FileReader, FileWriter

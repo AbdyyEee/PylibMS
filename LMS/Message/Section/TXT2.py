@@ -1,4 +1,4 @@
-from LMS.Config.Definitions.Tags import TagConfig
+from LMS.TitleConfig.Definitions.Tags import TagConfig
 from LMS.FileIO.Encoding import FileEncoding
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.Definitions.LMS_MessageText import LMS_MessageText

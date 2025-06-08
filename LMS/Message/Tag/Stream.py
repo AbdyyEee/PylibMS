@@ -1,4 +1,4 @@
-from LMS.Config.Definitions.Tags import TagConfig, TagDefinition
+from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Field.LMS_Field import LMS_Field
 from LMS.Field.Stream import read_field, write_field

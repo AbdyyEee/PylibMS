@@ -1,4 +1,4 @@
-from LMS.Config.Definitions.Attributes import AttributeConfig
+from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.Field.LMS_Field import LMS_DataType, LMS_Field
 from LMS.Field.Stream import read_field, write_field

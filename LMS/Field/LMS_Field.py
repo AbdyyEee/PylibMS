@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from LMS.Config.Definitions.Value import ValueDefinition
+from LMS.TitleConfig.Definitions.Value import ValueDefinition
 from LMS.Field.LMS_DataType import LMS_DataType
 
 
