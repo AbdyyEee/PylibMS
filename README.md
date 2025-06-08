@@ -7,7 +7,7 @@ Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary f
 * Super Mario 3D World
 * Super Mario 3D Land.
 # Features and Usage
-# Reading 
+## Reading 
 MSBT
 ```py
 from LMS.Message.MSBTStream import read_msbt
@@ -16,7 +16,7 @@ from LMS.Message.MSBTStream import read_msbt
 with open("Drama.msbt", "rb+") as f:
     msbt = read_msbt(f)
 ```
-# Writing 
+## Writing 
 ```py
 from LMS.Message.MSBTStream import write_msbt
 
