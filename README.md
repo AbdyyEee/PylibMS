@@ -35,3 +35,7 @@ with open("Out.msbt", "wb") as f:
 pip install PylibMS
 ```
 Python version must be `>=3.10.`
+# Credits & Sources
+* [Nintendo-File-Formats](nintendo-formats.com) by Kinnay: For existing information on the MSBT and MSBP file formats.
+* [Trippixyz](https://github.com/Trippixyz): For helping me get started general decompilation of the formats and general help.
+* [AeonSake](https://github.com/AeonSake): Inspiration for some the implementation of the library and a bit of general help.
