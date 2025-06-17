@@ -30,6 +30,9 @@ from LMS.Message.MSBTStream import write_msbt
 with open("Out.msbt", "wb") as f:
     write_msbt(f, msbt)
 ```
+# Adding Presets
+To add a Preset, you may create an issue with the relevant yaml file and the game it is for.
+
 # Installation
 ```
 pip install PylibMS
