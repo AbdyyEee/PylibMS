@@ -1,13 +1,11 @@
-from LMS.Field.LMS_DataType import LMS_DataType
-from LMS.Field.LMS_Field import LMS_Field
-from LMS.Field.Stream import read_field, write_field
+from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.FileIO.Stream import FileReader, FileWriter
-from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
+from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
+from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
+from LMS.Message.Definitions.Field.Stream import read_field, write_field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
-from LMS.Message.Tag.LMS_TagExceptions import (
-    LMS_TagReadingError,
-    LMS_TagWritingException,
-)
+from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
+                                               LMS_TagWritingException)
 from LMS.Message.Tag.System_Definition import SYSTEM_GROUP
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 

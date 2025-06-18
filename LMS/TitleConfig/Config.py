@@ -3,7 +3,7 @@ from typing import Self
 
 import yaml
 
-from LMS.Field.LMS_DataType import LMS_DataType
+from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.Project.MSBP import MSBP
 from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition

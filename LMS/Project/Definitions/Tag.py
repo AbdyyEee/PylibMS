@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from LMS.Field.LMS_DataType import LMS_DataType
+from LMS.Common.LMS_DataType import LMS_DataType
 
 
 class LMS_TagGroup:

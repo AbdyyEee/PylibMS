@@ -1,10 +1,10 @@
 import os
 from typing import BinaryIO
 
+from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.Common.Stream.FileInfo import read_file_info
 from LMS.Common.Stream.Hashtable import read_labels
 from LMS.Common.Stream.Section import read_section_data
-from LMS.Field.LMS_DataType import LMS_DataType
 from LMS.FileIO.Stream import FileReader
 from LMS.Project.MSBP import MSBP
 from LMS.Project.Section.ALI2 import read_ali2

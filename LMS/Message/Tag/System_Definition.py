@@ -1,4 +1,4 @@
-from LMS.Field.LMS_DataType import LMS_DataType
+from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.TitleConfig.Definitions.Tags import TagDefinition
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
 

@@ -1,5 +1,9 @@
 from LMS.Common.LMS_FileInfo import LMS_FileInfo
+from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
+from LMS.Message.Definitions.LMS_MessageText import LMS_MessageText
 from LMS.Message.MSBTEntry import MSBTEntry
+from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
+from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
 class MSBT:
@@ -7,7 +11,12 @@ class MSBT:
 
     https://nintendo-formats.com/libs/lms/msbt.html."""
 
-    def __init__(self, info: LMS_FileInfo):
+    def __init__(
+        self,
+        info: LMS_FileInfo,
+        attribute_config: AttributeConfig | None,
+        tag_config: TagConfig | None,
+    ):
         self._info = info
 
         self._entries: list[MSBTEntry] = []
@@ -27,6 +36,10 @@ class MSBT:
         # List of unsupported sections mapped to their raw data
         self.unsupported_sections: dict[str, bytes] = {}
 
+        # Store configs so if new labels are added LMS_MessageText objects and Attributes can be made properly
+        self._attribute_config = attribute_config
+        self._tag_config = tag_config
+
     @property
     def info(self) -> LMS_FileInfo:
         """The file info for the MSBT instance."""
@@ -41,7 +54,7 @@ class MSBT:
         self,
         name: str,
         text: str = None,
-        attribute: dict[str, int | str | float | bool | bytes] = None,
+        attribute: dict[str, int | str | float | bool | bytes] | bytes = None,
         style_index: int = None,
     ) -> None:
         """Adds an entry to the MSBT instance.
@@ -50,7 +63,32 @@ class MSBT:
         if name in [entry.name for entry in self.entries]:
             raise KeyError(f"The label '{name}' already exists!")
 
-        self._entries.append(MSBTEntry(name, text, attribute, style_index))
+        if isinstance(attribute, dict):
+            if self._attribute_config is None:
+                raise ValueError(
+                    "The attribute config must have been provided when reading to add decoded attributes!"
+                )
+
+            converted_attribute = {}
+
+            for definition in self._attribute_config.definitions:
+                converted_attribute[definition.name] = LMS_Field(
+                    attribute[definition.name], definition
+                )
+        else:
+            converted_attribute = attribute
+
+        if text is not None:
+            if self._tag_config is not None:
+                message_text = LMS_MessageText(text, self._tag_config)
+            else:
+                message_text = text
+        else:
+            message_text = ""
+
+        self._entries.append(
+            MSBTEntry(name, message_text, converted_attribute, style_index)
+        )
 
     def get_entry(self, name: str) -> MSBTEntry:
         """Retrieves an entry given it's name.

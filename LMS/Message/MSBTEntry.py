@@ -1,4 +1,4 @@
-from LMS.Message.Definitions.LMS_FieldMap import LMS_FieldMap
+from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Definitions.LMS_MessageText import LMS_MessageText
 
 
