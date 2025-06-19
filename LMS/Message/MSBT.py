@@ -70,7 +70,6 @@ class MSBT:
                 )
 
             converted_attribute = {}
-
             for definition in self._attribute_config.definitions:
                 converted_attribute[definition.name] = LMS_Field(
                     attribute[definition.name], definition

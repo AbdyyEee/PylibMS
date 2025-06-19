@@ -3,13 +3,20 @@ from typing import BinaryIO
 from LMS.Common import LMS_Exceptions
 from LMS.Common.Stream.FileInfo import read_file_info, write_file_info
 from LMS.Common.Stream.Hashtable import read_labels, write_labels
-from LMS.Common.Stream.Section import (read_section_data, write_section,
-                                       write_unsupported_section)
+from LMS.Common.Stream.Section import (
+    read_section_data,
+    write_section,
+    write_unsupported_section,
+)
 from LMS.FileIO.Stream import FileReader, FileWriter
 from LMS.Message.MSBT import MSBT
 from LMS.Message.MSBTEntry import MSBTEntry
-from LMS.Message.Section.ATR1 import (read_decoded_atr1, read_encoded_atr1,
-                                      write_decoded_atr1, write_encoded_atr1)
+from LMS.Message.Section.ATR1 import (
+    read_decoded_atr1,
+    read_encoded_atr1,
+    write_decoded_atr1,
+    write_encoded_atr1,
+)
 from LMS.Message.Section.TSY1 import read_tsy1, write_tsy1
 from LMS.Message.Section.TXT2 import read_txt2, write_txt2
 from LMS.TitleConfig.Config import AttributeConfig, TagConfig
@@ -27,7 +34,7 @@ def read_msbt(
     ## Usage
     ```
     with open(file_path, "rb") as file:
-        msbt = read_msbt(file, "Game.yaml")
+        msbt = read_msbt(file)
         ...
     ```"""
     if stream is None:
