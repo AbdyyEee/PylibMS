@@ -85,7 +85,7 @@ class MSBTEntry:
                     for definition in attribute_conifg.definitions
                 }
             else:
-                attribute = data["attribute"]
+                attribute = bytes.fromhex(data["attribute"])
         else:
             attribute = None
 
