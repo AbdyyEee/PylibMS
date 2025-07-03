@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from LMS.Message.Definitions.Field.LMS_Field import LMS_Field, cast_value
 from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Tag.LMS_TagExceptions import LMS_InvalidTagFormatError
-from LMS.Message.Tag.Tag_Formats import DECODED_FORMAT, ENCODED_FORMAT, PARAMETER_FORMAT
+from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
+                                         PARAMETER_FORMAT)
 from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
@@ -164,5 +165,5 @@ class LMS_DecodedTag(LMS_TagBase):
             )
         else:
             raise LMS_InvalidTagFormatError(
-                f"Invalid decoded tag format detectefd for tag '{tag}'"
+                f"Invalid decoded tag format detected for tag '{tag}'"
             )

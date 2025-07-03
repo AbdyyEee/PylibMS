@@ -2211,7 +2211,7 @@ tag_definitions:
     - name: val
       description: ''
       datatype: uint8
-attributes:
+attribute_definitions:
 - name: ActivityCategory
   description: ''
   definitions:

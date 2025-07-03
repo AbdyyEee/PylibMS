@@ -21,8 +21,6 @@ def read_field(reader: FileReader, definition: ValueDefinition) -> LMS_Field:
             value = reader.read_int32()
         case LMS_DataType.FLOAT32:
             value = reader.read_float32()
-        case LMS_DataType.STRING:
-            value = reader.read_uint32()
         case LMS_DataType.LIST:
             index = reader.read_uint8()
             value = definition.list_items[index]

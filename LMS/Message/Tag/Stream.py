@@ -4,10 +4,8 @@ from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
 from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Definitions.Field.Stream import read_field, write_field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
-from LMS.Message.Tag.LMS_TagExceptions import (
-    LMS_TagReadingError,
-    LMS_TagWritingException,
-)
+from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
+                                               LMS_TagWritingException)
 from LMS.Message.Tag.System_Definition import SYSTEM_GROUP
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 
@@ -35,9 +33,10 @@ def read_tag(
     else:
         definition = config.get_definition_by_indexes(group_index, tag_index)
 
-    # If the parameters were omitted from the definition but the tag still has defined parameters, read them.
-    # This is to account for encoded tags that group have tag names attatched.
-    if definition.parameters is None and param_size:
+    # If the parameters were omitted from the definition but the tag still has defined parameters, add the decoded
+    # names but read the tag as encoded. This is to account for encoded tags that group have tag names attatched. 
+    # i.e [System:Color 00-00-00-FF]
+    if definition.parameters is None and param_size > 0:
         parameters = _read_encoded_parameters(reader, param_size)
         return LMS_EncodedTag(
             group_index,
@@ -57,6 +56,7 @@ def read_tag(
 
 def write_tag(writer: FileWriter, tag: LMS_TagBase) -> None:
     tag_indicator = b"\x0e" + (b"\x00" * (writer.encoding.width - 1))
+    
     if writer.big_endian:
         tag_indicator = tag_indicator[::-1]
 

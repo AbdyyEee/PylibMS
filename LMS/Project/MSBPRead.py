@@ -36,9 +36,9 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
 
     exist_map = {"CLB1": False, "ALB1": False, "SLB1": False}
 
-    attribute_info_list = attribute_lists = tag_groups = tag_info_list = (
-        tag_param_list
-    ) = None
+    attribute_info_list = attribute_lists = tag_groups = tag_info_list = styles = (
+        source_list
+    ) = tag_param_list = None
     for magic, _ in read_section_data(reader, file_info.section_count):
         match magic:
             case "CLB1" | "ALB1" | "SLB1":

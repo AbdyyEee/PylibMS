@@ -9,3 +9,10 @@ class ValueDefinition:
     description: str
     datatype: LMS_DataType
     list_items: dict[int, str] = field(default=None)
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        name, description = data["name"], data["description"]
+        datatype = LMS_DataType.from_string(data["datatype"])
+        list_items = data.get("list_items")
+        return cls(name, description, datatype, list_items)

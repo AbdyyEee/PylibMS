@@ -9,6 +9,9 @@ from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
 
+TAG_KEY = "tag_definitions"
+ATTR_KEY = "attribute_definitions"
+
 
 class TitleConfig:
     """Represents a configuration for a specific game/title."""
@@ -38,8 +41,8 @@ class TitleConfig:
 
     @classmethod
     def load_preset(cls, game: str) -> Self:
-        """Loads an existing preset from the package."""
-        if game not in cls.PRESET_LIST:
+        """Loads an existing preset from a game."""
+        if game.lower() not in [preset.lower() for preset in cls.PRESET_LIST]:
             raise FileNotFoundError(f"Preset '{game}' not found.")
 
         with resources.open_text("LMS.TitleConfig.Presets", f"{game}.yaml") as f:
@@ -63,75 +66,32 @@ class TitleConfig:
         else:
             parsed_content = content
 
-        raw_tag_config = []
-        # Combine with the rest of the cofnig
-        group_map = parsed_content["tag_definitions"]["groups"]
-        for tag_def in parsed_content["tag_definitions"]["tags"]:
-            raw_tag_config.append(tag_def)
-
-        # Load tag definitions
-        tag_definitions = []
-        for tag_def in raw_tag_config:
-            tag_name = tag_def["name"]
-            group_index, tag_index = tag_def["group_index"], tag_def["tag_index"]
-            group_name = group_map[group_index]
-            tag_description = tag_def["description"]
-
-            group_name = group_map[group_index]
-
-            parameters = None
-            if "parameters" in tag_def:
-                parameters = []
-                for param_def in tag_def["parameters"]:
-                    param_name = param_def["name"]
-                    param_description = param_def["description"]
-                    datatype = LMS_DataType.from_string(param_def["datatype"])
-                    list_items = param_def.get("list_items")
-                    parameters.append(
-                        ValueDefinition(
-                            param_name, param_description, datatype, list_items
-                        )
-                    )
-
-            tag_definitions.append(
-                TagDefinition(
-                    group_name,
-                    group_index,
-                    tag_name,
-                    tag_index,
-                    tag_description,
-                    parameters,
-                )
+        # Load the attribute definitions
+        attribute_configs = {}
+        for config in parsed_content[ATTR_KEY]:
+            definitions = [
+                ValueDefinition.from_dict(value_def)
+                for value_def in config["definitions"]
+            ]
+            attribute_configs[config["name"]] = AttributeConfig(
+                config["name"], config["description"], definitions
             )
+
+        # Load the tag definitions
+        tag_definitions = []
+        group_map = parsed_content[TAG_KEY]["groups"]
+        for tag_def in parsed_content[TAG_KEY]["tags"]:
+            tag_definitions.append(TagDefinition.from_dict(tag_def, group_map))
 
         tag_config = TagConfig(group_map, tag_definitions)
 
-        # Load the attribute definitions
-        attribute_config = {}
-        for structure in parsed_content["attributes"]:
-            structure_name = structure["name"]
-
-            definitions = []
-            for info in structure["definitions"]:
-                name, description = info["name"], info["description"]
-                datatype = LMS_DataType.from_string(info["datatype"])
-                list_items = info.get("list_items")
-
-                definition = ValueDefinition(name, description, datatype, list_items)
-                definitions.append(definition)
-
-            structure = AttributeConfig(
-                structure_name, structure["description"], definitions
-            )
-            attribute_config[structure_name] = structure
-
-        return cls(attribute_config, tag_config)
+        return cls(attribute_configs, tag_config)
 
     @staticmethod
     def generate_file(file_path: str, project: MSBP) -> None:
         with open(file_path, "w+") as f:
             yaml.safe_dump(
-                TitleConfig.generate_profile(project),
+                TitleConfig.generate_config(project),
                 f,
                 default_flow_style=False,
                 sort_keys=False,
@@ -144,14 +104,11 @@ class TitleConfig:
         :param project: a MSBP object."""
         # TODO: Add custom node definitions
 
-        tag_key = "tag_definitions"
-        attr_key = "attributes"
-
         config = {}
         # Source files may be a path to a non-existent directory.
         # These files were generated from the source machine from the actual libMS tool
         # Shorten the filename with basname and replace the extension with .msbt for lookup later when reading a MSBT
-        config[tag_key] = {
+        config[TAG_KEY] = {
             "groups": {
                 i + 1: group.name for i, group in enumerate(project.tag_groups[1:])
             },
@@ -159,54 +116,57 @@ class TitleConfig:
         }
 
         # Slice to exclude System group
-        for group_i, group in enumerate(project.tag_groups[1:], start=1):
-            for tag_i, info in enumerate(group.tag_definitions):
+        if project.tag_groups is not None:
+            for group_i, group in enumerate(project.tag_groups[1:], start=1):
+                for tag_i, info in enumerate(group.tag_definitions):
 
-                definition = {
-                    "name": info.name,
-                    "group_index": group_i,
-                    "tag_index": tag_i,
-                    "description": "",
-                    "parameters": [],
-                }
-
-                for param_info in info.param_info:
-                    param_definition = {
-                        "name": param_info.name,
+                    definition = {
+                        "name": info.name,
+                        "group_index": group_i,
+                        "tag_index": tag_i,
                         "description": "",
-                        "datatype": param_info.datatype.to_string(),
+                        "parameters": [],
                     }
 
-                    if param_info.datatype is LMS_DataType.LIST:
-                        param_definition["list_items"] = param_info.list_items
+                    for param_info in info.param_info:
+                        param_definition = {
+                            "name": param_info.name,
+                            "description": "",
+                            "datatype": param_info.datatype.to_string(),
+                        }
 
-                    definition["parameters"].append(param_definition)
+                        if param_info.datatype is LMS_DataType.LIST:
+                            param_definition["list_items"] = param_info.list_items
 
-                config[tag_key]["tags"].append(definition)
+                        definition["parameters"].append(param_definition)
+
+                    config[TAG_KEY]["tags"].append(definition)
 
         # Set main attribute entries as the definitions from the MSBP
         # Since most games use one MSBP these act the primary definitions
-        config[attr_key] = []
+        config[ATTR_KEY] = []
 
-        attr_definitions = []
-        for attr_info in project.attribute_info:
-            definition = {
-                "name": attr_info.name,
-                "description": "",
-                "datatype": attr_info.datatype.to_string(),
-            }
-            if attr_info.datatype is LMS_DataType.LIST:
-                definition["list_items"] = attr_info.list_items
+        if project.attribute_info is not None:
 
-            attr_definitions.append(definition)
+            attr_definitions = []
+            for attr_info in project.attribute_info:
+                definition = {
+                    "name": attr_info.name,
+                    "description": "",
+                    "datatype": attr_info.datatype.to_string(),
+                }
+                if attr_info.datatype is LMS_DataType.LIST:
+                    definition["list_items"] = attr_info.list_items
 
-        # Main attribute entries
-        config[attr_key].append(
-            {
-                "name": project.name,
-                "description": "",
-                "definitions": attr_definitions,
-            }
-        )
+                attr_definitions.append(definition)
+
+            # Main attribute entries
+            config[ATTR_KEY].append(
+                {
+                    "name": project.name,
+                    "description": "",
+                    "definitions": attr_definitions,
+                }
+            )
 
         return config

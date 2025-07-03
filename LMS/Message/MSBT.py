@@ -50,6 +50,12 @@ class MSBT:
         """The list of entries for the MSBT instance."""
         return self._entries
 
+    def section_exists(self, name: str) -> bool:
+        """Determines if a section exists in the MSBT.
+
+        :param name: the name of the section."""
+        return name in self.section_list
+
     def add_entry(
         self,
         name: str,
