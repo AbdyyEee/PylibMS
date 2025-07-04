@@ -30,13 +30,14 @@ from LMS.Message.MSBTStream import write_msbt
 with open("Out.msbt", "wb") as f:
     write_msbt(f, msbt)
 ```
-# Adding Presets
-To add a Preset, you may create an issue with the relevant yaml file and the game it is for.
+# Adding/Editing Presets
+To add or edit Preset, you may create an issue with the relevant yaml file and the game it is for.
 
 # Installation
 ```
 pip install PylibMS
 ```
+
 Python version must be `>=3.10.`
 # Credits & Sources
 * [Nintendo-File-Formats](https://nintendo-formats.com) by Kinnay: For existing information on the MSBT and MSBP file formats.
