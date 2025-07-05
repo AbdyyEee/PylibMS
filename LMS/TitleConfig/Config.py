@@ -105,19 +105,16 @@ class TitleConfig:
         # TODO: Add custom node definitions
 
         config = {}
-        # Source files may be a path to a non-existent directory.
-        # These files were generated from the source machine from the actual libMS tool
-        # Shorten the filename with basname and replace the extension with .msbt for lookup later when reading a MSBT
+
         config[TAG_KEY] = {
             "groups": {
-                i + 1: group.name for i, group in enumerate(project.tag_groups[1:])
+                i: group.name for i, group in enumerate(project.tag_groups, start=1)
             },
             "tags": [],
         }
 
-        # Slice to exclude System group
         if project.tag_groups is not None:
-            for group_i, group in enumerate(project.tag_groups[1:], start=1):
+            for group_i, group in enumerate(project.tag_groups, start=1):
                 for tag_i, info in enumerate(group.tag_definitions):
 
                     definition = {
@@ -142,10 +139,7 @@ class TitleConfig:
 
                     config[TAG_KEY]["tags"].append(definition)
 
-        # Set main attribute entries as the definitions from the MSBP
-        # Since most games use one MSBP these act the primary definitions
         config[ATTR_KEY] = []
-
         if project.attribute_info is not None:
 
             attr_definitions = []

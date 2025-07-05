@@ -29,10 +29,6 @@ class MSBP:
         self._styles = styles
         self._source_files = source_files
 
-        self.clb1_exists = False
-        self.alb1_exists = False
-        self.slb1_exists = False
-
     @property
     def info(self) -> LMS_FileInfo:
         """The stream info of the MSBP."""

@@ -166,6 +166,12 @@ class FileWriter:
     def write_string(self, string: str):
         self.write_bytes(string.encode("UTF-8"))
 
+    def write_len_variable_encoding_string(self, string: str) -> None:
+        self.write_uint16(len(string) * self.encoding.width)
+        self.write_variable_encoding_string.write_variable_encoding_string(
+            string, False
+        )
+
     def write_variable_encoding_string(self, string: str, terminate: bool = True):
         self.write_bytes(string.encode(self.encoding.to_string_format(self.big_endian)))
         if terminate:

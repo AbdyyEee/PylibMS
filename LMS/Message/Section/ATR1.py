@@ -88,14 +88,14 @@ def write_decoded_atr1(
     string_offset = 8 + size_per_attribute * len(attributes)
     for attr in attributes:
         for field in attr.values():
-            if field.datatype is not LMS_DataType.STRING:
-                write_field(writer, field)
-            else:
+            if field.datatype is LMS_DataType.STRING:
                 writer.write_uint32(string_offset)
                 string_offset += (
                     len(field.value) * writer.encoding.width
                 ) + writer.encoding.width
                 string_table.append(field.value)
+            else:
+                write_field(writer, field)
 
     for string in string_table:
         writer.write_variable_encoding_string(string)

@@ -46,7 +46,6 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
                 # Set the name attributes of last read item
                 for i in labels:
                     items[i].name = labels[i]
-                # Set the section exists
                 exist_map[magic] = True
             case "CLR1":
                 colors = read_clr1(reader)
@@ -80,6 +79,13 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
 
     # Combining tag data
     if tag_groups:
+
+        # Cut out the System group from the definitions
+        # Since these are predefined, there is no need to keep them.
+        # Easier to remove here as opposed to manually skipping over them while reading
+        # See Tag/System_Definition for the full System definition of tags.
+        tag_groups = tag_groups[1:]
+
         for group in tag_groups:
             group.tag_definitions = [tag_info_list[i] for i in group.tag_indexes]
 
@@ -93,9 +99,4 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
 
     file = MSBP(file_info, colors, attribute_info_list, tag_groups, styles, source_list)
     file.name = os.path.basename(stream.name).removesuffix(".msbp")
-
-    file.clb1_exists = exist_map["CLB1"]
-    file.alb1_exists = exist_map["ALB1"]
-    file.slb1_exists = exist_map["SLB1"]
-
     return file

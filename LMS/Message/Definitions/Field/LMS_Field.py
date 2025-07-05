@@ -84,7 +84,6 @@ class LMS_Field:
                     return
             case LMS_DataType.FLOAT32:
                 min_value, max_value = -3.4028235e38, 3.4028235e38
-
             # Other number types fall here
             case _:
                 bits = datatype.stream_size * 8
@@ -108,16 +107,10 @@ def cast_value(value: int | str | float | bytes | bool, datatype: LMS_DataType) 
         case LMS_DataType.BYTE:
             return hex(int(value))
         case LMS_DataType.BOOL:
+            if value not in ("false", "true"):
+                raise ValueError("Value must be true or false for bool type.")
             return value.strip().lower() == "true"
         case LMS_DataType.FLOAT32:
-            try:
-                return float(value)
-            except ValueError:
-                raise ValueError(f"Cannot convert '{value}' to float.")
+            return float(value)
         case _:
-            if value.isdigit():
-                return int(value)
-            else:
-                raise TypeError(
-                    f"The provided value for type '{datatype}' is not a digit!"
-                )
+            return int(value)

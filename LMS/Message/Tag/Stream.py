@@ -6,7 +6,7 @@ from LMS.Message.Definitions.Field.Stream import read_field, write_field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
 from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
                                                LMS_TagWritingException)
-from LMS.Message.Tag.System_Definition import SYSTEM_GROUP
+from LMS.Message.Tag.System_Definitions import SYSTEM_GROUP
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 
 
@@ -34,8 +34,8 @@ def read_tag(
         definition = config.get_definition_by_indexes(group_index, tag_index)
 
     # If the parameters were omitted from the definition but the tag still has defined parameters, add the decoded
-    # names but read the tag as encoded. This is to account for encoded tags that group have tag names attatched. 
-    # i.e [System:Color 00-00-00-FF]
+    # names but read the tag as encoded. This is to account for encoded tags that group have tag names attatched.
+    # i.e [Group:Tag 00-00-00-FF]
     if definition.parameters is None and param_size > 0:
         parameters = _read_encoded_parameters(reader, param_size)
         return LMS_EncodedTag(
@@ -56,7 +56,7 @@ def read_tag(
 
 def write_tag(writer: FileWriter, tag: LMS_TagBase) -> None:
     tag_indicator = b"\x0e" + (b"\x00" * (writer.encoding.width - 1))
-    
+
     if writer.big_endian:
         tag_indicator = tag_indicator[::-1]
 
@@ -121,10 +121,10 @@ def _read_decoded_parameters(
 def _write_decoded_parameters(writer: FileWriter, tag: LMS_DecodedTag) -> None:
     param_size = 0
 
-    # Tags are padded by 0xCD if the size is not aligned to the encoding
+    # Tags are padded by a 0xCD byte if the size is not aligned to the encoding
     # This can occur before a string parameter, or at the end of the tag.
-    # Set a flag in order to be able to pad the first string correctly
-    needs_padding = False
+    # If a string parameter exists, then the padding will always be at the first string instance
+    # first_string is a flag so that the first string can be padded correctly.
     first_string = True
 
     for field in tag.parameters.values():
@@ -133,21 +133,19 @@ def _write_decoded_parameters(writer: FileWriter, tag: LMS_DecodedTag) -> None:
         else:
             param_size += field.datatype.stream_size
 
-    if param_size % 2 == 1:
-        needs_padding = True
+    if needs_padding := param_size % 2 == 1:
         param_size += 1
 
     writer.write_uint16(param_size)
     for field in tag.parameters.values():
         try:
             if field.datatype is LMS_DataType.STRING:
+
                 if first_string and needs_padding:
                     writer.write_bytes(b"\xcd")
-                    first_string = False
-                    needs_padding = False
+                    first_string, needs_padding = False, False
 
-                writer.write_uint16(len(field.value) * writer.encoding.width)
-                writer.write_variable_encoding_string(field.value, False)
+                writer.write_len_variable_encoding_string(field.value)
             else:
                 write_field(writer, field)
         except Exception as e:
