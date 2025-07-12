@@ -78,3 +78,19 @@ PAGEBREAK_TAG = TagDefinition(
     tag_index=4,
     description="Displays text in the same label on different pages.",
 )
+
+SYSTEM_INT_MAP = {
+    0: RUBY_TAG,
+    1: FONT_TAG,
+    2: SIZE_TAG,
+    3: COLOR_TAG,
+    4: PAGEBREAK_TAG,
+}
+
+SYSTEM_STR_MAP = {
+    "Ruby": RUBY_TAG,
+    "Font": FONT_TAG,
+    "Size": SIZE_TAG,
+    "Color": COLOR_TAG,
+    "Pagebreak": PAGEBREAK_TAG,
+}
