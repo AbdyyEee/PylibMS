@@ -2,6 +2,11 @@ from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.TitleConfig.Definitions.Tags import TagDefinition
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
 
+
+def get_system_tag(group: int | str) -> TagDefinition:
+    return SYSTEM_INT_MAP[group] if isinstance(group, int) else SYSTEM_STR_MAP[group]
+
+
 RUBY_TAG = TagDefinition(
     group_name="System",
     group_index=0,
@@ -73,11 +78,3 @@ PAGEBREAK_TAG = TagDefinition(
     tag_index=4,
     description="Displays text in the same label on different pages.",
 )
-
-SYSTEM_GROUP = {
-    0: RUBY_TAG,
-    1: FONT_TAG,
-    2: SIZE_TAG,
-    3: COLOR_TAG,
-    4: PAGEBREAK_TAG,
-}

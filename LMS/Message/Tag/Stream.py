@@ -6,7 +6,7 @@ from LMS.Message.Definitions.Field.Stream import read_field, write_field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
 from LMS.Message.Tag.LMS_TagExceptions import (LMS_TagReadingError,
                                                LMS_TagWritingException)
-from LMS.Message.Tag.System_Definitions import SYSTEM_GROUP
+from LMS.Message.Tag.System_Definitions import get_system_tag
 from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
 
 
@@ -29,7 +29,7 @@ def read_tag(
         return LMS_EncodedTag(group_index, tag_index, parameters)
 
     if group_index == 0:
-        definition = SYSTEM_GROUP[tag_index]
+        definition = get_system_tag(tag_index)
     else:
         definition = config.get_definition_by_indexes(group_index, tag_index)
 

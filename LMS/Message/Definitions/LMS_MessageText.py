@@ -3,6 +3,7 @@ from typing import overload
 
 from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
+from LMS.Message.Tag.System_Definitions import get_system_tag
 from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
                                          TAG_FORMAT)
 from LMS.TitleConfig.Config import TagConfig
@@ -72,35 +73,33 @@ class LMS_MessageText:
             )
         )
 
-    def append_decoded_tag(
-        self,
-        group_name: str,
-        tag_name: str,
-        parameters: dict[str, int | float | str | bytes | bool] | None = None,
-    ) -> None:
+    def append_decoded_tag(self, group_name: str, tag_name: str, **parameters) -> None:
         """Appends an decoded tag to the current message.
 
         :param group_name: the group name.
         :param tag_name: the tag name.:
-        :param parameters: a dictionary of parameters mapped to their value.
+        :param parameters: keyword arguments of parameters mapped to their value.
         """
 
-        definition = self._config.get_definition_by_names(group_name, tag_name)
+        if group_name == "System":
+            definition = get_system_tag(tag_name)
+        else:
+            definition = self._config.get_definition_by_names(group_name, tag_name)
 
-        # The provided dict must match the structure defined in the config in order for value conversion to work
+        # The provided kwargs must match the structure defined in the config in order for value conversion to work
         converted_params = {
             param_def.name: LMS_Field(parameters[param_def.name], param_def)
             for param_def in definition.parameters
         }
-        self._parts.append(
-            LMS_DecodedTag(
-                definition.group_index,
-                definition.tag_index,
-                group_name,
-                tag_name,
-                converted_params,
-            )
+
+        tag = LMS_DecodedTag(
+            definition.group_index,
+            definition.tag_index,
+            group_name,
+            tag_name,
+            converted_params,
         )
+        self._parts.append(tag)
 
     def append_tag_string(self, string: str) -> None:
         """Appends a tag to the current message given a string.
