@@ -2,6 +2,7 @@ import re
 from typing import overload
 
 from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
+from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
 from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
 from LMS.Message.Tag.System_Definitions import get_system_tag
 from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
@@ -45,27 +46,29 @@ class LMS_MessageText:
 
     @overload
     def append_encoded_tag(
-        self, group: int, tag: int, parameters: list[str] | None = None
+        self, group: int, tag: int, *parameters: tuple[str] 
     ) -> None: ...
 
     @overload
     def append_encoded_tag(
-        self, group: str, tag: str, parameters: list[str] | None = None
+        self, group: str, tag: str, *parameters: tuple[str]
     ) -> None: ...
 
     def append_encoded_tag(
-        self, group: int | str, tag: int | str, parameters: list[str] | None = None
+        self, group: int | str, tag: int | str, *parameters: tuple[str]
     ):
         """Appends an encoded tag to the current message.
 
         :param group: the group name or index.
         :param tag: the group tag or index:
         :param parameters: a list of hex strings.
+
+        message.append_encoded_tag(1, 2, "01", "00", "00", "CD")
         """
         if isinstance(group, int) and isinstance(tag, int):
             self._parts.append(LMS_EncodedTag(group, tag, parameters))
             return
-
+        
         definition = self._config.get_definition_by_names(group, tag)
         self._parts.append(
             LMS_EncodedTag(
@@ -73,12 +76,17 @@ class LMS_MessageText:
             )
         )
 
-    def append_decoded_tag(self, group_name: str, tag_name: str, **parameters) -> None:
+    def append_decoded_tag(self, group_name: str, tag_name: str, **parameters: LMS_FieldMap) -> None:
         """Appends an decoded tag to the current message.
 
         :param group_name: the group name.
         :param tag_name: the tag name.:
         :param parameters: keyword arguments of parameters mapped to their value.
+
+        ## Usage
+        ```
+        message.append_decoded_tag("Mii", "Nickname", buffer=1, type="Voice", conversion="None")
+        ```
         """
 
         if group_name == "System":

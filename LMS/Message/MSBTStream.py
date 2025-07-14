@@ -59,7 +59,7 @@ def read_msbt(
                 file.size_per_attribute = size_per_attribute
                 file.attr_string_table = string_table
             case "TXT2":
-                messages = read_txt2(reader, file_info.encoding, tag_config)
+                messages = read_txt2(reader, tag_config)
             case "TSY1":
                 style_indexes = read_tsy1(reader, len(labels))
             case _:

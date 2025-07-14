@@ -87,7 +87,7 @@ class MSBT:
             if self._tag_config is not None:
                 message_text = LMS_MessageText(text, self._tag_config)
             else:
-                message_text = text
+                message_text = LMS_MessageText(text)
         else:
             message_text = ""
 

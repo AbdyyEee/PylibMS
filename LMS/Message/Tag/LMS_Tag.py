@@ -10,6 +10,7 @@ from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
 class LMS_TagBase(ABC):
+    """Base class for encoded and decoded tags."""
     def __init__(
         self,
         group_index: int,
@@ -71,7 +72,7 @@ class LMS_EncodedTag(LMS_TagBase):
         self,
         group_index: int,
         tag_index: int,
-        parameters: list[str] = None,
+        parameters: list[str] | tuple[str] = None,
         group_name: str = None,
         tag_name: str = None,
     ):

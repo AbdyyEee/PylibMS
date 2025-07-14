@@ -3,7 +3,7 @@ from typing import Literal, Type
 
 
 class LMS_DataType(Enum):
-
+    """Enum that represents a datatype for a value entry in a MSBT/MSBP file."""
     UINT8 = 0
     UINT16 = 1
     UINT32 = 2
@@ -15,12 +15,17 @@ class LMS_DataType(Enum):
     FLOAT32 = 6
 
     # Unknown 16 bit type (value of 6) has yet to be documented
+    # Might be some sort of 2 byte integer, float, or may be an array.
+    # We wont ever know cause no game (yet that has been found) has utilized this type
+    # Thanks Nintendo.
     ...
 
     STRING = 8
     LIST = 9
-
-    # Interface types
+ 
+    # These types are not offical, but allow for abstraction from the value of the actual type
+    # As an example, BOOL can be utilized for UInt8 values that act like a bool
+    # Byte types can also be used for when the type/value is unknown or if there is extra data in the tag.
     BOOL = "bool"
     BYTE = "byte"
 
@@ -59,7 +64,7 @@ class LMS_DataType(Enum):
 
     @property
     def stream_size(self) -> Literal[1, 2, 4]:
-        """The size the datatype takes up in a strema."""
+        """The size the datatype takes up in a stream."""
         return {
             LMS_DataType.UINT8: 1,
             LMS_DataType.UINT16: 2,

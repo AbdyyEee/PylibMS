@@ -6,9 +6,9 @@ from LMS.Message.Tag.Stream import read_tag, write_tag
 from LMS.TitleConfig.Definitions.Tags import TagConfig
 
 
-def read_txt2(
-    reader: FileReader, encoding: FileEncoding, config: TagConfig
-) -> list[LMS_MessageText]:
+def read_txt2(reader: FileReader, config: TagConfig) -> list[LMS_MessageText]:
+    encoding = reader.encoding
+
     text_list = []
     count = reader.read_uint32()
 

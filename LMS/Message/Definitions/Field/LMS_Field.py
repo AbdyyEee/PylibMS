@@ -1,3 +1,4 @@
+
 from LMS.Common.LMS_DataType import LMS_DataType
 from LMS.TitleConfig.Definitions.Value import ValueDefinition
 
@@ -15,14 +16,13 @@ class LMS_Field:
         self._value = value
 
     def __repr__(self):
-        typename = self._definition.datatype.name
-        if typename == "LIST":
+        if self.datatype is LMS_DataType.LIST:
             if len(self.list_items) > 6:
                 preview = self.list_items[:3] + ["..."]
             else:
                 preview = self.list_items
             return f"LMS_Field(value={self._value}, options={preview})"
-        return f"LMS_Field(value={self._value!r}, type={typename})"
+        return f"LMS_Field(value={self._value}, type={self.datatype.name})"
 
     @property
     def name(self) -> str:

@@ -34,7 +34,7 @@ def read_tag(
         definition = config.get_definition_by_indexes(group_index, tag_index)
 
     # If the parameters were omitted from the definition but the tag still has defined parameters, add the decoded
-    # names but read the tag as encoded. This is to account for encoded tags that group have tag names attatched.
+    # names but read the tag as encoded. This is to account for encoded tags that have group and tag names defined.
     # i.e [Group:Tag 00-00-00-FF]
     if definition.parameters is None and param_size > 0:
         parameters = _read_encoded_parameters(reader, param_size)

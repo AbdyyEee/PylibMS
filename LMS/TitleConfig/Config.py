@@ -23,9 +23,7 @@ class TitleConfig:
         if file.name.endswith(".yaml")
     ]
 
-    def __init__(
-        self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig
-    ):
+    def __init__(self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig):
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
 
@@ -61,21 +59,16 @@ class TitleConfig:
         """Loads the config of a specified game.
 
         :param content: the config content, as a string or loaded as a dictionary."""
+        parsed_content = content
+
         if isinstance(content, str):
             parsed_content = yaml.safe_load(content)
-        else:
-            parsed_content = content
 
         # Load the attribute definitions
         attribute_configs = {}
         for config in parsed_content[ATTR_KEY]:
-            definitions = [
-                ValueDefinition.from_dict(value_def)
-                for value_def in config["definitions"]
-            ]
-            attribute_configs[config["name"]] = AttributeConfig(
-                config["name"], config["description"], definitions
-            )
+            definitions = [ValueDefinition.from_dict(value_def) for value_def in config["definitions"]]
+            attribute_configs[config["name"]] = AttributeConfig(config["name"], config["description"], definitions)
 
         # Load the tag definitions
         tag_definitions = []
@@ -107,9 +100,7 @@ class TitleConfig:
         config = {}
 
         config[TAG_KEY] = {
-            "groups": {
-                i: group.name for i, group in enumerate(project.tag_groups, start=1)
-            },
+            "groups": {i: group.name for i, group in enumerate(project.tag_groups, start=1)},
             "tags": [],
         }
 
