@@ -4,7 +4,7 @@ from lms.fileio.encoding import FileEncoding
 from lms.fileio.io import FileReader, FileWriter
 
 DATA_START = 0x20
-LITTLE_ENDIAN_BOM = b"\xfe\xff"
+LITTLE_ENDIAN_BOM = b"\xff\xfe"
 BIG_ENDIAN_BOM = b"\xfe\xff"
 
 

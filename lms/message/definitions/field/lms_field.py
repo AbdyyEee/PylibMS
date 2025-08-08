@@ -100,7 +100,7 @@ class LMS_Field:
                 return
 
         raise TypeError(
-            f"The value provided for '{self.name}' type '{type(value)}' should be '{self._definition.datatype.to_string()}'."
+            f"The value provided for '{self.name}' type '{type(value)}' should be '{datatype.builtin_type}'."
         )
 
 

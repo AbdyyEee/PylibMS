@@ -14,6 +14,8 @@ from lms.message.section.tsy1 import read_tsy1, write_tsy1
 from lms.message.section.txt2 import read_txt2, write_txt2
 from lms.titleconfig.config import AttributeConfig, TagConfig
 
+__all__ = ["read_msbt", "read_msbt_path", "write_msbt", "write_msbt_path"]
+
 
 def read_msbt_path(
     file_path: str,
@@ -51,11 +53,11 @@ def write_msbt_path(file_path: str, file: MSBT) -> None:
     ```
     """
     with open(file_path, "wb") as stream:
-        write_msbt(stream, file)
+        stream.write(write_msbt(file))
 
 
 def read_msbt(
-    stream: BinaryIO,
+    stream: BinaryIO | bytes,
     attribute_config: AttributeConfig | None = None,
     tag_config: TagConfig | None = None,
 ) -> MSBT:
@@ -118,7 +120,7 @@ def read_msbt(
     return file
 
 
-def write_msbt(stream: BinaryIO, file: MSBT) -> None:
+def write_msbt(file: MSBT) -> bytes:
     """Writes a MSBT file to a stream.
 
     :param stream: the filestream.
@@ -131,9 +133,6 @@ def write_msbt(stream: BinaryIO, file: MSBT) -> None:
             ...
     ```
     """
-    if stream is None:
-        raise LMS_Exceptions.LMS_Error("Stream is not valid!")
-
     if not isinstance(file, MSBT):
         raise LMS_Exceptions.LMS_Error("File provided is not a MSBT.")
 
@@ -177,4 +176,4 @@ def write_msbt(stream: BinaryIO, file: MSBT) -> None:
 
     writer.seek(0x12)
     writer.write_uint32(writer.get_stream_size())
-    stream.write(writer.get_data())
+    return writer.get_data()

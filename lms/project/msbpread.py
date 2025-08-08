@@ -31,7 +31,7 @@ def read_msbp_path(file_path: str) -> MSBP:
         return read_msbp(stream)
 
 
-def read_msbp(stream: BinaryIO | None) -> MSBP:
+def read_msbp(stream: BinaryIO | bytes) -> MSBP:
     """Reads a MSBP file from a stream.
 
     :param stream: a stream object.
