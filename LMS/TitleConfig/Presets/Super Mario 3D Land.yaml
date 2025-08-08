@@ -1,13 +1,59 @@
 tag_definitions:
   groups:
+    0: System
     1: PictureFont
     2: Replace
     3: Number
     4: ReplaceTagLabel
     5: String
   tags:
+  - name: Ruby
+    group_id: 0
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: rt
+      description: ''
+      datatype: string
+  - name: Font
+    group_id: 0
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: face
+      description: ''
+      datatype: string
+  - name: Size
+    group_id: 0
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: percent
+      description: ''
+      datatype: uint16
+  - name: Color
+    group_id: 0
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: r
+      description: ''
+      datatype: uint8
+    - name: g
+      description: ''
+      datatype: uint8
+    - name: b
+      description: ''
+      datatype: uint8
+    - name: a
+      description: ''
+      datatype: uint8
+  - name: PageBreak
+    group_id: 0
+    tag_index: 4
+    description: ''
   - name: Coin
-    group_index: 1
+    group_id: 1
     tag_index: 0
     description: ''
     parameters:
@@ -15,7 +61,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Mario
-    group_index: 1
+    group_id: 1
     tag_index: 1
     description: ''
     parameters:
@@ -23,7 +69,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Luigi
-    group_index: 1
+    group_id: 1
     tag_index: 2
     description: ''
     parameters:
@@ -31,7 +77,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Kinopio
-    group_index: 1
+    group_id: 1
     tag_index: 3
     description: ''
     parameters:
@@ -39,7 +85,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Peach
-    group_index: 1
+    group_id: 1
     tag_index: 4
     description: ''
     parameters:
@@ -47,7 +93,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Kuribo
-    group_index: 1
+    group_id: 1
     tag_index: 5
     description: ''
     parameters:
@@ -55,7 +101,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Koopa
-    group_index: 1
+    group_id: 1
     tag_index: 6
     description: ''
     parameters:
@@ -63,7 +109,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Clock
-    group_index: 1
+    group_id: 1
     tag_index: 7
     description: ''
     parameters:
@@ -71,7 +117,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: CheckpointFlag
-    group_index: 1
+    group_id: 1
     tag_index: 8
     description: ''
     parameters:
@@ -79,7 +125,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: PWing
-    group_index: 1
+    group_id: 1
     tag_index: 9
     description: ''
     parameters:
@@ -87,7 +133,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: KinokoOneUp
-    group_index: 1
+    group_id: 1
     tag_index: 10
     description: ''
     parameters:
@@ -95,7 +141,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: KinokoSuper
-    group_index: 1
+    group_id: 1
     tag_index: 11
     description: ''
     parameters:
@@ -103,7 +149,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: SuperStar
-    group_index: 1
+    group_id: 1
     tag_index: 12
     description: ''
     parameters:
@@ -111,7 +157,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: SuperLeafBrown
-    group_index: 1
+    group_id: 1
     tag_index: 13
     description: ''
     parameters:
@@ -119,7 +165,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: SuperLeafGreen
-    group_index: 1
+    group_id: 1
     tag_index: 14
     description: ''
     parameters:
@@ -127,7 +173,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: FireFlower
-    group_index: 1
+    group_id: 1
     tag_index: 15
     description: ''
     parameters:
@@ -135,7 +181,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: KinokoBoomerang
-    group_index: 1
+    group_id: 1
     tag_index: 16
     description: ''
     parameters:
@@ -143,7 +189,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: PropellerBox
-    group_index: 1
+    group_id: 1
     tag_index: 17
     description: ''
     parameters:
@@ -151,7 +197,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: StarMedal
-    group_index: 1
+    group_id: 1
     tag_index: 18
     description: ''
     parameters:
@@ -159,7 +205,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Player
-    group_index: 1
+    group_id: 1
     tag_index: 19
     description: ''
     parameters:
@@ -167,7 +213,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Cross
-    group_index: 1
+    group_id: 1
     tag_index: 20
     description: ''
     parameters:
@@ -175,7 +221,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: LuigiButton
-    group_index: 1
+    group_id: 1
     tag_index: 21
     description: ''
     parameters:
@@ -183,7 +229,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: StarMedalBlank
-    group_index: 1
+    group_id: 1
     tag_index: 22
     description: ''
     parameters:
@@ -191,7 +237,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: PlayerName
-    group_index: 2
+    group_id: 2
     tag_index: 0
     description: ''
     parameters:
@@ -202,7 +248,7 @@ tag_definitions:
       - Mario
       - Luigi
   - name: PlayerIcon
-    group_index: 2
+    group_id: 2
     tag_index: 1
     description: ''
     parameters:
@@ -213,7 +259,7 @@ tag_definitions:
       - Mario
       - Luigi
   - name: FigLeft
-    group_index: 3
+    group_id: 3
     tag_index: 0
     description: ''
     parameters:
@@ -221,7 +267,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig02
-    group_index: 3
+    group_id: 3
     tag_index: 1
     description: ''
     parameters:
@@ -229,7 +275,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig03
-    group_index: 3
+    group_id: 3
     tag_index: 2
     description: ''
     parameters:
@@ -237,7 +283,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig04
-    group_index: 3
+    group_id: 3
     tag_index: 3
     description: ''
     parameters:
@@ -245,7 +291,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig05
-    group_index: 3
+    group_id: 3
     tag_index: 4
     description: ''
     parameters:
@@ -253,7 +299,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig_2
-    group_index: 3
+    group_id: 3
     tag_index: 5
     description: ''
     parameters:
@@ -261,7 +307,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig_3
-    group_index: 3
+    group_id: 3
     tag_index: 6
     description: ''
     parameters:
@@ -269,7 +315,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig_4
-    group_index: 3
+    group_id: 3
     tag_index: 7
     description: ''
     parameters:
@@ -277,7 +323,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Fig_5
-    group_index: 3
+    group_id: 3
     tag_index: 8
     description: ''
     parameters:
@@ -285,12 +331,12 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: TitleName
-    group_index: 4
+    group_id: 4
     tag_index: 0
     description: ''
     parameters: []
   - name: MiiName
-    group_index: 5
+    group_id: 5
     tag_index: 0
     description: ''
     parameters:

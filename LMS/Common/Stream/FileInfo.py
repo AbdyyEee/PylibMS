@@ -1,19 +1,19 @@
-from LMS.Common import LMS_Exceptions
-from LMS.Common.LMS_FileInfo import LMS_FileInfo
-from LMS.FileIO.Encoding import FileEncoding
-from LMS.FileIO.Stream import FileReader, FileWriter
+from lms.common import lms_exceptions
+from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.fileio.encoding import FileEncoding
+from lms.fileio.stream import FileReader, FileWriter
 
 
 def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     magic = reader.read_string_len(8)
 
     if magic != expected_magic:
-        raise LMS_Exceptions.LMS_UnexpectedMagicError(
+        raise lms_exceptions.LMS_UnexpectedMagicError(
             f"Invalid magic!' Expected {expected_magic}', got '{magic}'."
         )
 
     big_endian = reader.read_bytes(2) == b"\xfe\xff"
-    reader.big_endian = big_endian
+    reader.is_big_endian = big_endian
 
     reader.skip(2)
 
@@ -28,7 +28,7 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
 
     reader.seek(0, 2)
     if file_size != reader.tell():
-        raise LMS_Exceptions.LMS_MisalignedSizeError(f"Filesize is misaligned!")
+        raise lms_exceptions.LMS_MisalignedSizeError(f"Filesize is misaligned!")
 
     # Seek to the start of data
     reader.seek(0x20)
@@ -46,7 +46,7 @@ def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> 
 
     :param writer: a Writer object.
     :param file_info: the file_info object."""
-    writer.big_endian = file_info.big_endian
+    writer.is_big_endian = file_info.big_endian
     writer.encoding = file_info.encoding
 
     writer.write_string(magic)
@@ -57,7 +57,6 @@ def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> 
     writer.write_uint8(file_info.version)
     writer.write_uint16(file_info.section_count)
 
-    # Padding
     writer.write_bytes(b"\x00\x00")
     writer.write_bytes(b"\x00" * 4)
     writer.write_bytes(b"\x00" * 10)

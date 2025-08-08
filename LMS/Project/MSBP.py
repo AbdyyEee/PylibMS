@@ -1,8 +1,8 @@
-from LMS.Common.LMS_FileInfo import LMS_FileInfo
-from LMS.Project.Definitions.Attribute import LMS_AttributeInfo
-from LMS.Project.Definitions.Color import LMS_Color
-from LMS.Project.Definitions.Style import LMS_Style
-from LMS.Project.Definitions.Tag import LMS_TagGroup
+from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.project.definitions.attribute import LMS_AttributeDefinition
+from lms.project.definitions.color import LMS_Color
+from lms.project.definitions.style import LMS_Style
+from lms.project.definitions.tag import LMS_TagGroup
 
 
 class MSBP:
@@ -14,7 +14,7 @@ class MSBP:
         self,
         info: LMS_FileInfo,
         colors: list[LMS_Color],
-        config: list[LMS_AttributeInfo],
+        config: list[LMS_AttributeDefinition],
         tag_groups: list[LMS_TagGroup],
         styles: list[LMS_Style],
         source_files: list[str],
@@ -40,7 +40,7 @@ class MSBP:
         return self._colors
 
     @property
-    def attribute_info(self) -> list[LMS_AttributeInfo]:
+    def attribute_info(self) -> list[LMS_AttributeDefinition]:
         """The attribute definitions for the project instance."""
         return self._config
 

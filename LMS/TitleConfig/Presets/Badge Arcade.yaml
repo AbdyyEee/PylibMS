@@ -1,12 +1,59 @@
 tag_definitions:
   groups:
+    0: System
     1: Sys
     2: Talk
     3: Util
     4: Ref
   tags:
+  - name: Ruby
+    group_id: 0
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: rt
+      description: ''
+      datatype: string
+  - name: Font
+    group_id: 0
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: face
+      description: ''
+      datatype: string
+  - name: Size
+    group_id: 0
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: percent
+      description: ''
+      datatype: uint16
+  - name: Color
+    group_id: 0
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: r
+      description: ''
+      datatype: uint8
+    - name: g
+      description: ''
+      datatype: uint8
+    - name: b
+      description: ''
+      datatype: uint8
+    - name: a
+      description: ''
+      datatype: uint8
+  - name: PageBreak
+    group_id: 0
+    tag_index: 4
+    description: ''
+    parameters: []
   - name: Wait
-    group_index: 1
+    group_id: 1
     tag_index: 0
     description: ''
     parameters:
@@ -14,7 +61,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: Speed
-    group_index: 1
+    group_id: 1
     tag_index: 1
     description: ''
     parameters:
@@ -22,12 +69,12 @@ tag_definitions:
       description: ''
       datatype: float32
   - name: Flush
-    group_index: 1
+    group_id: 1
     tag_index: 2
     description: ''
     parameters: []
   - name: Action
-    group_index: 2
+    group_id: 2
     tag_index: 0
     description: ''
     parameters:
@@ -202,7 +249,7 @@ tag_definitions:
       - TalkWishHandTogether_M00_W
       - TalkWishHandTogether_M01_W
   - name: Blend
-    group_index: 2
+    group_id: 2
     tag_index: 1
     description: ''
     parameters:
@@ -216,12 +263,12 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: NotClose
-    group_index: 2
+    group_id: 2
     tag_index: 2
     description: ''
     parameters: []
   - name: AutoScroll
-    group_index: 2
+    group_id: 2
     tag_index: 3
     description: ''
     parameters:
@@ -229,17 +276,17 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: ChoiceB
-    group_index: 2
+    group_id: 2
     tag_index: 4
     description: ''
     parameters: []
   - name: IgnoreA
-    group_index: 2
+    group_id: 2
     tag_index: 5
     description: ''
     parameters: []
   - name: Dictionary
-    group_index: 3
+    group_id: 3
     tag_index: 0
     description: ''
     parameters:
@@ -250,7 +297,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: SP
-    group_index: 3
+    group_id: 3
     tag_index: 1
     description: ''
     parameters:
@@ -276,12 +323,12 @@ tag_definitions:
       description: ''
       datatype: string
   - name: MyName
-    group_index: 4
+    group_id: 4
     tag_index: 0
     description: ''
     parameters: []
   - name: PlayCount
-    group_index: 4
+    group_id: 4
     tag_index: 1
     description: ''
     parameters:
@@ -289,7 +336,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Price
-    group_index: 4
+    group_id: 4
     tag_index: 2
     description: ''
     parameters:
@@ -297,7 +344,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Bonus
-    group_index: 4
+    group_id: 4
     tag_index: 3
     description: ''
     parameters:
@@ -311,7 +358,7 @@ tag_definitions:
       - Lose10Unit
       - PropFreeBySmallWin
   - name: CmpnTm
-    group_index: 4
+    group_id: 4
     tag_index: 4
     description: ''
     parameters:
@@ -325,7 +372,7 @@ tag_definitions:
       - RemainMoney
       - RemainUnit
   - name: CmpnBd
-    group_index: 4
+    group_id: 4
     tag_index: 5
     description: ''
     parameters:
@@ -338,17 +385,17 @@ tag_definitions:
       - NumGet_1
       - NumRemain
   - name: MonthLimit
-    group_index: 4
+    group_id: 4
     tag_index: 6
     description: ''
     parameters: []
   - name: MonthPlay
-    group_index: 4
+    group_id: 4
     tag_index: 7
     description: ''
     parameters: []
   - name: RenewTime
-    group_index: 4
+    group_id: 4
     tag_index: 8
     description: ''
     parameters:
@@ -356,12 +403,12 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: NexMntTime
-    group_index: 4
+    group_id: 4
     tag_index: 9
     description: ''
     parameters: []
   - name: PlayReport
-    group_index: 4
+    group_id: 4
     tag_index: 10
     description: ''
     parameters:
@@ -369,7 +416,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: ExtVar
-    group_index: 4
+    group_id: 4
     tag_index: 11
     description: ''
     parameters:

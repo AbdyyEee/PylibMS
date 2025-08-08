@@ -1,5 +1,6 @@
 tag_definitions:
   groups:
+    0: System
     1: Mii
     2: MiiTalk
     3: Date
@@ -13,8 +14,53 @@ tag_definitions:
     11: Format
     12: Nuance
   tags:
+  - name: Ruby
+    group_id: 0
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: rt
+      description: ''
+      datatype: string
+  - name: Font
+    group_id: 0
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: face
+      description: ''
+      datatype: string
+  - name: Size
+    group_id: 0
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: percent
+      description: ''
+      datatype: uint16
+  - name: Color
+    group_id: 0
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: r
+      description: ''
+      datatype: uint8
+    - name: g
+      description: ''
+      datatype: uint8
+    - name: b
+      description: ''
+      datatype: uint8
+    - name: a
+      description: ''
+      datatype: uint8
+  - name: PageBreak
+    description: ''
+    group_id: 0
+    tag_index: 4
   - name: Nickname
-    group_index: 1
+    group_id: 1
     tag_index: 0
     description: ''
     parameters:
@@ -34,7 +80,7 @@ tag_definitions:
       - None
       - Kana
   - name: Lastname
-    group_index: 1
+    group_id: 1
     tag_index: 1
     description: ''
     parameters:
@@ -54,7 +100,7 @@ tag_definitions:
       - None
       - Kana
   - name: Firstname
-    group_index: 1
+    group_id: 1
     tag_index: 2
     description: ''
     parameters:
@@ -74,7 +120,7 @@ tag_definitions:
       - None
       - Kana
   - name: Creator
-    group_index: 1
+    group_id: 1
     tag_index: 3
     description: ''
     parameters:
@@ -94,7 +140,7 @@ tag_definitions:
       - None
       - Kana
   - name: Character
-    group_index: 1
+    group_id: 1
     tag_index: 4
     description: ''
     parameters:
@@ -114,7 +160,7 @@ tag_definitions:
       - 'true'
       - 'false'
   - name: Character16
-    group_index: 1
+    group_id: 1
     tag_index: 5
     description: ''
     parameters:
@@ -134,7 +180,7 @@ tag_definitions:
       - 'true'
       - 'false'
   - name: LongPhrase
-    group_index: 1
+    group_id: 1
     tag_index: 6
     description: ''
     parameters:
@@ -148,7 +194,7 @@ tag_definitions:
       - Text
       - Voice
   - name: ShortPhrase
-    group_index: 1
+    group_id: 1
     tag_index: 7
     description: ''
     parameters:
@@ -170,7 +216,7 @@ tag_definitions:
       - Despond
       - Worry
   - name: FirstPerson
-    group_index: 1
+    group_id: 1
     tag_index: 8
     description: ''
     parameters:
@@ -184,7 +230,7 @@ tag_definitions:
       - Text
       - Voice
   - name: FirstPersonW
-    group_index: 1
+    group_id: 1
     tag_index: 9
     description: ''
     parameters:
@@ -195,7 +241,7 @@ tag_definitions:
       - Text
       - Voice
   - name: MyNickname
-    group_index: 1
+    group_id: 1
     tag_index: 10
     description: ''
     parameters:
@@ -212,7 +258,7 @@ tag_definitions:
       - None
       - Kana
   - name: BloodType
-    group_index: 1
+    group_id: 1
     tag_index: 11
     description: ''
     parameters:
@@ -226,7 +272,7 @@ tag_definitions:
       - Text
       - Voice
   - name: FavoriteColor
-    group_index: 1
+    group_id: 1
     tag_index: 12
     description: ''
     parameters:
@@ -240,7 +286,7 @@ tag_definitions:
       - Text
       - Voice
   - name: Speaker
-    group_index: 2
+    group_id: 2
     tag_index: 0
     description: ''
     parameters:
@@ -257,7 +303,7 @@ tag_definitions:
       - None
       - Kana
   - name: FriendA
-    group_index: 2
+    group_id: 2
     tag_index: 1
     description: ''
     parameters:
@@ -274,7 +320,7 @@ tag_definitions:
       - None
       - Kana
   - name: FriendB
-    group_index: 2
+    group_id: 2
     tag_index: 2
     description: ''
     parameters:
@@ -291,7 +337,7 @@ tag_definitions:
       - None
       - Kana
   - name: FriendC
-    group_index: 2
+    group_id: 2
     tag_index: 3
     description: ''
     parameters:
@@ -308,7 +354,7 @@ tag_definitions:
       - None
       - Kana
   - name: FriendD
-    group_index: 2
+    group_id: 2
     tag_index: 4
     description: ''
     parameters:
@@ -325,7 +371,7 @@ tag_definitions:
       - None
       - Kana
   - name: Lovers
-    group_index: 2
+    group_id: 2
     tag_index: 5
     description: ''
     parameters:
@@ -342,7 +388,7 @@ tag_definitions:
       - None
       - Kana
   - name: Couple
-    group_index: 2
+    group_id: 2
     tag_index: 6
     description: ''
     parameters:
@@ -359,7 +405,7 @@ tag_definitions:
       - None
       - Kana
   - name: BestFriend
-    group_index: 2
+    group_id: 2
     tag_index: 7
     description: ''
     parameters:
@@ -376,7 +422,7 @@ tag_definitions:
       - None
       - Kana
   - name: Child
-    group_index: 2
+    group_id: 2
     tag_index: 8
     description: ''
     parameters:
@@ -393,7 +439,7 @@ tag_definitions:
       - None
       - Kana
   - name: ChildApart
-    group_index: 2
+    group_id: 2
     tag_index: 9
     description: ''
     parameters:
@@ -410,7 +456,7 @@ tag_definitions:
       - None
       - Kana
   - name: Father
-    group_index: 2
+    group_id: 2
     tag_index: 10
     description: ''
     parameters:
@@ -427,7 +473,7 @@ tag_definitions:
       - None
       - Kana
   - name: Mother
-    group_index: 2
+    group_id: 2
     tag_index: 11
     description: ''
     parameters:
@@ -444,7 +490,7 @@ tag_definitions:
       - None
       - Kana
   - name: ExLovers
-    group_index: 2
+    group_id: 2
     tag_index: 12
     description: ''
     parameters:
@@ -461,7 +507,7 @@ tag_definitions:
       - None
       - Kana
   - name: Divorce
-    group_index: 2
+    group_id: 2
     tag_index: 13
     description: ''
     parameters:
@@ -478,7 +524,7 @@ tag_definitions:
       - None
       - Kana
   - name: BrotherSister
-    group_index: 2
+    group_id: 2
     tag_index: 14
     description: ''
     parameters:
@@ -495,7 +541,7 @@ tag_definitions:
       - None
       - Kana
   - name: N_Year
-    group_index: 3
+    group_id: 3
     tag_index: 0
     description: ''
     parameters:
@@ -521,7 +567,7 @@ tag_definitions:
       - Text
       - Voice
   - name: N_Month
-    group_index: 3
+    group_id: 3
     tag_index: 1
     description: ''
     parameters:
@@ -535,7 +581,7 @@ tag_definitions:
       - 'False'
       - 'True'
   - name: N_Day
-    group_index: 3
+    group_id: 3
     tag_index: 2
     description: ''
     parameters:
@@ -549,7 +595,7 @@ tag_definitions:
       - 'False'
       - 'True'
   - name: N_Hour
-    group_index: 3
+    group_id: 3
     tag_index: 3
     description: ''
     parameters:
@@ -569,7 +615,7 @@ tag_definitions:
       - 12-hour
       - 24-hour
   - name: N_Minute
-    group_index: 3
+    group_id: 3
     tag_index: 4
     description: ''
     parameters:
@@ -583,7 +629,7 @@ tag_definitions:
       - 'False'
       - 'True'
   - name: N_Second
-    group_index: 3
+    group_id: 3
     tag_index: 5
     description: ''
     parameters:
@@ -597,7 +643,7 @@ tag_definitions:
       - 'False'
       - 'True'
   - name: S_Month
-    group_index: 3
+    group_id: 3
     tag_index: 6
     description: ''
     parameters:
@@ -611,7 +657,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_MonthSh
-    group_index: 3
+    group_id: 3
     tag_index: 7
     description: ''
     parameters:
@@ -625,7 +671,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_Day
-    group_index: 3
+    group_id: 3
     tag_index: 8
     description: ''
     parameters:
@@ -639,7 +685,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_Hour
-    group_index: 3
+    group_id: 3
     tag_index: 9
     description: ''
     parameters:
@@ -659,7 +705,7 @@ tag_definitions:
       - 12-hour
       - 24-hour
   - name: S_Week
-    group_index: 3
+    group_id: 3
     tag_index: 10
     description: ''
     parameters:
@@ -673,7 +719,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_WeekSh
-    group_index: 3
+    group_id: 3
     tag_index: 11
     description: ''
     parameters:
@@ -687,7 +733,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_Season
-    group_index: 3
+    group_id: 3
     tag_index: 12
     description: ''
     parameters:
@@ -701,7 +747,7 @@ tag_definitions:
       - Text
       - Voice
   - name: S_AMPM
-    group_index: 3
+    group_id: 3
     tag_index: 13
     description: ''
     parameters:
@@ -715,7 +761,7 @@ tag_definitions:
       - Text
       - Voice
   - name: Body
-    group_index: 4
+    group_id: 4
     tag_index: 0
     description: ''
     parameters:
@@ -741,7 +787,7 @@ tag_definitions:
       - 'False'
       - 'True'
   - name: Headwear
-    group_index: 4
+    group_id: 4
     tag_index: 1
     description: ''
     parameters:
@@ -761,7 +807,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Room
-    group_index: 4
+    group_id: 4
     tag_index: 2
     description: ''
     parameters:
@@ -781,7 +827,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Food
-    group_index: 4
+    group_id: 4
     tag_index: 3
     description: ''
     parameters:
@@ -801,7 +847,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Tool
-    group_index: 4
+    group_id: 4
     tag_index: 4
     description: ''
     parameters:
@@ -821,7 +867,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Treasure
-    group_index: 4
+    group_id: 4
     tag_index: 5
     description: ''
     parameters:
@@ -841,7 +887,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Equip
-    group_index: 4
+    group_id: 4
     tag_index: 6
     description: ''
     parameters:
@@ -861,7 +907,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: SpecialProduct
-    group_index: 4
+    group_id: 4
     tag_index: 7
     description: ''
     parameters:
@@ -881,7 +927,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Item
-    group_index: 4
+    group_id: 4
     tag_index: 8
     description: ''
     parameters:
@@ -901,7 +947,7 @@ tag_definitions:
       - Singular
       - Plural
   - name: Number
-    group_index: 4
+    group_id: 4
     tag_index: 9
     description: ''
     parameters:
@@ -919,7 +965,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: News
-    group_index: 4
+    group_id: 4
     tag_index: 10
     description: ''
     parameters:
@@ -935,7 +981,7 @@ tag_definitions:
       - Hour
       - DateDiff
   - name: Island
-    group_index: 4
+    group_id: 4
     tag_index: 11
     description: ''
     parameters:
@@ -952,7 +998,7 @@ tag_definitions:
       - Mine
       - Others
   - name: Player
-    group_index: 4
+    group_id: 4
     tag_index: 12
     description: ''
     parameters:
@@ -965,7 +1011,7 @@ tag_definitions:
       list_items:
       - Country
   - name: Age
-    group_index: 4
+    group_id: 4
     tag_index: 13
     description: ''
     parameters:
@@ -973,7 +1019,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: SongGenre
-    group_index: 4
+    group_id: 4
     tag_index: 14
     description: ''
     parameters:
@@ -981,7 +1027,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Counter(JP)
-    group_index: 4
+    group_id: 4
     tag_index: 15
     description: ''
     parameters:
@@ -1002,7 +1048,7 @@ tag_definitions:
       - D_ConsonantEuphony
       - Normal
   - name: IslandAddress
-    group_index: 4
+    group_id: 4
     tag_index: 16
     description: ''
     parameters:
@@ -1027,7 +1073,7 @@ tag_definitions:
       - Num0
       - Num1
   - name: IslandSub
-    group_index: 4
+    group_id: 4
     tag_index: 17
     description: ''
     parameters:
@@ -1044,12 +1090,12 @@ tag_definitions:
       - Mine
       - Others
   - name: Currency
-    group_index: 4
+    group_id: 4
     tag_index: 18
     description: ''
     parameters: []
   - name: Note
-    group_index: 5
+    group_id: 5
     tag_index: 0
     description: ''
     parameters:
@@ -1118,7 +1164,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Rest
-    group_index: 5
+    group_id: 5
     tag_index: 1
     description: ''
     parameters:
@@ -1126,7 +1172,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Text
-    group_index: 5
+    group_id: 5
     tag_index: 2
     description: ''
     parameters:
@@ -1134,7 +1180,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Pitch
-    group_index: 5
+    group_id: 5
     tag_index: 3
     description: ''
     parameters:
@@ -1197,7 +1243,7 @@ tag_definitions:
       - B5
       - C6
   - name: Width
-    group_index: 6
+    group_id: 6
     tag_index: 0
     description: ''
     parameters:
@@ -1205,17 +1251,17 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Def
-    group_index: 7
+    group_id: 7
     tag_index: 0
     description: ''
     parameters: []
   - name: Indef
-    group_index: 7
+    group_id: 7
     tag_index: 1
     description: ''
     parameters: []
   - name: DefGE
-    group_index: 7
+    group_id: 7
     tag_index: 2
     description: ''
     parameters:
@@ -1223,7 +1269,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: IndefGE
-    group_index: 7
+    group_id: 7
     tag_index: 3
     description: ''
     parameters:
@@ -1231,7 +1277,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Mii
-    group_index: 8
+    group_id: 8
     tag_index: 0
     description: ''
     parameters:
@@ -1245,7 +1291,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: MyMii
-    group_index: 8
+    group_id: 8
     tag_index: 1
     description: ''
     parameters:
@@ -1256,7 +1302,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: MiiTalk
-    group_index: 8
+    group_id: 8
     tag_index: 2
     description: ''
     parameters:
@@ -1284,7 +1330,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: MiiSpeaker
-    group_index: 8
+    group_id: 8
     tag_index: 3
     description: ''
     parameters:
@@ -1295,7 +1341,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Body
-    group_index: 8
+    group_id: 8
     tag_index: 4
     description: ''
     parameters:
@@ -1312,7 +1358,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Headwear
-    group_index: 8
+    group_id: 8
     tag_index: 5
     description: ''
     parameters:
@@ -1329,7 +1375,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Room
-    group_index: 8
+    group_id: 8
     tag_index: 6
     description: ''
     parameters:
@@ -1346,7 +1392,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Food
-    group_index: 8
+    group_id: 8
     tag_index: 7
     description: ''
     parameters:
@@ -1363,7 +1409,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Tool
-    group_index: 8
+    group_id: 8
     tag_index: 8
     description: ''
     parameters:
@@ -1380,7 +1426,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Treasure
-    group_index: 8
+    group_id: 8
     tag_index: 9
     description: ''
     parameters:
@@ -1397,7 +1443,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Equip
-    group_index: 8
+    group_id: 8
     tag_index: 10
     description: ''
     parameters:
@@ -1414,7 +1460,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: SpecialProduct
-    group_index: 8
+    group_id: 8
     tag_index: 11
     description: ''
     parameters:
@@ -1431,7 +1477,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Item
-    group_index: 8
+    group_id: 8
     tag_index: 12
     description: ''
     parameters:
@@ -1448,7 +1494,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Body
-    group_index: 9
+    group_id: 9
     tag_index: 0
     description: ''
     parameters:
@@ -1468,7 +1514,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Headwear
-    group_index: 9
+    group_id: 9
     tag_index: 1
     description: ''
     parameters:
@@ -1488,7 +1534,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Room
-    group_index: 9
+    group_id: 9
     tag_index: 2
     description: ''
     parameters:
@@ -1508,7 +1554,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Food
-    group_index: 9
+    group_id: 9
     tag_index: 3
     description: ''
     parameters:
@@ -1528,7 +1574,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Tool
-    group_index: 9
+    group_id: 9
     tag_index: 4
     description: ''
     parameters:
@@ -1548,7 +1594,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Treasure
-    group_index: 9
+    group_id: 9
     tag_index: 5
     description: ''
     parameters:
@@ -1568,7 +1614,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Equip
-    group_index: 9
+    group_id: 9
     tag_index: 6
     description: ''
     parameters:
@@ -1588,7 +1634,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: SpecialProduct
-    group_index: 9
+    group_id: 9
     tag_index: 7
     description: ''
     parameters:
@@ -1608,7 +1654,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Item
-    group_index: 9
+    group_id: 9
     tag_index: 8
     description: ''
     parameters:
@@ -1628,7 +1674,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Number
-    group_index: 9
+    group_id: 9
     tag_index: 9
     description: ''
     parameters:
@@ -1642,7 +1688,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Hour
-    group_index: 9
+    group_id: 9
     tag_index: 10
     description: ''
     parameters:
@@ -1656,7 +1702,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Body
-    group_index: 10
+    group_id: 10
     tag_index: 0
     description: ''
     parameters:
@@ -1688,7 +1734,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Headwear
-    group_index: 10
+    group_id: 10
     tag_index: 1
     description: ''
     parameters:
@@ -1720,7 +1766,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Room
-    group_index: 10
+    group_id: 10
     tag_index: 2
     description: ''
     parameters:
@@ -1752,7 +1798,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Food
-    group_index: 10
+    group_id: 10
     tag_index: 3
     description: ''
     parameters:
@@ -1784,7 +1830,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Tool
-    group_index: 10
+    group_id: 10
     tag_index: 4
     description: ''
     parameters:
@@ -1816,7 +1862,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Treasure
-    group_index: 10
+    group_id: 10
     tag_index: 5
     description: ''
     parameters:
@@ -1848,7 +1894,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Equip
-    group_index: 10
+    group_id: 10
     tag_index: 6
     description: ''
     parameters:
@@ -1880,7 +1926,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: SpecialProduct
-    group_index: 10
+    group_id: 10
     tag_index: 7
     description: ''
     parameters:
@@ -1912,7 +1958,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Item
-    group_index: 10
+    group_id: 10
     tag_index: 8
     description: ''
     parameters:
@@ -1944,17 +1990,17 @@ tag_definitions:
       description: ''
       datatype: string
   - name: InitialCap
-    group_index: 11
+    group_id: 11
     tag_index: 0
     description: ''
     parameters: []
   - name: InitialCapSP
-    group_index: 11
+    group_id: 11
     tag_index: 1
     description: ''
     parameters: []
   - name: Elision
-    group_index: 11
+    group_id: 11
     tag_index: 2
     description: ''
     parameters:
@@ -1965,7 +2011,7 @@ tag_definitions:
       description: ''
       datatype: string
   - name: Particle
-    group_index: 11
+    group_id: 11
     tag_index: 3
     description: ''
     parameters:
@@ -1982,7 +2028,7 @@ tag_definitions:
       - ya
       - san
   - name: Patchim
-    group_index: 11
+    group_id: 11
     tag_index: 4
     description: ''
     parameters:
@@ -1993,12 +2039,12 @@ tag_definitions:
       description: ''
       datatype: string
   - name: AndSP
-    group_index: 11
+    group_id: 11
     tag_index: 5
     description: ''
     parameters: []
   - name: CS_Rate
-    group_index: 12
+    group_id: 12
     tag_index: 0
     description: ''
     parameters:
@@ -2006,7 +2052,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: CS_Vol
-    group_index: 12
+    group_id: 12
     tag_index: 1
     description: ''
     parameters:
@@ -2014,7 +2060,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: CS_Pause
-    group_index: 12
+    group_id: 12
     tag_index: 2
     description: ''
     parameters:
@@ -2022,12 +2068,12 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: CS_Reset
-    group_index: 12
+    group_id: 12
     tag_index: 3
     description: ''
     parameters: []
   - name: Echo
-    group_index: 12
+    group_id: 12
     tag_index: 4
     description: ''
     parameters:
@@ -2038,7 +2084,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Preset
-    group_index: 12
+    group_id: 12
     tag_index: 5
     description: ''
     parameters:
@@ -2052,7 +2098,7 @@ tag_definitions:
       - No_Intonation
       - Subdued_Voice
   - name: Song_Chorus
-    group_index: 12
+    group_id: 12
     tag_index: 6
     description: ''
     parameters:
@@ -2067,7 +2113,7 @@ tag_definitions:
       description: ''
       datatype: int32
   - name: CS_Toi
-    group_index: 12
+    group_id: 12
     tag_index: 7
     description: ''
     parameters:
@@ -2084,12 +2130,12 @@ tag_definitions:
       description: ''
       datatype: string
   - name: CS_Mw
-    group_index: 12
+    group_id: 12
     tag_index: 8
     description: ''
     parameters: []
   - name: CS_Tn
-    group_index: 12
+    group_id: 12
     tag_index: 9
     description: ''
     parameters:
@@ -2102,7 +2148,7 @@ tag_definitions:
       - address
       - sms
   - name: CS_Wait
-    group_index: 12
+    group_id: 12
     tag_index: 10
     description: ''
     parameters:
@@ -2110,7 +2156,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: CS_Spell
-    group_index: 12
+    group_id: 12
     tag_index: 11
     description: ''
     parameters:
@@ -2118,7 +2164,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: CS_Eos
-    group_index: 12
+    group_id: 12
     tag_index: 12
     description: ''
     parameters:
@@ -2129,7 +2175,7 @@ tag_definitions:
       - 'false'
       - 'true'
   - name: CS_ReadMode
-    group_index: 12
+    group_id: 12
     tag_index: 13
     description: ''
     parameters:
@@ -2143,7 +2189,7 @@ tag_definitions:
       - line
       - explicit
   - name: Song_WordStretch
-    group_index: 12
+    group_id: 12
     tag_index: 14
     description: ''
     parameters:
@@ -2156,7 +2202,7 @@ tag_definitions:
       - Only_Last
       - Whole_Word
   - name: LenAdjust_First
-    group_index: 12
+    group_id: 12
     tag_index: 15
     description: ''
     parameters:
@@ -2164,7 +2210,7 @@ tag_definitions:
       description: ''
       datatype: int8
   - name: LenAdjust_Second
-    group_index: 12
+    group_id: 12
     tag_index: 16
     description: ''
     parameters:
@@ -2172,7 +2218,7 @@ tag_definitions:
       description: ''
       datatype: int8
   - name: LenAdjust_SecondLast
-    group_index: 12
+    group_id: 12
     tag_index: 17
     description: ''
     parameters:
@@ -2180,7 +2226,7 @@ tag_definitions:
       description: ''
       datatype: int8
   - name: LenAdjust_Last
-    group_index: 12
+    group_id: 12
     tag_index: 18
     description: ''
     parameters:
@@ -2188,7 +2234,7 @@ tag_definitions:
       description: ''
       datatype: int8
   - name: Pitch_Smooth
-    group_index: 12
+    group_id: 12
     tag_index: 19
     description: ''
     parameters:
@@ -2196,7 +2242,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Pitch_Mod_Width
-    group_index: 12
+    group_id: 12
     tag_index: 20
     description: ''
     parameters:
@@ -2204,7 +2250,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: Pitch_Mod_Rate
-    group_index: 12
+    group_id: 12
     tag_index: 21
     description: ''
     parameters:

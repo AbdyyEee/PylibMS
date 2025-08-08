@@ -1,4 +1,4 @@
-from LMS.FileIO.Stream import FileReader
+from lms.fileio.stream import FileReader
 
 
 def read_ali2(reader: FileReader) -> list[list[str]]:

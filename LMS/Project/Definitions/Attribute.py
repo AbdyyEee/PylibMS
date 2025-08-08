@@ -1,13 +1,10 @@
-from LMS.Common.LMS_DataType import LMS_DataType
+from lms.common.lms_datatype import LMS_DataType
 
 
-class LMS_AttributeInfo:
-    def __init__(self, datatype: LMS_DataType, offset: int, list_index: int = None):
-        super().__init__()
+class LMS_AttributeDefinition:
+    def __init__(self, datatype: LMS_DataType, offset: int, list_index: int):
+        self.name: str | None = None
 
-        self.name: str = None
-
-        # Set later on from the ALI2 block
         self.list_items: list[str] = []
 
         self._datatype = datatype

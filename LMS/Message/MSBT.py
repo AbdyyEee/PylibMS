@@ -1,9 +1,10 @@
-from LMS.Common.LMS_FileInfo import LMS_FileInfo
-from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
-from LMS.Message.Definitions.LMS_MessageText import LMS_MessageText
-from LMS.Message.MSBTEntry import MSBTEntry
-from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
-from LMS.TitleConfig.Definitions.Tags import TagConfig
+from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.message.definitions.field.lms_field import (LMS_Field,
+                                                     dict_to_field_map)
+from lms.message.definitions.lms_messagetext import LMS_MessageText
+from lms.message.msbtentry import MSBTEntry
+from lms.titleconfig.definitions.attribute import AttributeConfig
+from lms.titleconfig.definitions.tags import TagConfig
 
 
 class MSBT:
@@ -25,9 +26,9 @@ class MSBT:
 
         # 101 is default for almost all games. However the value can be overriden by some games (i.e Echos of Wisdom).
         # Due to this, the slot count is set dynamically when LBL1 is read.
-        self.slot_count = None
+        self.slot_count = 101
 
-        self.attr_string_table: bytes = None
+        self.attr_string_table: list[str] | bytes | None = None
         self.encoded_attributes = True
 
         # List of section names to preserve order
@@ -39,6 +40,9 @@ class MSBT:
         # Store configs so if new labels are added LMS_MessageText objects and Attributes can be made properly
         self._attribute_config = attribute_config
         self._tag_config = tag_config
+
+    def __iter__(self):
+        return iter(self._entries)
 
     @property
     def info(self) -> LMS_FileInfo:
@@ -59,9 +63,9 @@ class MSBT:
     def add_entry(
         self,
         name: str,
-        text: str = None,
-        attribute: dict[str, int | str | float | bool | bytes] | bytes = None,
-        style_index: int = None,
+        text: str | None = None,
+        attribute: dict | bytes | None = None,
+        style_index: int | None = None,
     ) -> None:
         """Adds an entry to the MSBT instance.
 
@@ -74,12 +78,9 @@ class MSBT:
                 raise ValueError(
                     "The attribute config must have been provided when reading to add decoded attributes!"
                 )
-
-            converted_attribute = {}
-            for definition in self._attribute_config.definitions:
-                converted_attribute[definition.name] = LMS_Field(
-                    attribute[definition.name], definition
-                )
+            converted_attribute = dict_to_field_map(
+                attribute, self._attribute_config.definitions
+            )
         else:
             converted_attribute = attribute
 

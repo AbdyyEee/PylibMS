@@ -1,4 +1,4 @@
-from LMS.FileIO.Stream import FileReader, FileWriter
+from lms.fileio.stream import FileReader, FileWriter
 
 
 def read_labels(reader: FileReader) -> tuple[dict[int, str], int]:
@@ -26,7 +26,7 @@ def read_labels(reader: FileReader) -> tuple[dict[int, str], int]:
 
     # While the slot count is consistent for most files, some vary them.
     # Return the slot count to ensure that this change can be recorded.
-    return (sorted_labels, slot_count)
+    return sorted_labels, slot_count
 
 
 def write_labels(writer: FileWriter, labels: list[str], slot_count: int) -> None:

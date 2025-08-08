@@ -1,28 +1,25 @@
 import re
-from typing import overload
 
-from LMS.Message.Definitions.Field.LMS_Field import LMS_Field
-from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
-from LMS.Message.Tag.LMS_Tag import LMS_DecodedTag, LMS_EncodedTag, LMS_TagBase
-from LMS.Message.Tag.System_Definitions import get_system_tag
-from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
-                                         TAG_FORMAT)
-from LMS.TitleConfig.Config import TagConfig
+from lms.message.definitions.field.lms_field import LMS_Field
+from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
+                                     LMS_EncodedTag)
+from lms.titleconfig.config import TagConfig
 
 
 class LMS_MessageText:
-    """Class that represents a text entry."""
+    """Class that represents a message text entry."""
+
+    TAG_FORMAT = re.compile(r"(\[[^\]]+\])")
 
     def __init__(
-        self, message: str | list[str | LMS_TagBase], config: TagConfig | None = None
+        self, message: str | list[str | LMS_ControlTag], config: TagConfig | None = None
     ):
-        # Inject a reference to the tag definitions to allow for decoding of names and parameter types
-        self._config = config
-
         if isinstance(message, str):
             self._set_parts(message)
         else:
             self._parts = message
+
+        self._config = config
 
     def __iter__(self):
         return iter(self._parts)
@@ -30,53 +27,48 @@ class LMS_MessageText:
     @property
     def text(self) -> str:
         """The raw text of the message."""
-        return "".join(
-            part.to_text() if isinstance(part, LMS_TagBase) else part
-            for part in self._parts
-        )
+        text_list = []
+        for part in self._parts:
+            text_list.append(
+                part.to_text()
+                if isinstance(part, (LMS_EncodedTag, LMS_DecodedTag))
+                else part
+            )
+        return "".join(text_list)
 
     @text.setter
-    def text(self, string: str) -> str:
+    def text(self, string: str):
         self._set_parts(string)
 
     @property
-    def tags(self) -> list[LMS_EncodedTag | LMS_DecodedTag]:
+    def tags(self) -> list[LMS_ControlTag]:
         """The list of control tags in the message."""
-        return [part for part in self._parts if isinstance(part, LMS_TagBase)]
+        return [
+            part
+            for part in self._parts
+            if isinstance(part, (LMS_EncodedTag, LMS_DecodedTag))
+        ]
 
-    @overload
-    def append_encoded_tag(
-        self, group: int, tag: int, *parameters: tuple[str] 
-    ) -> None: ...
-
-    @overload
-    def append_encoded_tag(
-        self, group: str, tag: str, *parameters: tuple[str]
-    ) -> None: ...
-
-    def append_encoded_tag(
-        self, group: int | str, tag: int | str, *parameters: tuple[str]
-    ):
+    def append_encoded_tag(self, group_id: int, tag_index: int, *parameters: str):
         """Appends an encoded tag to the current message.
 
         :param group: the group name or index.
         :param tag: the group tag or index:
         :param parameters: a list of hex strings.
 
+        ## Usage
+        ```
         message.append_encoded_tag(1, 2, "01", "00", "00", "CD")
+        ```
         """
-        if isinstance(group, int) and isinstance(tag, int):
-            self._parts.append(LMS_EncodedTag(group, tag, parameters))
-            return
-        
-        definition = self._config.get_definition_by_names(group, tag)
-        self._parts.append(
-            LMS_EncodedTag(
-                definition.group_index, definition.tag_index, parameters, group, tag
-            )
-        )
+        self._parts.append(LMS_EncodedTag(group_id, tag_index, list(parameters)))
 
-    def append_decoded_tag(self, group_name: str, tag_name: str, **parameters: LMS_FieldMap) -> None:
+    def append_decoded_tag(
+        self,
+        group_name: str,
+        tag_name: str,
+        **parameters: int | str | float | bool | bytes,
+    ) -> None:
         """Appends an decoded tag to the current message.
 
         :param group_name: the group name.
@@ -88,44 +80,36 @@ class LMS_MessageText:
         message.append_decoded_tag("Mii", "Nickname", buffer=1, type="Voice", conversion="None")
         ```
         """
+        if self._config is None:
+            raise ValueError("A TitleConfig is required to append decoded tags.")
 
-        if group_name == "System":
-            definition = get_system_tag(tag_name)
-        else:
-            definition = self._config.get_definition_by_names(group_name, tag_name)
+        definition = self._config.get_definition_by_names(group_name, tag_name)
 
-        # The provided kwargs must match the structure defined in the config in order for value conversion to work
-        converted_params = {
-            param_def.name: LMS_Field(parameters[param_def.name], param_def)
-            for param_def in definition.parameters
-        }
+        converted_params = {}
+        for param_def in definition.parameters:
+            converted_params[param_def.name] = LMS_Field(
+                parameters[param_def.name], param_def
+            )
 
-        tag = LMS_DecodedTag(
-            definition.group_index,
-            definition.tag_index,
-            group_name,
-            tag_name,
-            converted_params,
-        )
-        self._parts.append(tag)
+        self._parts.append(LMS_DecodedTag(definition, converted_params))
 
-    def append_tag_string(self, string: str) -> None:
+    def append_tag_string(self, tag: str) -> None:
         """Appends a tag to the current message given a string.
 
-        :param string: the tag string."""
-        if re.match(DECODED_FORMAT, string):
-            tag = LMS_DecodedTag
-        elif re.match(ENCODED_FORMAT, string):
-            tag = LMS_EncodedTag
+        :param tag: the tag string."""
+        if re.match(LMS_DecodedTag.TAG_FORMAT, tag):
+            if self._config is None:
+                raise ValueError("TagConfig is required to append decoded tags.")
+            self._parts.append(LMS_DecodedTag.from_string(tag, self._config))
+        elif re.match(LMS_EncodedTag.TAG_FORMAT, tag):
+            self._parts.append(LMS_EncodedTag.from_string(tag))
         else:
-            raise ValueError(f"Invalid format for tag '{string}'.")
-
-        self._parts.append(tag.from_string(string, self._config))
+            raise ValueError(f"Invalid format for tag '{tag}'.")
 
     def _set_parts(self, text: str) -> None:
         self._parts = []
-        for part in re.split(TAG_FORMAT, text):
-            if bool(re.match(TAG_FORMAT, part)):
+        for part in self.TAG_FORMAT.split(text):
+            if bool(re.match(self.TAG_FORMAT, part)):
                 self.append_tag_string(part)
             else:
                 self._parts.append(part)

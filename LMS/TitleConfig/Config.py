@@ -3,51 +3,62 @@ from typing import Self
 
 import yaml
 
-from LMS.Common.LMS_DataType import LMS_DataType
-from LMS.Project.MSBP import MSBP
-from LMS.TitleConfig.Definitions.Attributes import AttributeConfig
-from LMS.TitleConfig.Definitions.Tags import TagConfig, TagDefinition
-from LMS.TitleConfig.Definitions.Value import ValueDefinition
-
-TAG_KEY = "tag_definitions"
-ATTR_KEY = "attribute_definitions"
+from lms.common.lms_datatype import LMS_DataType
+from lms.project.msbp import MSBP
+from lms.titleconfig.definitions.attribute import AttributeConfig
+from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
+from lms.titleconfig.definitions.value import ValueDefinition
 
 
 class TitleConfig:
     """Represents a configuration for a specific game/title."""
 
-    # Populate the preset list from the directory
+    TAG_KEY = "tag_definitions"
+    ATTR_KEY = "attribute_definitions"
+
     PRESET_LIST = [
         file.name.removesuffix(".yaml")
-        for file in resources.files("LMS.TitleConfig.Presets").iterdir()
-        if file.name.endswith(".yaml")
+        for file in resources.files("lms.titleconfig.presets").iterdir()
     ]
 
-    def __init__(self, attribute_configs: dict[str, AttributeConfig], tag_config: TagConfig):
+    def __init__(
+        self, attribute_configs: dict[str, AttributeConfig] | None = None, tag_config: TagConfig | None = None
+    ):
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
 
+        self.silence_reading_exceptions = False
+
     @property
-    def attribute_configs(self) -> dict[str, AttributeConfig]:
+    def attribute_configs(self) -> dict[str, AttributeConfig] | None:
         """The map of attribute config instances."""
         return self._attribute_configs
 
     @property
-    def tag_config(self) -> TagConfig:
+    def tag_config(self) -> TagConfig | None:
         """The loaded tag config instance."""
         return self._tag_config
 
     @classmethod
-    def load_preset(cls, game: str) -> Self:
-        """Loads an existing preset from a game."""
+    def load_preset(cls, game: str):
+        """Loads an existing preset from a game.
+
+        :param game: the game preset.
+
+        The list of presets are found with `TitleConfig.preset_list`.
+        """
+        preset_map = {preset.lower(): preset for preset in cls.PRESET_LIST}
+
         if game.lower() not in [preset.lower() for preset in cls.PRESET_LIST]:
             raise FileNotFoundError(f"Preset '{game}' not found.")
 
-        with resources.open_text("LMS.TitleConfig.Presets", f"{game}.yaml") as f:
+        actual_name = preset_map[game.lower()]
+
+        with resources.open_text("lms.titleconfig.presets", f"{actual_name}.yaml") as f:
             return cls.load_config(f.read())
 
     @classmethod
-    def load_file(self, file_path: str) -> Self:
+    def load_file(cls, file_path: str):
         """Loads a config from a file.
 
         :param file_path: the path to the config."""
@@ -55,25 +66,29 @@ class TitleConfig:
             return TitleConfig.load_config(f.read())
 
     @classmethod
-    def load_config(cls, content: str | dict) -> Self:
+    def load_config(cls, content: str | dict):
         """Loads the config of a specified game.
 
         :param content: the config content, as a string or loaded as a dictionary."""
-        parsed_content = content
 
         if isinstance(content, str):
             parsed_content = yaml.safe_load(content)
+        else:
+            parsed_content = content
 
-        # Load the attribute definitions
         attribute_configs = {}
-        for config in parsed_content[ATTR_KEY]:
-            definitions = [ValueDefinition.from_dict(value_def) for value_def in config["definitions"]]
-            attribute_configs[config["name"]] = AttributeConfig(config["name"], config["description"], definitions)
+        for config in parsed_content[cls.ATTR_KEY]:
+            definitions = [
+                ValueDefinition.from_dict(value_def)
+                for value_def in config["definitions"]
+            ]
+            attribute_configs[config["name"]] = AttributeConfig(
+                config["name"], config["description"], definitions
+            )
 
-        # Load the tag definitions
         tag_definitions = []
-        group_map = parsed_content[TAG_KEY]["groups"]
-        for tag_def in parsed_content[TAG_KEY]["tags"]:
+        group_map = parsed_content[cls.TAG_KEY]["groups"]
+        for tag_def in parsed_content[cls.TAG_KEY]["tags"]:
             tag_definitions.append(TagDefinition.from_dict(tag_def, group_map))
 
         tag_config = TagConfig(group_map, tag_definitions)
@@ -95,22 +110,20 @@ class TitleConfig:
         """Creates a message config file for the game.
 
         :param project: a MSBP object."""
-        # TODO: Add custom node definitions
-
         config = {}
 
-        config[TAG_KEY] = {
-            "groups": {i: group.name for i, group in enumerate(project.tag_groups, start=1)},
+        config[TitleConfig.TAG_KEY] = {
+            "groups": {group.id: group.name for group in project.tag_groups},
             "tags": [],
         }
 
         if project.tag_groups is not None:
-            for group_i, group in enumerate(project.tag_groups, start=1):
+            for group in project.tag_groups:
                 for tag_i, info in enumerate(group.tag_definitions):
 
                     definition = {
                         "name": info.name,
-                        "group_index": group_i,
+                        "group_id": group.id,
                         "tag_index": tag_i,
                         "description": "",
                         "parameters": [],
@@ -128,9 +141,9 @@ class TitleConfig:
 
                         definition["parameters"].append(param_definition)
 
-                    config[TAG_KEY]["tags"].append(definition)
+                    config[TitleConfig.TAG_KEY]["tags"].append(definition)
 
-        config[ATTR_KEY] = []
+        config[TitleConfig.ATTR_KEY] = []
         if project.attribute_info is not None:
 
             attr_definitions = []
@@ -146,7 +159,7 @@ class TitleConfig:
                 attr_definitions.append(definition)
 
             # Main attribute entries
-            config[ATTR_KEY].append(
+            config[TitleConfig.ATTR_KEY].append(
                 {
                     "name": project.name,
                     "description": "",

@@ -1,4 +1,4 @@
-from LMS.FileIO.Stream import FileReader, FileWriter
+from lms.fileio.stream import FileReader, FileWriter
 
 
 def read_tsy1(reader: FileReader, message_count: int) -> list[int]:

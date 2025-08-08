@@ -1,35 +1,80 @@
 tag_definitions:
   groups:
+    0: System
     1: InsertMessage
     2: InsertName
   tags:
+  - name: Ruby
+    group_id: 0
+    tag_index: 0
+    description: ''
+    parameters:
+    - name: rt
+      description: ''
+      datatype: string
+  - name: Font
+    group_id: 0
+    tag_index: 1
+    description: ''
+    parameters:
+    - name: face
+      description: ''
+      datatype: string
+  - name: Size
+    group_id: 0
+    tag_index: 2
+    description: ''
+    parameters:
+    - name: percent
+      description: ''
+      datatype: uint16
+  - name: Color
+    group_id: 0
+    tag_index: 3
+    description: ''
+    parameters:
+    - name: r
+      description: ''
+      datatype: uint8
+    - name: g
+      description: ''
+      datatype: uint8
+    - name: b
+      description: ''
+      datatype: uint8
+    - name: a
+      description: ''
+      datatype: uint8
+  - name: PageBreak
+    group_id: 0
+    tag_index: 4
   - name: PlayerName
-    group_index: 1
+    group_id: 1
     tag_index: 0
     description: ''
     parameters: []
   - name: UserName
-    group_index: 1
+    group_id: 1
     tag_index: 1
     description: ''
     parameters: []
   - name: ShadowLinkPlayerName
-    group_index: 1
+    group_id: 1
     tag_index: 2
     description: ''
     parameters: []
   - name: ShadowLinkUserName
-    group_index: 1
+    group_id: 1
     tag_index: 3
     description: ''
     parameters: []
   - name: InsertMark
-    group_index: 1
+    group_id: 1
     tag_index: 4
     description: ''
     parameters: []
   - name: IntNumberN
-    group_index: 1
+    group_id: 1
     tag_index: 5
     description: ''
     parameters:
@@ -51,7 +96,7 @@ tag_definitions:
       - Second
       - Minute
   - name: ChoiceN
-    group_index: 1
+    group_id: 1
     tag_index: 6
     description: ''
     parameters:
@@ -59,7 +104,7 @@ tag_definitions:
       description: ''
       datatype: uint8
   - name: AutoForward
-    group_index: 1
+    group_id: 1
     tag_index: 7
     description: ''
     parameters:
@@ -67,7 +112,7 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: Wait
-    group_index: 1
+    group_id: 1
     tag_index: 8
     description: ''
     parameters:
@@ -75,47 +120,47 @@ tag_definitions:
       description: ''
       datatype: uint16
   - name: MyRecordNum
-    group_index: 1
+    group_id: 1
     tag_index: 9
     description: ''
     parameters: []
   - name: ShadowLinkRecordNum
-    group_index: 1
+    group_id: 1
     tag_index: 10
     description: ''
     parameters: []
   - name: ShadowLinkPrizeMoney
-    group_index: 1
+    group_id: 1
     tag_index: 11
     description: ''
     parameters: []
   - name: ColoringStart
-    group_index: 1
+    group_id: 1
     tag_index: 12
     description: ''
     parameters: []
   - name: ColoringEnd
-    group_index: 1
+    group_id: 1
     tag_index: 13
     description: ''
     parameters: []
   - name: Flush
-    group_index: 1
+    group_id: 1
     tag_index: 14
     description: ''
     parameters: []
   - name: Vibrate
-    group_index: 1
+    group_id: 1
     tag_index: 15
     description: ''
     parameters: []
   - name: ChoicePositive
-    group_index: 1
+    group_id: 1
     tag_index: 16
     description: ''
     parameters: []
   - name: Cursor
-    group_index: 1
+    group_id: 1
     tag_index: 17
     description: ''
     parameters:
@@ -126,7 +171,7 @@ tag_definitions:
       description: ''
       datatype: int16
   - name: NpcName
-    group_index: 2
+    group_id: 2
     tag_index: 0
     description: ''
     parameters:
@@ -161,7 +206,7 @@ tag_definitions:
       - 'No'
       - 'Yes'
   - name: LocationName
-    group_index: 2
+    group_id: 2
     tag_index: 1
     description: ''
     parameters:
@@ -219,7 +264,7 @@ tag_definitions:
       - 'No'
       - 'Yes'
   - name: ItemName
-    group_index: 2
+    group_id: 2
     tag_index: 2
     description: ''
     parameters:

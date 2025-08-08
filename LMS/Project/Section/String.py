@@ -1,15 +1,14 @@
-from LMS.FileIO.Stream import FileReader
+from lms.fileio.stream import FileReader
 
 
-def read_strings(reader: FileReader, count_bits: int) -> list[str]:
+def read_strings(reader: FileReader, four_byte_count: bool) -> list[str]:
     string_list = []
 
-    match count_bits:
-        case 16:
-            count = reader.read_uint16()
-            reader.skip(2)
-        case 32:
-            count = reader.read_uint32()
+    if four_byte_count:
+        count = reader.read_uint32()
+    else:
+        count = reader.read_uint16()
+        reader.skip(2)
 
     for offset in reader.read_offset_array(count):
         reader.seek(offset)

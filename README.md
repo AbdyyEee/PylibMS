@@ -18,14 +18,14 @@ Simple preview of the library is below. See [the wiki](https://github.com/AbdyyE
 ## Reading 
 MSBT
 ```py
-from LMS.Message.MSBTStream import read_msbt
+from lms.message.msbtstream import read_msbt
 
 with open("Game.msbt", "rb+") as f:
     msbt = read_msbt(f)
 ```
 ## Writing 
 ```py
-from LMS.Message.MSBTStream import write_msbt
+from lms.message.msbtstream import write_msbt
 
 with open("Out.msbt", "wb") as f:
     write_msbt(f, msbt)

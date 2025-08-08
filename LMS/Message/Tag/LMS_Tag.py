@@ -1,66 +1,19 @@
 import re
-from abc import ABC, abstractmethod
 
-from LMS.Message.Definitions.Field.LMS_Field import LMS_Field, cast_value
-from LMS.Message.Definitions.Field.LMS_FieldMap import LMS_FieldMap
-from LMS.Message.Tag.LMS_TagExceptions import LMS_InvalidTagFormatError
-from LMS.Message.Tag.Tag_Formats import (DECODED_FORMAT, ENCODED_FORMAT,
-                                         PARAMETER_FORMAT)
-from LMS.TitleConfig.Definitions.Tags import TagConfig
+from lms.message.definitions.field.lms_field import (
+    LMS_Field,
+    LMS_FieldMap,
+    convert_string_to_type,
+)
+from lms.message.tag.lms_tagexceptions import LMS_InvalidTagFormatError
+from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
+TAG_PADDING_CHAR = "CD"
 
-class LMS_TagBase(ABC):
-    """Base class for encoded and decoded tags."""
-    def __init__(
-        self,
-        group_index: int,
-        tag_index: int,
-        parameters: LMS_FieldMap | list[str] | None = None,
-        group_name: str = None,
-        tag_name: str = None,
-    ):
-        self._group_index = group_index
-        self._tag_index = tag_index
-        self._parameters = parameters or {}
-        self._group_name, self._tag_name = group_name, tag_name
-
-    @property
-    def group_index(self) -> int:
-        """The index of the group."""
-        return self._group_index
-
-    @property
-    def tag_index(self) -> int:
-        """The index of the tag in it's group."""
-        return self._tag_index
-
-    @property
-    def group_name(self) -> str:
-        """The name of the tag group."""
-        return self._group_name
-
-    @property
-    def tag_name(self) -> str:
-        """The name of the tag in the tag group."""
-        return self._tag_name
-
-    @property
-    def parameters(self) -> list[str] | LMS_FieldMap:
-        """The parameters of the tag."""
-        return self._parameters
-
-    @abstractmethod
-    def to_text(self) -> str:
-        """Converts the tag to its string representation."""
-        pass
-
-    @classmethod
-    @abstractmethod
-    def from_string(self, string: str, config: TagConfig | None = None) -> str:
-        pass
+type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
 
 
-class LMS_EncodedTag(LMS_TagBase):
+class LMS_EncodedTag:
     """A class that represents an encoded tag.
 
     Example encoded tags:
@@ -68,56 +21,97 @@ class LMS_EncodedTag(LMS_TagBase):
         - `[0:4]`
         - `[1:0 01-00-00-CD]`"""
 
+    TAG_FORMAT = re.compile(r"\[\s*(\/)?\s*(\d+)\s*:\s*(\d+)(?:[^\]]*)\]")
+    PARAMETER_FORMAT = re.compile(r"^\s*([0-9A-Fa-f]{2})(\s*-\s*[0-9A-Fa-f]{2})*\s*$")
+
     def __init__(
         self,
-        group_index: int,
+        group_id: int,
         tag_index: int,
-        parameters: list[str] | tuple[str] = None,
-        group_name: str = None,
-        tag_name: str = None,
+        parameters: list[str] | None = None,
+        is_fallback: bool = False,
+        is_closing: bool = False,
     ):
-        super().__init__(group_index, tag_index, parameters)
-        self._group_name = group_name
-        self._tag_name = tag_name
+        self._group_id = group_id
+        self._tag_index = tag_index
+        self._parameters = parameters
+
+        self._is_fallback = is_fallback
+        self._is_closing = is_closing
+
+    @property
+    def group_id(self) -> int:
+        return self._group_id
+
+    @property
+    def tag_index(self) -> int:
+        return self._tag_index
+
+    @property
+    def parameters(self) -> list[str] | None:
+        return self._parameters
+
+    @property
+    def is_fallback(self) -> bool:
+        """Determines if the tag is a fallback tag."""
+        return self._is_fallback
+
+    @property
+    def is_closing(self) -> bool:
+        return self._is_closing
 
     def to_text(self) -> str:
-        if self._group_name is not None and self._tag_name is not None:
-            # Determine what to display based on if the names are provided
-            group = self._group_name or self._group_index
-            tag = self._tag_name or self._tag_index
-        else:
-            group, tag = self._group_index, self._tag_index
+        if self._is_closing:
+            return f"[/{self._group_id}:{self._tag_index}]"
 
-        if not self._parameters:
-            return f"[{group}:{tag}]"
+        fallback_prefix = "!" if self._is_fallback else ""
 
-        parameters = "-".join(self.parameters)
-        return f"[{group}:{tag} {parameters}]"
+        if self._parameters is None:
+            return f"[{self.group_id}:{self.tag_index}]"
+
+        parameters = "-".join(self._parameters)
+        return f"[{fallback_prefix}{self.group_id}:{self.tag_index} {parameters}]"
 
     @classmethod
-    def from_string(cls, string: str, config: TagConfig | None = None):
-        if match := re.match(ENCODED_FORMAT, string):
-            group, tag = match.group(1), match.group(2)
-            parameters = match.group(3).split("-")
-
-            if group.isdigit() and tag.isdigit():
-                return cls(int(group), int(tag), parameters)
-
-            tag_definition = config.get_definition_by_names(group, tag)
-            return cls(
-                group,
-                tag,
-                parameters,
-                tag_definition.group_name,
-                tag_definition.tag_name,
-            )
-        else:
+    def from_string(cls, tag: str):
+        if not (match := cls.TAG_FORMAT.match(tag)):
             raise LMS_InvalidTagFormatError(
-                f"Invalid encoded tag format detected for tag'{string}'"
+                f"Invalid encoded tag format detected for tag: '{tag}'"
             )
 
+        is_closing = match.group(1) is not None
+        group_id, tag_index = match.group(2), match.group(3)
 
-class LMS_DecodedTag(LMS_TagBase):
+        if not group_id.isdigit() or not tag_index.isdigit():
+            raise LMS_InvalidTagFormatError(
+                f"The group id and or tag index must be digits in tag: '{tag}'"
+            )
+
+        group_id, tag_index = int(group_id), int(tag_index)
+
+        if is_closing:
+            return cls(group_id, tag_index, is_closing=True)
+
+        param_str = tag[match.end(3) :].strip().removesuffix("]").strip()
+
+        if not param_str:
+            return cls(group_id, tag_index)
+
+        if not cls.PARAMETER_FORMAT.match(param_str):
+            raise LMS_InvalidTagFormatError(
+                f"Malformed parameters located in tag: '{tag}'"
+            )
+
+        parameters = [param.strip().upper() for param in param_str.split("-")]
+
+        # Ensure 0xCD padding is added
+        if len(parameters) % 2 == 1:
+            parameters.append(TAG_PADDING_CHAR)
+
+        return cls(group_id, tag_index, parameters)
+
+
+class LMS_DecodedTag:
     """A class that represents a decoded tag.
 
     Example encoded tags:
@@ -125,46 +119,86 @@ class LMS_DecodedTag(LMS_TagBase):
         - `[System:Pagebreak]`
         - `[Mii:Nickname buffer="1" type="Text" conversion="None"]`"""
 
+    TAG_FORMAT = re.compile(r"\[\s*(/)?\s*(\w+)\s*:\s*(\w+)(?:\s+[^\]]*)?\s*\]")
+    PARAMETER_FORMAT = re.compile(r'(\w+)="([^"]*)"')
+
     def __init__(
         self,
-        group_index: int,
-        tag_index: int,
-        group_name: str,
-        tag_name: str,
-        parameters: LMS_FieldMap = None,
+        definition: TagDefinition,
+        parameters: LMS_FieldMap | None = None,
+        is_closing: bool = False,
     ):
-        super().__init__(group_index, tag_index, parameters, group_name, tag_name)
+        self._definition = definition
+        self._parameters = parameters
+
+        self._is_closing = is_closing
+
+    @property
+    def group_id(self) -> int:
+        return self._definition.group_id
+
+    @property
+    def tag_index(self) -> int:
+        return self._definition.tag_index
+
+    @property
+    def group_name(self) -> str:
+        """The name of the tag group."""
+        return self._definition.group_name
+
+    @property
+    def tag_name(self) -> str:
+        """The name of the tag in the tag group."""
+        return self._definition.tag_name
+
+    @property
+    def is_closing(self) -> bool:
+        return self._is_closing
+
+    @property
+    def parameters(self) -> LMS_FieldMap | None:
+        return self._parameters
 
     def to_text(self) -> str:
-        if not self._parameters:
-            return f"[{self.group_name}:{self.tag_name}]"
+        if self._is_closing:
+            return f"[/{self._definition.group_name}:{self._definition.tag_name}]"
 
-        parameters = " ".join(
-            f'{key}="{param._value}"' for key, param in self._parameters.items()
+        if not self._parameters:
+            return f"[{self._definition.group_name}:{self._definition.tag_name}]"
+
+        parameters = []
+        for key, param in self._parameters.items():
+            if isinstance(param.value, bytes):
+                parameters.append(f'{key}="{param.value.hex()}"')
+            else:
+                parameters.append(f'{key}="{param.value}"')
+
+        parameters = " ".join(parameters)
+        return (
+            f"[{self._definition.group_name}:{self._definition.tag_name} {parameters}]"
         )
-        return f"[{self.group_name}:{self.tag_name} {parameters}]"
 
     @classmethod
     def from_string(cls, tag: str, config: TagConfig):
-        if match := re.match(DECODED_FORMAT, tag):
-            group_name, tag_name = match.group(1), match.group(2)
-            parameters = dict(re.findall(PARAMETER_FORMAT, tag))
-
-            tag_definition = config.get_definition_by_names(group_name, tag_name)
-            for definition in tag_definition.parameters:
-                casted_value = cast_value(
-                    parameters[definition.name], definition.datatype
-                )
-                parameters[definition.name] = LMS_Field(casted_value, definition)
-
-            return cls(
-                tag_definition.group_index,
-                tag_definition.tag_index,
-                group_name,
-                tag_name,
-                parameters,
-            )
-        else:
+        if not (match := cls.TAG_FORMAT.match(tag)):
             raise LMS_InvalidTagFormatError(
                 f"Invalid decoded tag format detected for tag '{tag}'"
             )
+
+        is_closing = match.group(1) is not None
+        group_name, tag_name = match.group(2), match.group(3)
+        tag_definition = config.get_definition_by_names(group_name, tag_name)
+
+        if is_closing:
+            return cls(tag_definition, is_closing=True)
+
+        parameters = dict(cls.PARAMETER_FORMAT.findall(tag))
+
+        parameter_map = {}
+        for definition in tag_definition.parameters:
+            casted_value = convert_string_to_type(
+                parameters[definition.name], definition.datatype
+            )
+            parameter_map[definition.name] = LMS_Field(casted_value, definition)
+
+        return cls(tag_definition, parameter_map)

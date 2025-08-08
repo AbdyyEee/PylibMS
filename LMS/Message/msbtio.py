@@ -1,35 +1,78 @@
 from typing import BinaryIO
 
-from LMS.Common import LMS_Exceptions
-from LMS.Common.Stream.FileInfo import read_file_info, write_file_info
-from LMS.Common.Stream.Hashtable import read_labels, write_labels
-from LMS.Common.Stream.Section import (read_section_data, write_section,
+from lms.common import lms_exceptions
+from lms.common.stream.FileInfo import read_file_info, write_file_info
+from lms.common.stream.Hashtable import read_labels, write_labels
+from lms.common.stream.Section import (read_section_data, write_section,
                                        write_unsupported_section)
-from LMS.FileIO.Stream import FileReader, FileWriter
-from LMS.Message.MSBT import MSBT
-from LMS.Message.MSBTEntry import MSBTEntry
-from LMS.Message.Section.ATR1 import (read_decoded_atr1, read_encoded_atr1,
+from lms.fileio.stream import FileReader, FileWriter
+from lms.message.msbt import MSBT
+from lms.message.msbtentry import MSBTEntry
+from lms.message.section.atr1 import (read_decoded_atr1, read_encoded_atr1,
                                       write_decoded_atr1, write_encoded_atr1)
-from LMS.Message.Section.TSY1 import read_tsy1, write_tsy1
-from LMS.Message.Section.TXT2 import read_txt2, write_txt2
-from LMS.TitleConfig.Config import AttributeConfig, TagConfig
+from lms.message.section.tsy1 import read_tsy1, write_tsy1
+from lms.message.section.txt2 import read_txt2, write_txt2
+from lms.titleconfig.config import AttributeConfig, TagConfig
+
+
+def read_msbt_path(
+    file_path: str,
+    attribute_config: AttributeConfig | None = None,
+    tag_config: TagConfig | None = None,
+) -> MSBT:
+    """
+    Reads a MSBT file from a given path.
+
+    :param file_path: the path to the MSBT file.
+    :param attribute_config: the attribute config to use for decoding attributes.
+    :param tag_config: the tag config to use for decoding tags.
+
+    ## Usage
+    ```
+    msbt = read_msbt_path("path/to/file.msbt")
+    ...
+    ```
+    """
+    with open(file_path, "rb") as stream:
+        return read_msbt(stream, attribute_config, tag_config)
+
+
+def write_msbt_path(file_path: str, file: MSBT) -> None:
+    """
+    Writes a MSBT file to a given path.
+
+    :param file_path: the path to the MSBT file.
+    :param file: the MSBT file object.
+
+    ## Usage
+    ```
+    write_msbt_path(file_path, msbt)
+    ...
+    ```
+    """
+    with open(file_path, "wb") as stream:
+        write_msbt(stream, file)
 
 
 def read_msbt(
     stream: BinaryIO,
-    attribute_config: AttributeConfig = None,
-    tag_config: TagConfig = None,
+    attribute_config: AttributeConfig | None = None,
+    tag_config: TagConfig | None = None,
 ) -> MSBT:
-    """Reads a MSBT file from a stream.
+    """
+    Reads a MSBT file from a stream.
 
     :param stream: a stream object.
+    :param attribute_config: the attribute config to use for decoding attributes.
+    :param tag_config: the tag config to use for decoding tags.
 
     ## Usage
     ```
     with open(file_path, "rb") as file:
         msbt = read_msbt(file)
         ...
-    ```"""
+    ```
+    """
     if stream is None:
         raise ValueError("Stream must be valid!")
 
@@ -41,14 +84,13 @@ def read_msbt(
     if attribute_config is not None:
         file.encoded_attributes = False
 
-    messages = attributes = style_indexes = None
+    attributes = style_indexes = None
     for magic, size in read_section_data(reader, file_info.section_count):
         match magic:
             case "LBL1":
                 labels, slot_count = read_labels(reader)
                 file.slot_count = slot_count
             case "ATR1":
-                # Map to shared variable to make assignment cleaner
                 if attribute_config is None:
                     data = read_encoded_atr1(reader, size)
                 else:
@@ -68,7 +110,7 @@ def read_msbt(
         file.section_list.append(magic)
 
     for i, label in labels.items():
-        text = None if messages is None else messages[i]
+        text = messages[i]
         attribute = None if attributes is None else attributes[i]
         style_index = None if style_indexes is None else style_indexes[i]
         file.entries.append(MSBTEntry(label, text, attribute, style_index))

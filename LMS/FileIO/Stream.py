@@ -4,7 +4,7 @@ import struct
 from io import BytesIO
 from typing import BinaryIO, Generator
 
-from LMS.FileIO.Encoding import FileEncoding
+from lms.fileio.encoding import FileEncoding
 
 STRUCT_TYPES = {
     "little": {
@@ -36,7 +36,7 @@ class FileReader:
             self._data = BytesIO(stream.read())
 
         self.encoding: FileEncoding = None
-        self.big_endian = big_endian
+        self.is_big_endian = big_endian
 
     def tell(self) -> int:
         return self._data.tell()
@@ -97,24 +97,26 @@ class FileReader:
             raw_char := self.read_bytes(self.encoding.width)
         ) != self.encoding.terminator:
             message += raw_char
-        return message.decode(self.encoding.to_string_format(self.big_endian))
+        return message.decode(self.encoding.to_string_format(self.is_big_endian))
 
     def read_len_string_variable_encoding(self):
-        self.align(len("\x00".encode(self.encoding.to_string_format(self.big_endian))))
+        self.align(
+            len("\x00".encode(self.encoding.to_string_format(self.is_big_endian)))
+        )
         length = self.read_uint16()
         return self.read_bytes(length).decode(
-            self.encoding.to_string_format(self.big_endian)
+            self.encoding.to_string_format(self.is_big_endian)
         )
 
     def _get_datatype(self, name: str) -> str:
-        return STRUCT_TYPES["little" if not self.big_endian else "big"][name]
+        return STRUCT_TYPES["little" if not self.is_big_endian else "big"][name]
 
 
 class FileWriter:
     def __init__(self, encoding: FileEncoding):
         self.data = BytesIO(b"")
         self.encoding = encoding
-        self.big_endian = False
+        self.is_big_endian = False
 
     def skip(self, length: int) -> None:
         self.data.seek(length, 1)
@@ -168,12 +170,12 @@ class FileWriter:
 
     def write_len_variable_encoding_string(self, string: str) -> None:
         self.write_uint16(len(string) * self.encoding.width)
-        self.write_variable_encoding_string.write_variable_encoding_string(
-            string, False
-        )
+        self.write_variable_encoding_string(string, False)
 
     def write_variable_encoding_string(self, string: str, terminate: bool = True):
-        self.write_bytes(string.encode(self.encoding.to_string_format(self.big_endian)))
+        self.write_bytes(
+            string.encode(self.encoding.to_string_format(self.is_big_endian))
+        )
         if terminate:
             self.write_bytes(b"\x00" * self.encoding.width)
 
@@ -181,7 +183,7 @@ class FileWriter:
         return (-number % alignment + alignment) % alignment
 
     def _get_datatype(self, name: str) -> str:
-        return STRUCT_TYPES["little" if not self.big_endian else "big"][name]
+        return STRUCT_TYPES["little" if not self.is_big_endian else "big"][name]
 
     def get_data(self) -> bytes:
         return self.data.getvalue()

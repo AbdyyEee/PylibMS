@@ -1,6 +1,6 @@
 from typing import Any, Callable, Generator
 
-from LMS.FileIO.Stream import FileReader, FileWriter
+from lms.fileio.stream import FileReader, FileWriter
 
 
 def read_section_data(
@@ -11,7 +11,6 @@ def read_section_data(
         magic = reader.read_string_len(4)
         size = reader.read_uint32()
 
-        # Skip to start of data
         reader.skip(8)
         end = reader.tell() + size
 
@@ -27,7 +26,7 @@ def write_section(
     magic: str,
     section_call: Callable,
     data: list[Any],
-    *write_parameters,
+    *write_arguments,
 ) -> None:
     writer.write_string(magic)
     size_offset = writer.tell()
@@ -36,7 +35,7 @@ def write_section(
     writer.write_bytes(b"\x00" * 8)
     data_start = writer.tell()
 
-    section_call(writer, data, *write_parameters)
+    section_call(writer, data, *write_arguments)
 
     _write_end_data(writer, data_start, size_offset)
 
@@ -57,4 +56,4 @@ def _write_end_data(writer: FileWriter, data_start: int, size_offset: int) -> No
     writer.seek(size_offset)
     writer.write_uint32(size)
     writer.seek(end)
-    writer.write_alignment(b"\xAB", 16)
+    writer.write_alignment(b"\xab", 16)

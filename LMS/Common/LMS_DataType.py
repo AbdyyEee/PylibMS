@@ -4,6 +4,7 @@ from typing import Literal, Type
 
 class LMS_DataType(Enum):
     """Enum that represents a datatype for a value entry in a MSBT/MSBP file."""
+
     UINT8 = 0
     UINT16 = 1
     UINT32 = 2
@@ -22,12 +23,12 @@ class LMS_DataType(Enum):
 
     STRING = 8
     LIST = 9
- 
+
     # These types are not offical, but allow for abstraction from the value of the actual type
     # As an example, BOOL can be utilized for UInt8 values that act like a bool
     # Byte types can also be used for when the type/value is unknown or if there is extra data in the tag.
     BOOL = "bool"
-    BYTE = "byte"
+    BYTES = "byte"
 
     def to_string(self) -> str:
         return self._name_.lower()
@@ -39,7 +40,7 @@ class LMS_DataType(Enum):
             LMS_DataType.STRING,
             LMS_DataType.LIST,
             LMS_DataType.BOOL,
-            LMS_DataType.BYTE,
+            LMS_DataType.BYTES,
         ]:
             return self in [LMS_DataType.INT8, LMS_DataType.INT16, LMS_DataType.INT32]
 
@@ -59,11 +60,11 @@ class LMS_DataType(Enum):
             LMS_DataType.STRING: str,
             LMS_DataType.LIST: str,
             LMS_DataType.BOOL: bool,
-            LMS_DataType.BYTE: bytes,
+            LMS_DataType.BYTES: bytes,
         }[self]
 
     @property
-    def stream_size(self) -> Literal[1, 2, 4]:
+    def stream_size(self):
         """The size the datatype takes up in a stream."""
         return {
             LMS_DataType.UINT8: 1,
@@ -75,7 +76,7 @@ class LMS_DataType(Enum):
             LMS_DataType.FLOAT32: 4,
             LMS_DataType.LIST: 1,
             LMS_DataType.BOOL: 1,
-            LMS_DataType.BYTE: 1,
+            LMS_DataType.BYTES: 1,
         }[self]
 
     @classmethod

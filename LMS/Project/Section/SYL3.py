@@ -1,5 +1,5 @@
-from LMS.FileIO.Stream import FileReader
-from LMS.Project.Definitions.Style import LMS_Style
+from lms.fileio.stream import FileReader
+from lms.project.definitions.style import LMS_Style
 
 
 def read_styles(reader: FileReader) -> list[LMS_Style]:

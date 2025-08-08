@@ -1,6 +1,18 @@
+from typing import Iterable, cast
 
-from LMS.Common.LMS_DataType import LMS_DataType
-from LMS.TitleConfig.Definitions.Value import ValueDefinition
+from lms.common.lms_datatype import LMS_DataType
+from lms.titleconfig.definitions.value import ValueDefinition
+
+# Typehint that represents a map of strings to field instances.
+# Utilized as a means of storing attributes, or parameters in decoded tags mapped to their string names.
+type LMS_FieldMap = dict[str, LMS_Field]
+
+
+def dict_to_field_map(data: dict, definitions: Iterable[ValueDefinition]):
+    return {
+        definition.name: LMS_Field(data[definition.name], definition)
+        for definition in definitions
+    }
 
 
 class LMS_Field:
@@ -57,33 +69,26 @@ class LMS_Field:
     def _verify_value(self, value: int | str | float | bytes | bool) -> None:
         datatype = self._definition.datatype
 
-        # Check if the value is not the correct instance of the datatype
-        if type(value) is not (builtin_type := datatype.builtin_type):
-            raise TypeError(
-                f"The value provided for '{self.name}' type '{type(value)}' should be '{builtin_type.__name__}'."
-            )
-
-        # These values require no extra verification
         if datatype in (LMS_DataType.BOOL, LMS_DataType.STRING):
             return
 
         match datatype:
-            case LMS_DataType.BYTE:
+            case LMS_DataType.BYTES if isinstance(value, bytes):
                 if len(value) != 1:
                     raise ValueError("Byte types only work for values of length 1!")
                 else:
                     return
-            case LMS_DataType.LIST:
+            case LMS_DataType.LIST if isinstance(value, str):
                 if value not in self._definition.list_items:
                     raise ValueError(
                         f"The value of '{value}' provided for field '{self.name}' is not in the list {self._definition.list_items}."
                     )
                 else:
                     return
-            case LMS_DataType.FLOAT32:
-                min_value, max_value = -3.4028235e38, 3.4028235e38
-            # Other number types fall here
-            case _:
+            case LMS_DataType.FLOAT32 if isinstance(value, float):
+                _verify_range(value, -3.4028235e38, 3.4028235e38, self._definition)
+                return
+            case _ if isinstance(value, int):
                 bits = datatype.stream_size * 8
                 if datatype.signed:
                     max_value = 2 ** (bits - 1)
@@ -91,19 +96,23 @@ class LMS_Field:
                 else:
                     min_value, max_value = 0, (2**bits) - 1
 
-        if not min_value <= value <= max_value:
-            raise ValueError(
-                f"The value '{value}' of type '{datatype}' provided for field '{self.name}' is out of range of ({min_value}, {max_value})"
-            )
+                _verify_range(value, min_value, max_value, self._definition)
+                return
+
+        raise TypeError(
+            f"The value provided for '{self.name}' type '{type(value)}' should be '{self._definition.datatype.to_string()}'."
+        )
 
 
-def cast_value(value: int | str | float | bytes | bool, datatype: LMS_DataType) -> str:
+def convert_string_to_type(
+    value: str, datatype: LMS_DataType
+) -> int | str | bool | float | bytes:
     if datatype in (LMS_DataType.STRING, LMS_DataType.LIST):
-        return value
+        return cast(str, value)
 
     match datatype:
-        case LMS_DataType.BYTE:
-            return hex(int(value))
+        case LMS_DataType.BYTES:
+            return bytes.fromhex(value)
         case LMS_DataType.BOOL:
             if value not in ("false", "true"):
                 raise ValueError("Value must be true or false for bool type.")
@@ -112,3 +121,12 @@ def cast_value(value: int | str | float | bytes | bool, datatype: LMS_DataType) 
             return float(value)
         case _:
             return int(value)
+
+
+def _verify_range(
+    value: int | float, min: int | float, max: int | float, definition: ValueDefinition
+):
+    if not min <= value <= max:
+        raise ValueError(
+            f"The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' is out of range of ({min}, {max})"
+        )

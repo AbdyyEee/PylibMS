@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from LMS.FileIO.Encoding import FileEncoding
+from lms.fileio.encoding import FileEncoding
 
 
 @dataclass(frozen=True)

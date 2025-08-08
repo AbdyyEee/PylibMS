@@ -1,20 +1,34 @@
 import os
 from typing import BinaryIO
 
-from LMS.Common.LMS_DataType import LMS_DataType
-from LMS.Common.Stream.FileInfo import read_file_info
-from LMS.Common.Stream.Hashtable import read_labels
-from LMS.Common.Stream.Section import read_section_data
-from LMS.FileIO.Stream import FileReader
-from LMS.Project.MSBP import MSBP
-from LMS.Project.Section.ALI2 import read_ali2
-from LMS.Project.Section.ATI2 import read_ati2
-from LMS.Project.Section.CLR1 import read_clr1
-from LMS.Project.Section.String import read_strings
-from LMS.Project.Section.SYL3 import read_styles
-from LMS.Project.Section.TAG2 import read_tag2
-from LMS.Project.Section.TGG2 import read_tgg2
-from LMS.Project.Section.TGP2 import read_tgp2
+from lms.common.lms_datatype import LMS_DataType
+from lms.common.stream.FileInfo import read_file_info
+from lms.common.stream.Hashtable import read_labels
+from lms.common.stream.Section import read_section_data
+from lms.fileio.stream import FileReader
+from lms.project.msbp import MSBP
+from lms.project.section.ali2 import read_ali2
+from lms.project.section.ati2 import read_ati2
+from lms.project.section.clr1 import read_clr1
+from lms.project.section.string import read_strings
+from lms.project.section.syl3 import read_styles
+from lms.project.section.tag2 import read_tag2
+from lms.project.section.tgg2 import read_tgg2
+from lms.project.section.tgp2 import read_tgp2
+
+
+def read_msbp_path(file_path: str) -> MSBP:
+    """Reads a MSBP file from a given path.
+
+    :param file_path: the path to the MSBP file.
+
+    ## Usage
+    ```
+    msbp = read_msbp_path("path/to/file.msbp")
+    ...
+    ```"""
+    with open(file_path, "rb") as stream:
+        return read_msbp(stream)
 
 
 def read_msbp(stream: BinaryIO | None) -> MSBP:
@@ -34,19 +48,21 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
     reader = FileReader(stream)
     file_info = read_file_info(reader, "MsgPrjBn")
 
-    exist_map = {"CLB1": False, "ALB1": False, "SLB1": False}
+    attribute_info_list = None
+    attribute_lists = None
+    tag_groups = None
+    tag_info_list = None
+    tag_param_list = None
+    styles = None
+    source_list = None
 
-    attribute_info_list = attribute_lists = tag_groups = tag_info_list = styles = (
-        source_list
-    ) = tag_param_list = None
     for magic, _ in read_section_data(reader, file_info.section_count):
         match magic:
             case "CLB1" | "ALB1" | "SLB1":
-                labels, _ = read_labels(reader)
                 # Set the name attributes of last read item
+                labels, _ = read_labels(reader)
                 for i in labels:
                     items[i].name = labels[i]
-                exist_map[magic] = True
             case "CLR1":
                 colors = read_clr1(reader)
                 items = colors
@@ -62,40 +78,23 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
             case "TGP2":
                 tag_param_list = read_tgp2(reader)
             case "TGL2":
-                list_items = read_strings(reader, 16)
+                list_items = read_strings(reader, False)
             case "SYL3":
                 styles = read_styles(reader)
                 items = styles
             case "CTI1":
-                source_list = read_strings(reader, 32)
+                source_list = read_strings(reader, True)
             case _:
-                pass
+                raise ValueError(f"Unknown section magic '{magic}' in MSBP file.")
 
-    # Set all list items for attributes
     if attribute_info_list:
         for info in attribute_info_list:
             if info.datatype is LMS_DataType.LIST:
                 info.list_items = attribute_lists[info.list_index]
 
-    # Combining tag data
     if tag_groups:
-
-        # Cut out the System group from the definitions
-        # Since these are predefined, there is no need to keep them.
-        # Easier to remove here as opposed to manually skipping over them while reading
-        # See Tag/System_Definition for the full System definition of tags.
-        tag_groups = tag_groups[1:]
-
         for group in tag_groups:
-            group.tag_definitions = [tag_info_list[i] for i in group.tag_indexes]
-
-            for tag in group.tag_definitions:
-                tag.param_info = [tag_param_list[i] for i in tag.parameter_indexes]
-
-                for parameter in tag.param_info:
-                    parameter.list_items = [
-                        list_items[i] for i in parameter.list_indexes
-                    ]
+            group.set_all_definitions(tag_info_list, tag_param_list, list_items)
 
     file = MSBP(file_info, colors, attribute_info_list, tag_groups, styles, source_list)
     file.name = os.path.basename(stream.name).removesuffix(".msbp")
