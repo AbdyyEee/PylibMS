@@ -13,13 +13,13 @@ class MSBP:
     def __init__(
         self,
         info: LMS_FileInfo,
-        colors: list[LMS_Color],
-        config: list[LMS_AttributeDefinition],
-        tag_groups: list[LMS_TagGroup],
-        styles: list[LMS_Style],
-        source_files: list[str],
+        colors: list[LMS_Color] | None,
+        config: list[LMS_AttributeDefinition] | None,
+        tag_groups: list[LMS_TagGroup] | None,
+        styles: list[LMS_Style] | None,
+        source_files: list[str] | None,
     ):
-        self.name = None
+        self.name: str = ""
 
         self._info = info
 
@@ -35,26 +35,26 @@ class MSBP:
         return self._info
 
     @property
-    def colors(self) -> list[LMS_Color]:
+    def colors(self) -> list[LMS_Color] | None:
         """The color definitions for the project."""
         return self._colors
 
     @property
-    def attribute_info(self) -> list[LMS_AttributeDefinition]:
+    def attribute_info(self) -> list[LMS_AttributeDefinition] | None:
         """The attribute definitions for the project instance."""
         return self._config
 
     @property
-    def tag_groups(self) -> list[LMS_TagGroup]:
+    def tag_groups(self) -> list[LMS_TagGroup] | None:
         """The tag group definitions for the project instance."""
         return self._tag_groups
 
     @property
-    def style_list(self) -> list[LMS_Style]:
+    def style_list(self) -> list[LMS_Style] | None:
         """The style definitions for the project instance."""
         return self._styles
 
     @property
-    def source_files(self) -> list[str]:
+    def source_files(self) -> list[str] | None:
         """The source file definitions for the project instance."""
         return self._source_files

@@ -12,7 +12,6 @@ class FileEncoding(Enum):
     def to_string_format(
         self, big_endian: bool = False
     ):
-        """Returns the encoding in the string format"""
         match self:
             case FileEncoding.UTF8:
                 return "UTF-8"
@@ -27,7 +26,6 @@ class FileEncoding(Enum):
 
     @property
     def width(self):
-        """The width of a character in a stream."""
         match self:
             case FileEncoding.UTF8:
                 return 1
@@ -38,5 +36,4 @@ class FileEncoding(Enum):
 
     @property
     def terminator(self):
-        """The terminator of the string in a stream."""
         return b"\x00" * self.width

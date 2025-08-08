@@ -1,5 +1,5 @@
 import os
-from typing import BinaryIO
+from typing import BinaryIO, cast
 
 from lms.common.lms_datatype import LMS_DataType
 from lms.common.stream.fileinfo import read_file_info
@@ -48,11 +48,11 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
     reader = FileReader(stream)
     file_info = read_file_info(reader, "MsgPrjBn")
 
-    attribute_info_list = None
+    attr_definitions = None
     attribute_lists = None
     tag_groups = None
-    tag_info_list = None
-    tag_param_list = None
+    tag_definitions = None
+    tag_param_definitions = None
     styles = None
     source_list = None
 
@@ -67,16 +67,16 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
                 colors = read_clr1(reader)
                 items = colors
             case "ATI2":
-                attribute_info_list = read_ati2(reader)
-                items = attribute_info_list
+                attr_definitions = read_ati2(reader)
+                items = attr_definitions
             case "ALI2":
                 attribute_lists = read_ali2(reader)
             case "TGG2":
                 tag_groups = read_tgg2(reader, file_info.version)
             case "TAG2":
-                tag_info_list = read_tag2(reader)
+                tag_definitions = read_tag2(reader)
             case "TGP2":
-                tag_param_list = read_tgp2(reader)
+                tag_param_definitions = read_tgp2(reader)
             case "TGL2":
                 list_items = read_strings(reader, False)
             case "SYL3":
@@ -87,15 +87,23 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
             case _:
                 raise ValueError(f"Unknown section magic '{magic}' in MSBP file.")
 
-    if attribute_info_list:
-        for info in attribute_info_list:
-            if info.datatype is LMS_DataType.LIST:
-                info.list_items = attribute_lists[info.list_index]
+    if attr_definitions is not None:
+        # There will always be attribute lists defined if there is any attribute definitions
+        attribute_lists = cast(list, attr_definitions)
 
-    if tag_groups:
+        for definition in attr_definitions:
+            if definition.datatype is LMS_DataType.LIST:
+                definition.list_items = attribute_lists[definition.list_index]
+
+    if tag_groups is not None:
+         # There will always be parameter definitions alongside list items if there is any group definitions
+        tag_definitions = cast(list, tag_definitions)
+        tag_param_definitions = cast(list, tag_param_definitions)
+        list_items = cast(list, list_items)
+
         for group in tag_groups:
-            group.set_all_definitions(tag_info_list, tag_param_list, list_items)
+            group.set_all_definitions(tag_definitions, tag_param_definitions, list_items)
 
-    file = MSBP(file_info, colors, attribute_info_list, tag_groups, styles, source_list)
+    file = MSBP(file_info, colors, attr_definitions, tag_groups, styles, source_list)
     file.name = os.path.basename(stream.name).removesuffix(".msbp")
     return file

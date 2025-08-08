@@ -12,8 +12,8 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
             f"Invalid magic!' Expected {expected_magic}', got '{magic}'."
         )
 
-    big_endian = reader.read_bytes(2) == b"\xfe\xff"
-    reader.is_big_endian = big_endian
+    is_big_endian = reader.read_bytes(2) == b"\xfe\xff"
+    reader.is_big_endian = is_big_endian
 
     reader.skip(2)
 
@@ -34,7 +34,7 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     reader.seek(0x20)
 
     return LMS_FileInfo(
-        big_endian,
+        is_big_endian,
         encoding,
         version,
         section_count,
@@ -46,11 +46,11 @@ def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> 
 
     :param writer: a Writer object.
     :param file_info: the file_info object."""
-    writer.is_big_endian = file_info.big_endian
+    writer.is_big_endian = file_info.is_big_endian
     writer.encoding = file_info.encoding
 
     writer.write_string(magic)
-    writer.write_bytes(b"\xff\xfe" if not file_info.big_endian else b"\xfe\xff")
+    writer.write_bytes(b"\xff\xfe" if not file_info.is_big_endian else b"\xfe\xff")
     writer.write_bytes(b"\x00\x00")
 
     writer.write_uint8(file_info.encoding.value)
