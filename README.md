@@ -6,13 +6,13 @@ Python library built in Python 3.10+ or the libMessageStudio (LMS) proprietary f
 * Supports encoded/decoded attributes and encoding/decoded tags.
 * Additonal tag manipulation.
 
-Games that work with the library, including but not limited to:
-* Tomodachi Life 
-* Nintendo Badge Arcade
-* The Legend of Zelda: A Link Between Worlds
-* Animal Crossing: Amiibo Festival
-* Super Mario 3D World
-* Super Mario 3D Land.
+This library is designed to support LMS revision 3.0 and above, with the associated file formats used across the following Nintendo platforms:
+* Wii (Specific titles only)
+* Nintendo 3DS
+* Wii U
+* Mobile (Specific titles only)
+* Nintendo Switch
+
 # Features and Usage
 Simple preview of the library is below. See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for more explanations and examples.
 ## Reading 
@@ -29,7 +29,7 @@ from lms.message.msbtio import write_msbt_path
 write_msbt_path("Out_Game.msbt")
 ```
 # Adding/Editing Presets
-To add or edit Preset, you may create an issue with the relevant yaml file and the game it is for.
+To add or edit Preset, you may create an issue with the relevant `yaml` file and the game it is for. 
 
 # Installation
 ```
