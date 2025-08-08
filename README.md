@@ -18,17 +18,15 @@ Simple preview of the library is below. See [the wiki](https://github.com/AbdyyE
 ## Reading 
 MSBT
 ```py
-from lms.message.msbtstream import read_msbt
+from lms.message.msbtio import read_msbt_path
 
-with open("Game.msbt", "rb+") as f:
-    msbt = read_msbt(f)
+msbt = read_msbt_path("Game.msbt")
 ```
 ## Writing 
 ```py
-from lms.message.msbtstream import write_msbt
+from lms.message.msbtio import write_msbt_path
 
-with open("Out.msbt", "wb") as f:
-    write_msbt(f, msbt)
+write_msbt_path("Out_Game.msbt")
 ```
 # Adding/Editing Presets
 To add or edit Preset, you may create an issue with the relevant yaml file and the game it is for.
