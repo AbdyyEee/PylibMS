@@ -1,10 +1,7 @@
 import re
 
-from lms.message.definitions.field.lms_field import (
-    LMS_Field,
-    LMS_FieldMap,
-    convert_string_to_type,
-)
+from lms.message.definitions.field.lms_field import (LMS_Field, LMS_FieldMap,
+                                                     convert_string_to_type)
 from lms.message.tag.lms_tagexceptions import LMS_InvalidTagFormatError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 

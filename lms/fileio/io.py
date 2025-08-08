@@ -28,13 +28,13 @@ STRUCT_TYPES = {
 }
 
 
-class FileReader: 
+class FileReader:
     def __init__(self, data: BinaryIO | bytes, big_endian: bool = False):
         if isinstance(data, bytes):
-            self._stream = BytesIO(data) 
+            self._stream = BytesIO(data)
         else:
             data = cast(BinaryIO, data)
-            self._stream = BytesIO(data.read()) 
+            self._stream = BytesIO(data.read())
 
         self.encoding = FileEncoding.UTF8
         self.is_big_endian = big_endian
@@ -152,7 +152,7 @@ class FileWriter:
         self.data.write(struct.pack(self._get_datatype("int16"), value))
 
     def write_int32(self, value: int) -> None:
-       self.data.write(struct.pack(self._get_datatype("int32"), value))
+        self.data.write(struct.pack(self._get_datatype("int32"), value))
 
     def write_uint8(self, value: int) -> None:
         self.data.write(struct.pack(self._get_datatype("uint8"), value))

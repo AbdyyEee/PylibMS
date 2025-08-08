@@ -64,7 +64,7 @@ class LMS_DataType(Enum):
         }[self]
 
     @property
-    def stream_size(self):
+    def stream_size(self) -> int:
         """The size the datatype takes up in a stream."""
         return {
             LMS_DataType.UINT8: 1,
@@ -82,8 +82,25 @@ class LMS_DataType(Enum):
     @classmethod
     def from_string(cls, string: str):
         """Creates a LMS_Datatype enum value from it's string representation"""
-        string = string.upper()
-        if string in cls.__members__:
-            return cls[string]
+        member = string.upper()
+        if member in cls.__members__:
+            return cls[member]
+
+        alias_map = {
+            "u8": "UINT8",
+            "u16": "UINT16",
+            "u32": "UINT32",
+            "i8": "INT8",
+            "i16": "INT16",
+            "i32": "INT32",
+            "f32": "FLOAT32",
+            "str": "STRING",
+            "bool": "BOOL",
+            "byte": "BYTES",
+        }
+
+        alias_member = alias_map.get(string.lower())
+        if alias_member is not None:
+            return cls[alias_member]
         else:
             raise ValueError(f"Unknown value of '{string}' was provided!")

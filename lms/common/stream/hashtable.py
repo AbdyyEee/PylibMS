@@ -47,7 +47,6 @@ def write_labels(writer: FileWriter, labels: list[str], slot_count: int) -> None
 
     hash_slots = dict(sorted(hash_slots.items(), key=lambda x: x[0]))
 
-
     for i in range(slot_count):
         if i in hash_slots:
             writer.write_uint32(len(hash_slots[i]))

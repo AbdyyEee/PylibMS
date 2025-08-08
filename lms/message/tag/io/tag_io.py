@@ -38,7 +38,7 @@ def read_tag(
 
     if is_closing:
         return _read_decoded_tag(reader, definition, is_closing=True)
-    
+
     try:
         tag = _read_decoded_tag(reader, definition)
     except LMS_TagReadingError as e:
@@ -88,9 +88,11 @@ def _read_decoded_tag(
 
 
 def write_tag(writer: FileWriter, tag: LMS_ControlTag) -> None:
-    start_indicator, close_indicator = get_tag_indicator(writer.encoding, writer.is_big_endian)
+    start_indicator, close_indicator = get_tag_indicator(
+        writer.encoding, writer.is_big_endian
+    )
     writer.write_bytes(start_indicator if not tag.is_closing else close_indicator)
-    
+
     writer.write_uint16(tag.group_id)
     writer.write_uint16(tag.tag_index)
 

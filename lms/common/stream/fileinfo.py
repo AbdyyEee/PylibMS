@@ -3,6 +3,10 @@ from lms.common.lms_fileinfo import LMS_FileInfo
 from lms.fileio.encoding import FileEncoding
 from lms.fileio.io import FileReader, FileWriter
 
+DATA_START = 0x20
+LITTLE_ENDIAN_BOM = b"\xfe\xff"
+BIG_ENDIAN_BOM = b"\xfe\xff"
+
 
 def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     magic = reader.read_string_len(8)
@@ -12,7 +16,7 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
             f"Invalid magic!' Expected {expected_magic}', got '{magic}'."
         )
 
-    is_big_endian = reader.read_bytes(2) == b"\xfe\xff"
+    is_big_endian = reader.read_bytes(2) == BIG_ENDIAN_BOM
     reader.is_big_endian = is_big_endian
 
     reader.skip(2)
@@ -30,8 +34,7 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     if file_size != reader.tell():
         raise lms_exceptions.LMS_MisalignedSizeError(f"Filesize is misaligned!")
 
-    # Seek to the start of data
-    reader.seek(0x20)
+    reader.seek(DATA_START)
 
     return LMS_FileInfo(
         is_big_endian,
@@ -42,15 +45,13 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
 
 
 def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> None:
-    """Writes the file info to a stream.
-
-    :param writer: a Writer object.
-    :param file_info: the file_info object."""
     writer.is_big_endian = file_info.is_big_endian
     writer.encoding = file_info.encoding
 
     writer.write_string(magic)
-    writer.write_bytes(b"\xff\xfe" if not file_info.is_big_endian else b"\xfe\xff")
+    writer.write_bytes(
+        LITTLE_ENDIAN_BOM if not file_info.is_big_endian else BIG_ENDIAN_BOM
+    )
     writer.write_bytes(b"\x00\x00")
 
     writer.write_uint8(file_info.encoding.value)
@@ -60,4 +61,4 @@ def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> 
     writer.write_bytes(b"\x00\x00")
     writer.write_bytes(b"\x00" * 4)
     writer.write_bytes(b"\x00" * 10)
-    writer.seek(0x20)
+    writer.seek(DATA_START)

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from lms.common.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
 
+
 class TagConfig:
     """Class that represents an tag structure definition."""
 

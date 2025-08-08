@@ -96,13 +96,15 @@ def read_msbp(stream: BinaryIO | None) -> MSBP:
                 definition.list_items = attribute_lists[definition.list_index]
 
     if tag_groups is not None:
-         # There will always be parameter definitions alongside list items if there is any group definitions
+        # There will always be parameter definitions alongside list items if there is any group definitions
         tag_definitions = cast(list, tag_definitions)
         tag_param_definitions = cast(list, tag_param_definitions)
         list_items = cast(list, list_items)
 
         for group in tag_groups:
-            group.set_all_definitions(tag_definitions, tag_param_definitions, list_items)
+            group.set_all_definitions(
+                tag_definitions, tag_param_definitions, list_items
+            )
 
     file = MSBP(file_info, colors, attr_definitions, tag_groups, styles, source_list)
     file.name = os.path.basename(stream.name).removesuffix(".msbp")

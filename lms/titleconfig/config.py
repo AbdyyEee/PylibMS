@@ -22,7 +22,9 @@ class TitleConfig:
     ]
 
     def __init__(
-        self, attribute_configs: dict[str, AttributeConfig] | None = None, tag_config: TagConfig | None = None
+        self,
+        attribute_configs: dict[str, AttributeConfig] | None = None,
+        tag_config: TagConfig | None = None,
     ):
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
@@ -112,33 +114,32 @@ class TitleConfig:
         :param project: a MSBP object."""
         config = {}
 
-
         if project.tag_groups is not None:
             config[TitleConfig.TAG_KEY] = {
                 "groups": {group.id: group.name for group in project.tag_groups},
                 "tags": [],
             }
-                    
+
             for group in project.tag_groups:
-                for tag_i, info in enumerate(group.tag_definitions):
+                for tag_i, tag_def in enumerate(group.tag_definitions):
 
                     definition = {
-                        "name": info.name,
+                        "name": tag_def.name,
                         "group_id": group.id,
                         "tag_index": tag_i,
                         "description": "",
                         "parameters": [],
                     }
 
-                    for param_info in info.param_info:
+                    for param_def in tag_def.param_info:
                         param_definition = {
-                            "name": param_info.name,
+                            "name": param_def.name,
                             "description": "",
-                            "datatype": param_info.datatype.to_string(),
+                            "datatype": param_def.datatype.to_string(),
                         }
 
-                        if param_info.datatype is LMS_DataType.LIST:
-                            param_definition["list_items"] = param_info.list_items
+                        if param_def.datatype is LMS_DataType.LIST:
+                            param_definition["list_items"] = param_def.list_items
 
                         definition["parameters"].append(param_definition)
 

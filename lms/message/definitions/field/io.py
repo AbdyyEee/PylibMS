@@ -34,7 +34,7 @@ def read_field(reader: FileReader, definition: ValueDefinition) -> LMS_Field:
     return LMS_Field(value, definition)
 
 
-def write_field(writer: FileWriter, field: LMS_Field) -> None:  
+def write_field(writer: FileWriter, field: LMS_Field) -> None:
     # All values are verifed before this point due to LMS_Field._verify_value
     match field.datatype:
         case LMS_DataType.UINT8:

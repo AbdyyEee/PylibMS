@@ -9,9 +9,7 @@ class FileEncoding(Enum):
     UTF16 = 1
     UTF32 = 2
 
-    def to_string_format(
-        self, big_endian: bool = False
-    ):
+    def to_string_format(self, big_endian: bool = False):
         match self:
             case FileEncoding.UTF8:
                 return "UTF-8"
