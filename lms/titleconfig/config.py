@@ -112,12 +112,13 @@ class TitleConfig:
         :param project: a MSBP object."""
         config = {}
 
-        config[TitleConfig.TAG_KEY] = {
-            "groups": {group.id: group.name for group in project.tag_groups},
-            "tags": [],
-        }
 
         if project.tag_groups is not None:
+            config[TitleConfig.TAG_KEY] = {
+                "groups": {group.id: group.name for group in project.tag_groups},
+                "tags": [],
+            }
+                    
             for group in project.tag_groups:
                 for tag_i, info in enumerate(group.tag_definitions):
 
