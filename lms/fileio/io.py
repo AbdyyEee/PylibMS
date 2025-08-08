@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import struct
 from io import BytesIO
-from typing import BinaryIO, Generator
+from typing import BinaryIO, Generator, cast
 
 from lms.fileio.encoding import FileEncoding
 
@@ -30,10 +30,11 @@ STRUCT_TYPES = {
 
 class FileReader: 
     def __init__(self, data: BinaryIO | bytes, big_endian: bool = False):
-        if isinstance(data, BinaryIO):
-            self._stream = BytesIO(data.read())
-        else:
+        if isinstance(data, bytes):
             self._stream = BytesIO(data) 
+        else:
+            data = cast(BinaryIO, data)
+            self._stream = BytesIO(data.read()) 
 
         self.encoding = FileEncoding.UTF8
         self.is_big_endian = big_endian
