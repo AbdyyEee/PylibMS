@@ -1,9 +1,9 @@
 from typing import BinaryIO
 
 from lms.common import lms_exceptions
-from lms.common.stream.FileInfo import read_file_info, write_file_info
-from lms.common.stream.Hashtable import read_labels, write_labels
-from lms.common.stream.Section import (read_section_data, write_section,
+from lms.common.stream.fileinfo import read_file_info, write_file_info
+from lms.common.stream.hashtable import read_labels, write_labels
+from lms.common.stream.section import (read_section_data, write_section,
                                        write_unsupported_section)
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.msbt import MSBT
