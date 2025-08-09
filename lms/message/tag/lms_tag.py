@@ -38,14 +38,17 @@ class LMS_EncodedTag:
 
     @property
     def group_id(self) -> int:
+        """The group id for the tag."""
         return self._group_id
 
     @property
     def tag_index(self) -> int:
+        """The tag index in the tags group."""
         return self._tag_index
 
     @property
     def parameters(self) -> list[str] | None:
+        """The list of hex string parameters."""
         return self._parameters
 
     @property
@@ -55,6 +58,7 @@ class LMS_EncodedTag:
 
     @property
     def is_closing(self) -> bool:
+        """Determines if the tag is a closing tag."""
         return self._is_closing
 
     def to_text(self) -> str:
@@ -132,10 +136,12 @@ class LMS_DecodedTag:
 
     @property
     def group_id(self) -> int:
+        """The group id for the tag."""
         return self._definition.group_id
 
     @property
     def tag_index(self) -> int:
+        """The tag index in the tags group."""
         return self._definition.tag_index
 
     @property
@@ -149,11 +155,18 @@ class LMS_DecodedTag:
         return self._definition.tag_name
 
     @property
+    def description(self) -> str:
+        """The description of the tag."""
+        return self._definition.description
+
+    @property
     def is_closing(self) -> bool:
+        """Determines if the tag is a closing tag."""
         return self._is_closing
 
     @property
     def parameters(self) -> LMS_FieldMap | None:
+        """The map of parameters for the tag."""
         return self._parameters
 
     def to_text(self) -> str:

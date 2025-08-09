@@ -20,16 +20,16 @@ def get_tag_indicator(encoding: FileEncoding, is_big_endian: bool):
 
 
 def read_tag(
-    reader: FileReader, config: TagConfig | None, is_closing: bool
+    reader: FileReader, tag_config: TagConfig | None, is_closing: bool
 ) -> LMS_EncodedTag | LMS_DecodedTag:
     group_id = reader.read_uint16()
     tag_index = reader.read_uint16()
     start = reader.tell()
 
-    if config is None:
+    if tag_config is None:
         return _read_encoded_tag(reader, group_id, tag_index, is_closing)
 
-    definition = config.get_definition_by_indexes(group_id, tag_index)
+    definition = tag_config.get_definition_by_indexes(group_id, tag_index)
 
     if definition is None:
         # Tags not defined in the config are not considered fallback tags
@@ -42,7 +42,7 @@ def read_tag(
     try:
         tag = _read_decoded_tag(reader, definition)
     except LMS_TagReadingError as e:
-        if not config.silence_reading_exceptions:
+        if not tag_config.silence_reading_exceptions:
             raise e
 
         reader.seek(start)

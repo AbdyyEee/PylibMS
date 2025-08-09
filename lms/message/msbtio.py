@@ -1,6 +1,5 @@
-from typing import BinaryIO
+from io import BufferedReader
 
-from lms.common import lms_exceptions
 from lms.common.stream.fileinfo import read_file_info, write_file_info
 from lms.common.stream.hashtable import read_labels, write_labels
 from lms.common.stream.section import (read_section_data, write_section,
@@ -19,6 +18,7 @@ __all__ = ["read_msbt", "read_msbt_path", "write_msbt", "write_msbt_path"]
 
 def read_msbt_path(
     file_path: str,
+    *,
     attribute_config: AttributeConfig | None = None,
     tag_config: TagConfig | None = None,
 ) -> MSBT:
@@ -36,7 +36,9 @@ def read_msbt_path(
     ```
     """
     with open(file_path, "rb") as stream:
-        return read_msbt(stream, attribute_config, tag_config)
+        return read_msbt(
+            stream, attribute_config=attribute_config, tag_config=tag_config
+        )
 
 
 def write_msbt_path(file_path: str, file: MSBT) -> None:
@@ -57,7 +59,8 @@ def write_msbt_path(file_path: str, file: MSBT) -> None:
 
 
 def read_msbt(
-    stream: BinaryIO | bytes,
+    stream: BufferedReader | bytes,
+    *,
     attribute_config: AttributeConfig | None = None,
     tag_config: TagConfig | None = None,
 ) -> MSBT:
@@ -75,7 +78,7 @@ def read_msbt(
         ...
     ```
     """
-    if stream is None:
+    if not isinstance(stream, (BufferedReader, bytes)):
         raise ValueError("Stream must be valid!")
 
     reader = FileReader(stream)
@@ -84,7 +87,7 @@ def read_msbt(
     file = MSBT(file_info, attribute_config, tag_config)
 
     if attribute_config is not None:
-        file.encoded_attributes = False
+        file.uses_encoded_attributes = False
 
     attributes = style_indexes = None
     for magic, size in read_section_data(reader, file_info.section_count):
@@ -96,7 +99,7 @@ def read_msbt(
                 if attribute_config is None:
                     data = read_encoded_atr1(reader, size)
                 else:
-                    file.encoded_attributes = False
+                    file.uses_encoded_attributes = False
                     data = read_decoded_atr1(reader, attribute_config)
 
                 attributes, size_per_attribute, string_table = data
@@ -112,7 +115,7 @@ def read_msbt(
         file.section_list.append(magic)
 
     for i, label in labels.items():
-        text = messages[i]
+        text = None if messages is None else messages[i]
         attribute = None if attributes is None else attributes[i]
         style_index = None if style_indexes is None else style_indexes[i]
         file.entries.append(MSBTEntry(label, text, attribute, style_index))
@@ -146,7 +149,7 @@ def write_msbt(file: MSBT) -> bytes:
                 write_section(writer, "LBL1", write_labels, labels, file.slot_count)
             case "ATR1":
                 attributes = [entry.attribute for entry in file.entries]
-                if file.encoded_attributes:
+                if file.uses_encoded_attributes:
                     write_section(
                         writer,
                         "ATR1",

@@ -1,5 +1,4 @@
 from importlib import resources
-from typing import Self
 
 import yaml
 
@@ -11,7 +10,7 @@ from lms.titleconfig.definitions.value import ValueDefinition
 
 
 class TitleConfig:
-    """Represents a configuration for a specific game/title."""
+    """Represents a configuration for a specific title."""
 
     TAG_KEY = "tag_definitions"
     ATTR_KEY = "attribute_definitions"
@@ -23,13 +22,21 @@ class TitleConfig:
 
     def __init__(
         self,
+        game: str,
         attribute_configs: dict[str, AttributeConfig] | None = None,
         tag_config: TagConfig | None = None,
     ):
+        self._game = game
+
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
 
         self.silence_reading_exceptions = False
+
+    @property
+    def game(self) -> str:
+        """The name of the game the titleconfig is for."""
+        return self._game
 
     @property
     def attribute_configs(self) -> dict[str, AttributeConfig] | None:
@@ -43,7 +50,8 @@ class TitleConfig:
 
     @classmethod
     def load_preset(cls, game: str):
-        """Loads an existing preset from a game.
+        """
+        Loads an existing preset from a game.
 
         :param game: the game preset.
 
@@ -51,7 +59,7 @@ class TitleConfig:
         """
         preset_map = {preset.lower(): preset for preset in cls.PRESET_LIST}
 
-        if game.lower() not in [preset.lower() for preset in cls.PRESET_LIST]:
+        if game.lower() not in preset_map:
             raise FileNotFoundError(f"Preset '{game}' not found.")
 
         actual_name = preset_map[game.lower()]
@@ -61,22 +69,28 @@ class TitleConfig:
 
     @classmethod
     def load_file(cls, file_path: str):
-        """Loads a config from a file.
+        """
+        Loads a config from a file.
 
-        :param file_path: the path to the config."""
+        :param file_path: the path to the config.
+        """
         with open(file_path, "r") as f:
             return TitleConfig.load_config(f.read())
 
     @classmethod
     def load_config(cls, content: str | dict):
-        """Loads the config of a specified game.
+        """
+        Loads the config of a specified game.
 
-        :param content: the config content, as a string or loaded as a dictionary."""
+        :param content: the config content, as a string or loaded as a dictionary.
+        """
 
         if isinstance(content, str):
             parsed_content = yaml.safe_load(content)
         else:
             parsed_content = content
+
+        game = parsed_content["game"]
 
         attribute_configs = {}
         for config in parsed_content[cls.ATTR_KEY]:
@@ -95,24 +109,28 @@ class TitleConfig:
 
         tag_config = TagConfig(group_map, tag_definitions)
 
-        return cls(attribute_configs, tag_config)
+        return cls(game, attribute_configs, tag_config)
 
     @staticmethod
-    def generate_file(file_path: str, project: MSBP) -> None:
+    def generate_file(file_path: str, game: str, project: MSBP) -> None:
         with open(file_path, "w+") as f:
             yaml.safe_dump(
-                TitleConfig.generate_config(project),
+                TitleConfig.generate_config(game, project),
                 f,
                 default_flow_style=False,
                 sort_keys=False,
             )
 
     @staticmethod
-    def generate_config(project: MSBP) -> dict | None:
-        """Creates a message config file for the game.
+    def generate_config(game: str, project: MSBP) -> dict | None:
+        """
+        Creates a title config file for the game.
 
-        :param project: a MSBP object."""
+        :param game: the name of the game.
+        :param project: a MSBP object.
+        """
         config = {}
+        config["game"] = game
 
         if project.tag_groups is not None:
             config[TitleConfig.TAG_KEY] = {
@@ -128,11 +146,14 @@ class TitleConfig:
                         "group_id": group.id,
                         "tag_index": tag_i,
                         "description": "",
-                        "parameters": [],
+                        "parameters": None if not tag_def.parameter_definitions else [],
                     }
 
-                    for param_def in tag_def.param_info:
-                        param_definition = {
+                    if definition["parameters"] is None:
+                        continue
+
+                    for param_def in tag_def.parameter_definitions:
+                        param_definition: dict[str, str | list] = {
                             "name": param_def.name,
                             "description": "",
                             "datatype": param_def.datatype.to_string(),

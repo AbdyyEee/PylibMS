@@ -1,3 +1,4 @@
+game: 'Tomodachi Life'
 tag_definitions:
   groups:
     0: System
@@ -62,13 +63,13 @@ tag_definitions:
   - name: Nickname
     group_id: 1
     tag_index: 0
-    description: ''
+    description: 'The nickname of the Mii for the island.'
     parameters:
     - name: buffer
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -88,7 +89,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -108,7 +109,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -128,7 +129,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -142,7 +143,7 @@ tag_definitions:
   - name: Character
     group_id: 1
     tag_index: 4
-    description: ''
+    description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
     parameters:
     - name: buffer
       description: ''
@@ -162,7 +163,7 @@ tag_definitions:
   - name: Character16
     group_id: 1
     tag_index: 5
-    description: ''
+    description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
     parameters:
     - name: buffer
       description: ''
@@ -188,7 +189,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -202,7 +203,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -224,7 +225,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -235,7 +236,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -246,7 +247,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -266,7 +267,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -280,7 +281,7 @@ tag_definitions:
       description: ''
       datatype: uint8
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -291,7 +292,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -308,7 +309,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -325,7 +326,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -342,7 +343,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -359,7 +360,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -376,7 +377,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -393,7 +394,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -410,7 +411,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -427,7 +428,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -444,7 +445,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -461,7 +462,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -478,7 +479,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -495,7 +496,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -512,7 +513,7 @@ tag_definitions:
     description: ''
     parameters:
     - name: type
-      description: ''
+      description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
       datatype: list
       list_items:
       - Text
@@ -526,7 +527,7 @@ tag_definitions:
   - name: BrotherSister
     group_id: 2
     tag_index: 14
-    description: ''
+    description: 'Determines if to utilize the text version or the voice pronounciation version of the tag text.'
     parameters:
     - name: type
       description: ''

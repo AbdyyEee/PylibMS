@@ -16,7 +16,6 @@ def read_section_data(
 
         yield (magic, size)
 
-        # Seek past the AB padding on next iteration
         reader.seek(end)
         reader.align(16)
 

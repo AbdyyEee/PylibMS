@@ -1,3 +1,4 @@
+game: 'Super Mario 3D World + Bowsers Fury'
 tag_definitions:
   groups:
     0: System
@@ -42,7 +43,6 @@ tag_definitions:
     group_id: 0
     tag_index: 4
     description: 'Displays text on a new page in the same label.'
-    parameters: []
   - name: Reference
     group_id: 0
     tag_index: 5

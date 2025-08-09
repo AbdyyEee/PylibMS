@@ -16,7 +16,7 @@ class LMS_TagGroup:
         self._id = id
         self._tag_indexes = tag_indexes
 
-        self.tag_definitions = []
+        self.tag_definitions: list[LMS_TagDefinition] = []
 
     @property
     def name(self) -> str:
@@ -35,10 +35,10 @@ class LMS_TagGroup:
 
         self.tag_definitions.extend(tag_definitions[i] for i in self._tag_indexes)
         for tag in self.tag_definitions:
-            tag.param_info.extend(
+            tag.parameter_definitions.extend(
                 parameter_definitions[i] for i in tag.parameter_indexes
             )
-            for parameter in tag.param_info:
+            for parameter in tag.parameter_definitions:
                 if parameter.datatype is LMS_DataType.LIST:
                     parameter.list_items = [
                         item for i in parameter.list_indexes for item in list_items[i]
@@ -56,7 +56,7 @@ class LMS_TagDefinition:
         self._parameter_indexes = (
             parameter_indexes if parameter_indexes is not None else []
         )
-        self.param_info = (
+        self.parameter_definitions = (
             parameter_definitions if parameter_definitions is not None else []
         )
 
@@ -77,7 +77,7 @@ class LMS_TagParamDefinition:
         list_indexes: list[int] | None = None,
     ):
         self._name = name
-        self.list_items = []
+        self.list_items: list[str] = []
 
         self._datatype = datatype
         self._list_indexes = list_indexes if list_indexes is not None else []

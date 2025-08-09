@@ -1,7 +1,7 @@
 from lms.fileio.io import FileReader, FileWriter
 
 
-def read_labels(reader: FileReader) -> tuple[dict[int, str], int]:
+def read_labels(reader: FileReader) -> tuple[dict, int]:
     labels = {}
 
     data_start = reader.tell()

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Literal, Type
+from typing import Type
 
 
 class LMS_DataType(Enum):

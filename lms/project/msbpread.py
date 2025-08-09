@@ -25,7 +25,6 @@ def read_msbp_path(file_path: str) -> MSBP:
     ## Usage
     ```
     msbp = read_msbp_path("path/to/file.msbp")
-    ...
     ```"""
     with open(file_path, "rb") as stream:
         return read_msbp(stream)
@@ -42,7 +41,7 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
         msbp = read_msbp(file)
         ...
     ```"""
-    if stream is None:
+    if not isinstance(stream, (BinaryIO, bytes)):
         raise ValueError("Stream must be valid!")
 
     reader = FileReader(stream)
@@ -107,5 +106,8 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
             )
 
     file = MSBP(file_info, colors, attr_definitions, tag_groups, styles, source_list)
-    file.name = os.path.basename(stream.name).removesuffix(".msbp")
+
+    if isinstance(stream, BinaryIO):
+        file.name = os.path.basename(stream.name).removesuffix(".msbp")
+
     return file

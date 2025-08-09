@@ -29,11 +29,7 @@ class LMS_Field:
 
     def __repr__(self):
         if self.datatype is LMS_DataType.LIST:
-            if len(self.list_items) > 6:
-                preview = self.list_items[:3] + ["..."]
-            else:
-                preview = self.list_items
-            return f"LMS_Field(value={self._value}, options={preview})"
+            return f"LMS_Field(value={self._value}, list_items={self.list_items})"
         return f"LMS_Field(value={self._value}, type={self.datatype.name})"
 
     @property
@@ -58,7 +54,7 @@ class LMS_Field:
 
     @property
     def list_items(self) -> list[str]:
-        """The list items bound to the field instance. Only is valid for LMS_Datatype.LIST values."""
+        """The list items bound to the field instance. Only is valid for `LMS_Datatype.LIST` values."""
         return self._definition.list_items
 
     @value.setter

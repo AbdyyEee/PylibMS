@@ -1,3 +1,5 @@
+from typing import overload
+
 from lms.common.lms_fileinfo import LMS_FileInfo
 from lms.message.definitions.field.lms_field import (LMS_Field,
                                                      dict_to_field_map)
@@ -29,15 +31,12 @@ class MSBT:
         self.slot_count = 101
 
         self.attr_string_table: list[str] | bytes | None = None
-        self.encoded_attributes = True
+        self.uses_encoded_attributes = True
 
-        # List of section names to preserve order
+        self.unsupported_sections: dict[str, bytes] = {}
         self.section_list: list[str] = []
 
         # List of unsupported sections mapped to their raw data
-        self.unsupported_sections: dict[str, bytes] = {}
-
-        # Store configs so if new labels are added LMS_MessageText objects and Attributes can be made properly
         self._attribute_config = attribute_config
         self._tag_config = tag_config
 
@@ -55,9 +54,11 @@ class MSBT:
         return self._entries
 
     def section_exists(self, name: str) -> bool:
-        """Determines if a section exists in the MSBT.
+        """
+        Determines if a section exists in the current MSBT.
 
-        :param name: the name of the section."""
+        :param name: the name of the section.
+        """
         return name in self.section_list
 
     def add_entry(
@@ -67,9 +68,14 @@ class MSBT:
         attribute: dict | bytes | None = None,
         style_index: int | None = None,
     ) -> None:
-        """Adds an entry to the MSBT instance.
+        """
+        Adds an entry to the MSBT instance.
 
-        :param name: the name of the entry."""
+        :param name: the name of the entry.
+        :param text: the message text to add.
+        :param attribute: the attribute data to add. can be a dictionary of data or raw bytes.
+        :param style_index: the index of a style for the message.
+        """
         if name in [entry.name for entry in self.entries]:
             raise KeyError(f"The label '{name}' already exists!")
 
@@ -85,10 +91,7 @@ class MSBT:
             converted_attribute = attribute
 
         if text is not None:
-            if self._tag_config is not None:
-                message_text = LMS_MessageText(text, self._tag_config)
-            else:
-                message_text = LMS_MessageText(text)
+            message_text = LMS_MessageText(text, self._tag_config)
         else:
             message_text = ""
 

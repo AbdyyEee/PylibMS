@@ -1,4 +1,4 @@
-from typing import Any, Self
+from typing import Self, overload
 
 from lms.message.definitions.field.lms_field import (LMS_Field, LMS_FieldMap,
                                                      dict_to_field_map)
@@ -13,22 +13,36 @@ class MSBTEntry:
     def __init__(
         self,
         name: str,
-        message: str | LMS_MessageText,
+        message: LMS_MessageText | str | None = None,
         attribute: LMS_FieldMap | bytes | None = None,
         style_index: int | None = None,
     ):
         self.name = name
 
-        if isinstance(message, str):
-            self._message = LMS_MessageText(message)
+        if not isinstance(message, (LMS_MessageText, str)):
+            raise TypeError(
+                f"An invalid type was provided for text in entry '{name}'! Expected LMS_MessageText object or str got {type(message)}"
+            )
+
+        if message is not None:
+            self._message = (
+                message
+                if isinstance(message, LMS_MessageText)
+                else LMS_MessageText(message)
+            )
         else:
-            self._message = message
+            self._message = None
+
+        if not isinstance(attribute, (dict, bytes)):
+            raise TypeError(
+                f"An invalid type was provided for attribute in entry '{name}'. Expected dict or bytes got {type(attribute)},"
+            )
 
         self._attribute = attribute
         self.style_index = style_index
 
     @property
-    def message(self) -> LMS_MessageText:
+    def message(self) -> LMS_MessageText | None:
         """The message object for the instance."""
         return self._message
 
@@ -43,11 +57,14 @@ class MSBTEntry:
         result["name"] = self.name
         result["message"] = "" if self.message is None else self.message.text
 
-        if self.attribute is not None:
-            if isinstance(self.attribute, bytes):
-                result["attribute"] = self.attribute.hex().upper()
+        if self._attribute is not None:
+            if isinstance(self._attribute, bytes):
+                result["attribute"] = self._attribute.hex().upper()
             else:
-                result["attribute"] = {name: attr.value for name, attr in self.attribute.items()}  # type: ignore
+
+                result["attribute"] = {
+                    name: attr.value for name, attr in self._attribute.items()
+                }
 
         result["style_index"] = self.style_index
         return result
