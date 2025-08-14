@@ -46,24 +46,6 @@ def read_msbt_path(
         )
 
 
-def write_msbt_path(file_path: str, file: MSBT) -> None:
-    """
-    Writes a MSBT file to a given file path.
-
-    :param file_path: the path to write the file to.
-    :param msbt: the MSBT file object.
-
-    ## Usage
-    ```
-    write_msbt_path("path/to/file.msbt", msbt)
-    ...
-    ```
-    """
-    with open(file_path, "wb") as stream:
-        data = write_msbt(file)
-        stream.write(data)
-
-
 def read_msbt(
     stream: BinaryIO | bytes,
     *,
@@ -112,7 +94,8 @@ def read_msbt(
             case _:
                 file.unsupported_sections[magic] = reader.read_bytes(size)
 
-        file.section_list.append(magic)
+        if not file.section_exists(magic):
+            file.section_list.append(magic)
 
     for i, label in labels.items():
         text = None if messages is None else messages[i]
@@ -123,6 +106,24 @@ def read_msbt(
         )
 
     return file
+
+
+def write_msbt_path(file_path: str, file: MSBT) -> None:
+    """
+    Writes a MSBT file to a given file path.
+
+    :param file_path: the path to write the file to.
+    :param msbt: the MSBT file object.
+
+    ## Usage
+    ```
+    write_msbt_path("path/to/file.msbt", msbt)
+    ...
+    ```
+    """
+    with open(file_path, "wb") as stream:
+        data = write_msbt(file)
+        stream.write(data)
 
 
 def write_msbt(file: MSBT) -> bytes:

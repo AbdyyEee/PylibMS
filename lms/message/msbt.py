@@ -1,7 +1,7 @@
 from typing import overload
 
 from lms.common.lms_fileinfo import LMS_FileInfo
-from lms.message.definitions.field.lms_field import LMS_FieldMap
+from lms.message.definitions.field.lms_field import FieldValue, LMS_FieldMap
 from lms.message.definitions.lms_messagetext import LMS_MessageText
 from lms.message.msbtentry import MSBTEntry
 from lms.titleconfig.definitions.attribute import AttributeConfig
@@ -15,11 +15,11 @@ class MSBT:
 
     def __init__(
         self,
-        info: LMS_FileInfo,
-        attribute_config: AttributeConfig | None,
-        tag_config: TagConfig | None,
+        info: LMS_FileInfo | None = None,
+        attribute_config: AttributeConfig | None = None,
+        tag_config: TagConfig | None = None,
     ):
-        self._info = info
+        self._info = info if info is not None else LMS_FileInfo()
 
         self._entries: list[MSBTEntry] = []
 
@@ -33,9 +33,13 @@ class MSBT:
         self.uses_encoded_attributes = True
 
         self.unsupported_sections: dict[str, bytes] = {}
-        self.section_list: list[str] = []
 
-        # List of unsupported sections mapped to their raw data
+        # Default section list used for writing
+        # The section order is usually fixed at LBL1 -> TXT2 -> ATR1 -> TSY1
+        # However, ATR1 and TSY1 are not in the default list ince usually these are not required sections
+        # The order of additional sections is preserved when reading
+        self.section_list: list[str] = ["LBL1", "TXT2"]
+
         self._attribute_config = attribute_config
         self._tag_config = tag_config
 
@@ -73,8 +77,9 @@ class MSBT:
     def add_entry(
         self,
         name: str,
+        *,
         text: str | None = None,
-        attribute: dict | bytes | None = None,
+        attribute: dict[str, FieldValue] | bytes | None = None,
         style_index: int | None = None,
     ) -> None:
         """
@@ -88,27 +93,39 @@ class MSBT:
         if name in [entry.name for entry in self.entries]:
             raise KeyError(f"The label '{name}' already exists!")
 
-        if isinstance(attribute, dict):
-            if self._attribute_config is None:
-                raise ValueError(
-                    "The attribute config must have been provided when reading to add decoded attributes!"
+        match attribute:
+            case dict():
+                if self._attribute_config is None:
+                    raise ValueError(
+                        "The attribute config must have been provided when reading to add decoded attributes!"
+                    )
+                converted_attr = LMS_FieldMap.from_dict(
+                    attribute, self._attribute_config.definitions
                 )
-            converted_attribute = LMS_FieldMap.from_dict(
-                attribute, self._attribute_config.definitions
-            )
-        else:
-            converted_attribute = attribute
+            case bytes():
+                converted_attr = attribute
+            case None:
+                converted_attr = None
+            case _:
+                raise TypeError("The provided attributes are not type bytes or dict!")
 
         if text is not None:
             message_text = LMS_MessageText(text, self._tag_config)
         else:
             message_text = ""
 
+        # Insert the section magics in the correct position that when writing the sections will be properly recognized
+        if attribute is not None and "ATR1" not in self.section_list:
+            self.section_list.insert(2, "ATR1")
+
+        if style_index is not None and "TSY1" not in self.section_list:
+            self.section_list.insert(3, "TSY1")
+
         self._entries.append(
             MSBTEntry(
                 name,
                 message=message_text,
-                attribute=converted_attribute,
+                attribute=converted_attr,
                 style_index=style_index,
             )
         )

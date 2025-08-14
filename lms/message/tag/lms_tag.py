@@ -1,8 +1,7 @@
 import re
-from typing import TypeGuard, runtime_checkable
+from typing import TypeGuard
 
-from lms.message.definitions.field.lms_field import (LMS_Field, LMS_FieldMap,
-                                                     convert_string_to_type)
+from lms.message.definitions.field.lms_field import LMS_FieldMap
 from lms.message.tag.lms_tagexceptions import LMS_InvalidTagFormatError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
@@ -12,16 +11,19 @@ type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
 
 
 def is_tag(obj: object) -> TypeGuard[LMS_ControlTag]:
+    """Typeguard for a tag."""
     return isinstance(obj, (LMS_EncodedTag, LMS_DecodedTag))
 
 
 class LMS_EncodedTag:
-    """A class that represents an encoded tag.
+    """
+    A class that represents an encoded tag.
 
     Example encoded tags:
         - `[0:3 00-00-00-FF]`
         - `[0:4]`
-        - `[1:0 01-00-00-CD]`"""
+        - `[1:0 01-00-00-CD]`
+    """
 
     TAG_FORMAT = re.compile(r"\[\s*(\/)?\s*(\d+)\s*:\s*(\d+)(?:[^\]]*)\]")
     PARAMETER_FORMAT = re.compile(r"^\s*([0-9A-Fa-f]{2})(\s*-\s*[0-9A-Fa-f]{2})*\s*$")
@@ -118,14 +120,18 @@ class LMS_EncodedTag:
 
 
 class LMS_DecodedTag:
-    """A class that represents a decoded tag.
+    """
+    A class that represents a decoded tag.
 
-    Example encoded tags:
+    Example decoded tags:
         - `[System:Color r="0" g="255" b="255" a="255"]`
         - `[System:Pagebreak]`
-        - `[Mii:Nickname buffer="1" type="Text" conversion="None"]`"""
+        - `[Mii:Nickname buffer="1" type="Text" conversion="None"]`
+    """
 
-    TAG_FORMAT = re.compile(r"\[\s*(/)?\s*(\w+)\s*:\s*(\w+)(?:\s+[^\]]*)?\s*\]")
+    TAG_FORMAT = re.compile(
+        r"\[\s*(/)?\s*([A-Za-z][\w]*)\s*:\s*([A-Za-z]+)(?:\s+[^\]]*)?\s*\]"
+    )
     PARAMETER_FORMAT = re.compile(r'(\w+)="([^"]*)"')
 
     def __init__(

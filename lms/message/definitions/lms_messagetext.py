@@ -16,12 +16,12 @@ class LMS_MessageText:
         message: str | list[str | LMS_ControlTag],
         tag_config: TagConfig | None = None,
     ):
+        self._tag_config = tag_config
+
         if isinstance(message, str):
             self._set_parts(message)
         else:
             self._parts = message
-
-        self._tag_config = tag_config
 
     def __iter__(self):
         return iter(self._parts)
@@ -118,11 +118,11 @@ class LMS_MessageText:
 
         :param tag: the tag string.
         """
-        if re.match(LMS_DecodedTag.TAG_FORMAT, tag):
+        if re.fullmatch(LMS_DecodedTag.TAG_FORMAT, tag):
             if self._tag_config is None:
                 raise ValueError("TagConfig is required to append decoded tags.")
             self._parts.append(LMS_DecodedTag.from_string(tag, self._tag_config))
-        elif re.match(LMS_EncodedTag.TAG_FORMAT, tag):
+        elif re.fullmatch(LMS_EncodedTag.TAG_FORMAT, tag):
             self._parts.append(LMS_EncodedTag.from_string(tag))
         else:
             raise ValueError(f"Invalid format for tag '{tag}'.")
