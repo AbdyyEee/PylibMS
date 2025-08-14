@@ -1,24 +1,73 @@
-from typing import Iterable, cast
+from __future__ import annotations
+
+from collections.abc import Iterator
+from dataclasses import dataclass, field
+from typing import cast
 
 from lms.common.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
 
-# Typehint that represents a map of strings to field instances.
-# Utilized as a means of storing attributes, or parameters in decoded tags mapped to their string names.
-type LMS_FieldMap = dict[str, LMS_Field]
+FLOAT_MIN = 1.17549435e-38
+FLOAT_MAX = 3.4028235e38
 
 
-def dict_to_field_map(data: dict, definitions: Iterable[ValueDefinition]):
-    return {
-        definition.name: LMS_Field(data[definition.name], definition)
-        for definition in definitions
-    }
+type FieldValue = int | str | float | bool | bytes
+
+
+@dataclass(frozen=True)
+class LMS_FieldMap:
+    """
+    A wrapper for a dictionary of LMS_Field objects for easier access and abstraction from the dictionary object.
+    """
+
+    _fields: dict[str, LMS_Field]
+
+    def __iter__(self) -> Iterator[LMS_Field]:
+        return iter(self._fields.values())
+
+    def get_field(self, name: str) -> LMS_Field:
+        """
+        Returns the field associated with the name.
+
+        :param name: the name of the field.
+        """
+        if name not in self._fields:
+            raise KeyError(f"Field '{name}' does not exist")
+
+        return self._fields[name]
+
+    def set_value(self, name: str, value: FieldValue) -> None:
+        """
+        Sets the value of the specified field.
+
+        :param name: the name of the field.
+        :param value: the new value for the field.
+        """
+        if name not in self._fields:
+            raise KeyError(f"Field '{name}' does not exist")
+
+        self._fields[name].value = value
+
+    def to_dict(self) -> dict[str, FieldValue]:
+        """Converts the field map to a regular dictionary."""
+        return {field.name: field.value for field in self._fields.values()}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, FieldValue], definitions: list[ValueDefinition]):
+        return cls(
+            {
+                definition.name: LMS_Field(data[definition.name], definition)
+                for definition in definitions
+            }
+        )
 
 
 class LMS_Field:
-    """A class that represents a mapped field linked to a config definition.
+    """
+    A class that represents a mapped field linked to a config definition.
 
-    Acts as values for Attributes and Tag Parameters."""
+    Acts as values for Attributes and Tag Parameters.
+    """
 
     def __init__(
         self, value: int | str | float | bytes | bool, definition: ValueDefinition
@@ -82,7 +131,7 @@ class LMS_Field:
                 else:
                     return
             case LMS_DataType.FLOAT32 if isinstance(value, float):
-                _verify_range(value, -3.4028235e38, 3.4028235e38, self._definition)
+                _verify_range(value, FLOAT_MIN, FLOAT_MAX, self._definition)
                 return
             case _ if isinstance(value, int):
                 bits = datatype.stream_size * 8

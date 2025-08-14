@@ -1,8 +1,7 @@
 from typing import overload
 
 from lms.common.lms_fileinfo import LMS_FileInfo
-from lms.message.definitions.field.lms_field import (LMS_Field,
-                                                     dict_to_field_map)
+from lms.message.definitions.field.lms_field import LMS_FieldMap
 from lms.message.definitions.lms_messagetext import LMS_MessageText
 from lms.message.msbtentry import MSBTEntry
 from lms.titleconfig.definitions.attribute import AttributeConfig
@@ -44,14 +43,24 @@ class MSBT:
         return iter(self._entries)
 
     @property
+    def entries(self) -> list[MSBTEntry]:
+        """The list of entries for the MSBT instance."""
+        return self._entries
+
+    @property
     def info(self) -> LMS_FileInfo:
         """The file info for the MSBT instance."""
         return self._info
 
     @property
-    def entries(self) -> list[MSBTEntry]:
-        """The list of entries for the MSBT instance."""
-        return self._entries
+    def has_attributes(self) -> bool:
+        """If the msbt contains attributs."""
+        return self.section_exists("ATR1")
+
+    @property
+    def has_style_indexes(self) -> bool:
+        """If the msbt contains style indexes."""
+        return self.section_exists("TSY1")
 
     def section_exists(self, name: str) -> bool:
         """
@@ -84,7 +93,7 @@ class MSBT:
                 raise ValueError(
                     "The attribute config must have been provided when reading to add decoded attributes!"
                 )
-            converted_attribute = dict_to_field_map(
+            converted_attribute = LMS_FieldMap.from_dict(
                 attribute, self._attribute_config.definitions
             )
         else:
@@ -96,7 +105,12 @@ class MSBT:
             message_text = ""
 
         self._entries.append(
-            MSBTEntry(name, message_text, converted_attribute, style_index)
+            MSBTEntry(
+                name,
+                message=message_text,
+                attribute=converted_attribute,
+                style_index=style_index,
+            )
         )
 
     def get_entry(self, name: str) -> MSBTEntry:

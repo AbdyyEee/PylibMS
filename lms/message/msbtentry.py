@@ -1,7 +1,4 @@
-from typing import Self, overload
-
-from lms.message.definitions.field.lms_field import (LMS_Field, LMS_FieldMap,
-                                                     dict_to_field_map)
+from lms.message.definitions.field.lms_field import LMS_FieldMap
 from lms.message.definitions.lms_messagetext import LMS_MessageText
 from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.tags import TagConfig
@@ -13,6 +10,7 @@ class MSBTEntry:
     def __init__(
         self,
         name: str,
+        *,
         message: LMS_MessageText | str | None = None,
         attribute: LMS_FieldMap | bytes | None = None,
         style_index: int | None = None,
@@ -24,16 +22,12 @@ class MSBTEntry:
                 f"An invalid type was provided for text in entry '{name}'! Expected LMS_MessageText object or str got {type(message)}"
             )
 
-        if message is not None:
-            self._message = (
-                message
-                if isinstance(message, LMS_MessageText)
-                else LMS_MessageText(message)
-            )
+        if isinstance(message, str):
+            self._message = LMS_MessageText(message)
         else:
-            self._message = None
+            self._message = message
 
-        if not isinstance(attribute, (dict, bytes)):
+        if attribute is not None and not isinstance(attribute, (LMS_FieldMap, bytes)):
             raise TypeError(
                 f"An invalid type was provided for attribute in entry '{name}'. Expected dict or bytes got {type(attribute)},"
             )
@@ -61,10 +55,7 @@ class MSBTEntry:
             if isinstance(self._attribute, bytes):
                 result["attribute"] = self._attribute.hex().upper()
             else:
-
-                result["attribute"] = {
-                    name: attr.value for name, attr in self._attribute.items()
-                }
+                result["attribute"] = self._attribute.to_dict()
 
         result["style_index"] = self.style_index
         return result
@@ -75,29 +66,33 @@ class MSBTEntry:
         data: dict,
         attribute_conifg: AttributeConfig | None = None,
         tag_config: TagConfig | None = None,
-    ) -> Self:
-        """Creates a MSBTEntry from a dictionary object.
+    ):
+        """
+        Creates a MSBTEntry from a dictionary object.
 
         :param data: the dictionary data.
         :param attribute_config: the config to use to import decoded attributes.
         :param tag_config: the config to use if decoded tags are included in the message.
         """
-        if "message" in data:
-            message = LMS_MessageText(data["message"], tag_config)
+        message = data.get("message")
+        attribute = data.get("attribute")
+        style_index = data.get("style_index")
 
-        attribute = None
-        if "attribute" in data:
-            attr = data["attribute"]
-            if isinstance(attr, dict):
+        if attribute is not None:
+            if not isinstance(attribute, (dict, str)):
+                raise TypeError("Invalid attribute type provided!")
+
+            if isinstance(attribute, dict):
                 if attribute_conifg is None:
                     raise TypeError(
                         "A valid attribute config must be provided for decoded attributes!"
                     )
-                attribute = dict_to_field_map(attr, attribute_conifg.definitions)
-            elif isinstance(attr, str):
-                attribute = bytes.fromhex(attr)
+                attribute = LMS_FieldMap.from_dict(
+                    attribute, attribute_conifg.definitions
+                )
             else:
-                raise TypeError("Invalid attribute type!")
+                attribute = bytes.fromhex(attribute)
 
-        style_index = data.get("style_index")
-        return cls(data["name"], message, attribute, style_index)
+        return cls(
+            data["name"], message=message, attribute=attribute, style_index=style_index
+        )

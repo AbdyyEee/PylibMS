@@ -1,9 +1,8 @@
 import re
-from typing import overload
 
-from lms.message.definitions.field.lms_field import LMS_Field
+from lms.message.definitions.field.lms_field import LMS_FieldMap
 from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
-                                     LMS_EncodedTag)
+                                     LMS_EncodedTag, is_tag)
 from lms.titleconfig.config import TagConfig
 
 
@@ -30,14 +29,13 @@ class LMS_MessageText:
     @property
     def text(self) -> str:
         """The raw text of the message."""
-        text_list = []
+        result = []
         for part in self._parts:
-            text_list.append(
-                part.to_text()
-                if isinstance(part, (LMS_EncodedTag, LMS_DecodedTag))
-                else part
-            )
-        return "".join(text_list)
+            if is_tag(part):
+                result.append(part.to_text())
+            else:
+                result.append(part)
+        return "".join(result)
 
     @text.setter
     def text(self, string: str):
@@ -46,16 +44,13 @@ class LMS_MessageText:
     @property
     def tags(self) -> list[LMS_ControlTag]:
         """The list of control tags in the message."""
-        return [
-            part
-            for part in self._parts
-            if isinstance(part, (LMS_EncodedTag, LMS_DecodedTag))
-        ]
+        return [part for part in self._parts if is_tag(part)]
 
     def append_encoded_tag(
         self, group_id: int, tag_index: int, is_closing: bool = False, *parameters: str
-    ):
-        """Appends an encoded tag to the current message.
+    ) -> LMS_EncodedTag:
+        """
+        Appends an encoded tag to the current message and returns that tag.
 
         :param group: the group name or index.
         :param tag: the group tag or index:
@@ -74,6 +69,7 @@ class LMS_MessageText:
             )
 
         self._parts.append(tag)
+        return tag
 
     def append_decoded_tag(
         self,
@@ -81,8 +77,9 @@ class LMS_MessageText:
         tag_name: str,
         is_closing: bool = False,
         **parameters: int | str | float | bool | bytes,
-    ) -> None:
-        """Appends an decoded tag to the current message.
+    ) -> LMS_DecodedTag:
+        """
+        Appends an decoded tag to the current message and returns that tag.
 
         :param group_name: the group name.
         :param tag_name: the tag name.:
@@ -98,25 +95,29 @@ class LMS_MessageText:
 
         definition = self._tag_config.get_definition_by_names(group_name, tag_name)
 
-        converted_params = None
-        if parameters:
-            converted_params = {}
-            for param_def in definition.parameters:
-                converted_params[param_def.name] = LMS_Field(
-                    parameters[param_def.name], param_def
-                )
+        param_map = None
+
+        if not parameters:
+            tag = LMS_DecodedTag(definition)
+            self._parts.append(tag)
+            return tag
+
+        param_map = LMS_FieldMap.from_dict(parameters, definition.parameters)
 
         if is_closing:
             tag = LMS_DecodedTag(definition, is_closing=True)
         else:
-            tag = LMS_DecodedTag(definition, converted_params)
+            tag = LMS_DecodedTag(definition, param_map)
 
         self._parts.append(tag)
+        return tag
 
     def append_tag_string(self, tag: str) -> None:
-        """Appends a tag to the current message given a string.
+        """
+        Appends a tag to the current message given a string.
 
-        :param tag: the tag string."""
+        :param tag: the tag string.
+        """
         if re.match(LMS_DecodedTag.TAG_FORMAT, tag):
             if self._tag_config is None:
                 raise ValueError("TagConfig is required to append decoded tags.")

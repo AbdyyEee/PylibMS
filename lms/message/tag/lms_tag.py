@@ -1,4 +1,5 @@
 import re
+from typing import TypeGuard, runtime_checkable
 
 from lms.message.definitions.field.lms_field import (LMS_Field, LMS_FieldMap,
                                                      convert_string_to_type)
@@ -8,6 +9,10 @@ from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 TAG_PADDING_CHAR = "CD"
 
 type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
+
+
+def is_tag(obj: object) -> TypeGuard[LMS_ControlTag]:
+    return isinstance(obj, (LMS_EncodedTag, LMS_DecodedTag))
 
 
 class LMS_EncodedTag:

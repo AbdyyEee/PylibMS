@@ -4,8 +4,7 @@ from lms.message.tag.io.param_io import (read_decoded_parameters,
                                          read_encoded_parameters,
                                          write_decoded_parameters,
                                          write_encoded_parameters)
-from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
-                                     LMS_EncodedTag)
+from lms.message.tag.lms_tag import LMS_DecodedTag, LMS_EncodedTag
 from lms.message.tag.lms_tagexceptions import LMS_TagReadingError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
@@ -20,7 +19,10 @@ def get_tag_indicator(encoding: FileEncoding, is_big_endian: bool):
 
 
 def read_tag(
-    reader: FileReader, tag_config: TagConfig | None, is_closing: bool
+    reader: FileReader,
+    tag_config: TagConfig | None,
+    is_closing: bool,
+    suppress_tag_errors: bool,
 ) -> LMS_EncodedTag | LMS_DecodedTag:
     group_id = reader.read_uint16()
     tag_index = reader.read_uint16()
@@ -31,18 +33,19 @@ def read_tag(
 
     definition = tag_config.get_definition_by_indexes(group_id, tag_index)
 
+    # Tags not defined in the config are not considered fallback tags
+    # Not all configs will define every tag, so this is simply a measure to still read tags that arent defined
     if definition is None:
-        # Tags not defined in the config are not considered fallback tags
-        # Not all configs will define every tag, so this is simply a measure to still read tags that arent defined
         return _read_encoded_tag(reader, group_id, tag_index, is_closing)
 
+    # There doesnt need to be error handling in this case since there are no parameters for closing tags
     if is_closing:
         return _read_decoded_tag(reader, definition, is_closing=True)
 
     try:
         tag = _read_decoded_tag(reader, definition)
     except LMS_TagReadingError as e:
-        if not tag_config.silence_reading_exceptions:
+        if not suppress_tag_errors:
             raise e
 
         reader.seek(start)
@@ -72,6 +75,7 @@ def _read_decoded_tag(
     reader: FileReader, definition: TagDefinition, is_closing: bool = False
 ) -> LMS_DecodedTag:
     parameter_size = reader.read_uint16()
+    end = reader.tell() + parameter_size
 
     if not parameter_size:
         return LMS_DecodedTag(definition)
@@ -80,14 +84,11 @@ def _read_decoded_tag(
         return LMS_DecodedTag(definition, is_closing=True)
 
     parameters = read_decoded_parameters(reader, definition)
-
-    if parameters is None:
-        return LMS_DecodedTag(definition)
-
+    reader.seek(end)
     return LMS_DecodedTag(definition, parameters)
 
 
-def write_tag(writer: FileWriter, tag: LMS_ControlTag) -> None:
+def write_tag(writer: FileWriter, tag: LMS_EncodedTag | LMS_DecodedTag) -> None:
     start_indicator, close_indicator = get_tag_indicator(
         writer.encoding, writer.is_big_endian
     )

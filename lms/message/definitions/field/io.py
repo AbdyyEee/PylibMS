@@ -35,20 +35,22 @@ def read_field(reader: FileReader, definition: ValueDefinition) -> LMS_Field:
 
 
 def write_field(writer: FileWriter, field: LMS_Field) -> None:
-    # All values are verifed before this point due to LMS_Field._verify_value
+    if isinstance(field.value, int):
+        value = cast(int, field.value)
+
     match field.datatype:
         case LMS_DataType.UINT8:
-            writer.write_uint8(cast(int, field.value))
+            writer.write_uint8(value)
         case LMS_DataType.INT8:
-            writer.write_int8(cast(int, field.value))
+            writer.write_int8(value)
         case LMS_DataType.UINT16:
-            writer.write_uint16(cast(int, field.value))
+            writer.write_uint16(value)
         case LMS_DataType.INT16:
-            writer.write_int16(cast(int, field.value))
+            writer.write_int16(value)
         case LMS_DataType.UINT32:
-            writer.write_uint32(cast(int, field.value))
+            writer.write_uint32(value)
         case LMS_DataType.INT32:
-            writer.write_int32(cast(int, field.value))
+            writer.write_int32(value)
         case LMS_DataType.LIST:
             writer.write_uint8(field.list_items.index(cast(str, field.value)))
         case LMS_DataType.BOOL:

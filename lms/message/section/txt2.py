@@ -5,7 +5,9 @@ from lms.message.tag.lms_tag import LMS_DecodedTag, LMS_EncodedTag
 from lms.titleconfig.definitions.tags import TagConfig
 
 
-def read_txt2(reader: FileReader, config: TagConfig | None) -> list[LMS_MessageText]:
+def read_txt2(
+    reader: FileReader, config: TagConfig | None, suppress_tag_errors: bool
+) -> list[LMS_MessageText]:
     encoding = reader.encoding
 
     messages = []
@@ -24,7 +26,7 @@ def read_txt2(reader: FileReader, config: TagConfig | None) -> list[LMS_MessageT
 
             if is_opening_tag or is_closing_tag:
                 parts.append(text.decode(encoding_format))
-                tag = read_tag(reader, config, is_closing_tag)
+                tag = read_tag(reader, config, is_closing_tag, suppress_tag_errors)
                 parts.append(tag)
                 text = b""
             else:

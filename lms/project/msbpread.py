@@ -16,34 +16,38 @@ from lms.project.section.tag2 import read_tag2
 from lms.project.section.tgg2 import read_tgg2
 from lms.project.section.tgp2 import read_tgp2
 
+__all__ = ["read_msbp", "read_msbp_path"]
+
 
 def read_msbp_path(file_path: str) -> MSBP:
-    """Reads a MSBP file from a given path.
+    """
+    Reads and retrieves a MSBP file from a given path.
 
     :param file_path: the path to the MSBP file.
 
     ## Usage
     ```
     msbp = read_msbp_path("path/to/file.msbp")
-    ```"""
+    ...
+    ```
+    """
     with open(file_path, "rb") as stream:
         return read_msbp(stream)
 
 
 def read_msbp(stream: BinaryIO | bytes) -> MSBP:
-    """Reads a MSBP file from a stream.
+    """
+    Reads and retrieves a MSBP file from a specified stream.
 
-    :param stream: a stream object.
+    :param stream: an `IOBase`, `BytesIO`, `memoryview`, or `bytes` object.
 
     ## Usage
     ```
     with open(file_path, "rb") as file:
         msbp = read_msbp(file)
         ...
-    ```"""
-    if not isinstance(stream, (BinaryIO, bytes)):
-        raise ValueError("Stream must be valid!")
-
+    ```
+    """
     reader = FileReader(stream)
     file_info = read_file_info(reader, "MsgPrjBn")
 

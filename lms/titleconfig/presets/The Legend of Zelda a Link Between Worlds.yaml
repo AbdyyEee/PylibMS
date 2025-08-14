@@ -51,9 +51,6 @@ tag_definitions:
     tag_index: 4
     description: 'Displays text on a new page in the same label.'
     parameters: []
-  - name: PageBreak
-    group_id: 0
-    tag_index: 4
   - name: PlayerName
     group_id: 1
     tag_index: 0

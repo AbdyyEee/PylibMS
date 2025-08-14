@@ -6,7 +6,7 @@ from lms.message.definitions.field.io import read_field, write_field
 from lms.message.definitions.field.lms_field import LMS_Field, LMS_FieldMap
 from lms.message.tag.lms_tagexceptions import (LMS_TagReadingError,
                                                LMS_TagWritingException)
-from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
+from lms.titleconfig.definitions.tags import TagDefinition
 
 TAG_PADDING_BYTE = b"\xcd"
 
@@ -39,7 +39,7 @@ def read_decoded_parameters(
 
         parameters[param.name] = value
 
-    return parameters
+    return LMS_FieldMap(parameters)
 
 
 def write_encoded_parameters(writer: FileWriter, parameters: list[str]) -> None:
@@ -53,34 +53,33 @@ def write_decoded_parameters(
 ) -> None:
     param_size = 0
 
-    for field in parameters.values():
+    for field in parameters:
         if field.datatype is LMS_DataType.STRING:
-            # len prefix + the length of the string if it were encoded
-            param_size += 2 + len(cast(str, field.value)) * writer.encoding.width
+            field.value = cast(str, field.value)
+            param_size += 2 + len(field.value) * writer.encoding.width
         else:
             param_size += field.datatype.stream_size
 
-    if needs_padding := param_size % writer.encoding.width == 1:
+    if needs_padding := (param_size % writer.encoding.width != 0):
         param_size += 1
 
     writer.write_uint16(param_size)
 
-    for field in parameters.values():
+    for field in parameters:
         try:
-            if not field.datatype is LMS_DataType.STRING:
+            if field.datatype is LMS_DataType.STRING:
+                field.value = cast(str, field.value)
+
+                # Tags are padded by a 0xCD byte if the size is not aligned to the encoding
+                # This can occur before a string parameter, or at the end of the tag.
+                # If a string parameter exists, then the padding will always be at the first string instance
+                if needs_padding:
+                    writer.write_bytes(TAG_PADDING_BYTE)
+                    needs_padding = False
+
+                writer.write_len_variable_encoding_string(field.value)
+            else:
                 write_field(writer, field)
-                continue
-
-            field.value = cast(str, field.value)
-
-            # Tags are padded by a 0xCD byte if the size is not aligned to the encoding
-            # This can occur before a string parameter, or at the end of the tag.
-            # If a string parameter exists, then the padding will always be at the first string instance
-            if needs_padding:
-                writer.write_bytes(TAG_PADDING_BYTE)
-                needs_padding = False
-
-            writer.write_len_variable_encoding_string(field.value)
         except Exception as e:
             raise LMS_TagWritingException(
                 f"An error occured in tag [{group_name}:{tag_name} writing parameter '{field.name}' at offset {writer.tell()}!"

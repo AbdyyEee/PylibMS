@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import struct
-from io import BytesIO
+from io import BytesIO, IOBase
 from typing import BinaryIO, Generator, cast
 
 from lms.fileio.encoding import FileEncoding
@@ -30,11 +30,12 @@ STRUCT_TYPES = {
 
 class FileReader:
     def __init__(self, data: BinaryIO | bytes, big_endian: bool = False):
-        if isinstance(data, bytes):
+        if isinstance(data, IOBase):
+            self._stream = data
+        elif isinstance(data, (bytes, bytearray, memoryview)):
             self._stream = BytesIO(data)
         else:
-            data = cast(BinaryIO, data)
-            self._stream = BytesIO(data.read())
+            raise TypeError("The stream provided is not valid!")
 
         self.encoding = FileEncoding.UTF8
         self.is_big_endian = big_endian
@@ -101,9 +102,7 @@ class FileReader:
         return message.decode(self.encoding.to_string_format(self.is_big_endian))
 
     def read_len_string_variable_encoding(self):
-        self.align(
-            len("\x00".encode(self.encoding.to_string_format(self.is_big_endian)))
-        )
+        self.align(self.encoding.width)
         length = self.read_uint16()
         return self.read_bytes(length).decode(
             self.encoding.to_string_format(self.is_big_endian)

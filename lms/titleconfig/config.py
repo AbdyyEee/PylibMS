@@ -22,20 +22,17 @@ class TitleConfig:
 
     def __init__(
         self,
-        game: str,
+        game: str | None,
         attribute_configs: dict[str, AttributeConfig] | None = None,
         tag_config: TagConfig | None = None,
     ):
         self._game = game
-
         self._attribute_configs = attribute_configs
         self._tag_config = tag_config
 
-        self.silence_reading_exceptions = False
-
     @property
-    def game(self) -> str:
-        """The name of the game the titleconfig is for."""
+    def game(self) -> str | None:
+        """The name of the game for the titleconfig."""
         return self._game
 
     @property
@@ -90,7 +87,7 @@ class TitleConfig:
         else:
             parsed_content = content
 
-        game = parsed_content["game"]
+        game = parsed_content.get("game")
 
         attribute_configs = {}
         for config in parsed_content[cls.ATTR_KEY]:
@@ -104,6 +101,7 @@ class TitleConfig:
 
         tag_definitions = []
         group_map = parsed_content[cls.TAG_KEY]["groups"]
+
         for tag_def in parsed_content[cls.TAG_KEY]["tags"]:
             tag_definitions.append(TagDefinition.from_dict(tag_def, group_map))
 
@@ -113,6 +111,13 @@ class TitleConfig:
 
     @staticmethod
     def generate_file(file_path: str, game: str, project: MSBP) -> None:
+        """
+        Generates a title config file for a specific game.
+
+        :param file_path: the path to the yaml file.
+        :param game: the name of the game to create the config for.
+        :param project: a MSBP object.
+        """
         with open(file_path, "w+") as f:
             yaml.safe_dump(
                 TitleConfig.generate_config(game, project),
@@ -124,9 +129,9 @@ class TitleConfig:
     @staticmethod
     def generate_config(game: str, project: MSBP) -> dict | None:
         """
-        Creates a title config file for the game.
+        Generates a title config file for the specified game.
 
-        :param game: the name of the game.
+        :param game: the name of the game to create the config for.
         :param project: a MSBP object.
         """
         config = {}
@@ -139,12 +144,12 @@ class TitleConfig:
             }
 
             for group in project.tag_groups:
-                for tag_i, tag_def in enumerate(group.tag_definitions):
+                for i, tag_def in enumerate(group.tag_definitions):
 
                     definition = {
                         "name": tag_def.name,
                         "group_id": group.id,
-                        "tag_index": tag_i,
+                        "tag_index": i,
                         "description": "",
                         "parameters": None if not tag_def.parameter_definitions else [],
                     }
@@ -170,14 +175,14 @@ class TitleConfig:
         if project.attribute_info is not None:
 
             attr_definitions = []
-            for attr_info in project.attribute_info:
+            for attr_def in project.attribute_info:
                 definition = {
-                    "name": attr_info.name,
+                    "name": attr_def.name,
                     "description": "",
-                    "datatype": attr_info.datatype.to_string(),
+                    "datatype": attr_def.datatype.to_string(),
                 }
-                if attr_info.datatype is LMS_DataType.LIST:
-                    definition["list_items"] = attr_info.list_items
+                if attr_def.datatype is LMS_DataType.LIST:
+                    definition["list_items"] = attr_def.list_items
 
                 attr_definitions.append(definition)
 

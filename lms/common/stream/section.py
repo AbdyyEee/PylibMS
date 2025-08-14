@@ -25,7 +25,7 @@ def write_section(
     magic: str,
     section_call: Callable,
     data: list[Any],
-    *write_arguments,
+    *write_arguments: Any,
 ) -> None:
     writer.write_string(magic)
     size_offset = writer.tell()

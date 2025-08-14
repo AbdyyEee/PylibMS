@@ -6,6 +6,14 @@ from lms.message.definitions.field.lms_field import (LMS_DataType, LMS_Field,
 from lms.titleconfig.definitions.attribute import AttributeConfig
 
 
+def read_atr1(
+    reader: FileReader, config: AttributeConfig | None, section_size: int
+) -> tuple[list[bytes] | list[LMS_FieldMap], int, bytes | None]:
+    if config is None:
+        return read_encoded_atr1(reader, section_size)
+    return read_decoded_atr1(reader, config)
+
+
 def read_encoded_atr1(
     reader: FileReader, section_size: int
 ) -> tuple[list[bytes], int, bytes | None]:
@@ -21,6 +29,36 @@ def read_encoded_atr1(
         string_table = reader.read_bytes(absolute_size - reader.tell())
 
     return (attributes, size_per_attribute, string_table)
+
+
+def read_decoded_atr1(
+    reader: FileReader, config: AttributeConfig
+) -> tuple[list[LMS_FieldMap], int, None]:
+    section_start = reader.tell()
+
+    attr_count = reader.read_uint32()
+    size_per_attr = reader.read_uint32()
+
+    attributes, attr_start = [], reader.tell()
+
+    for i in range(attr_count):
+        reader.seek(attr_start + i * size_per_attr)
+
+        attribute = {}
+        for definition in config.definitions:
+            if definition.datatype is LMS_DataType.STRING:
+                last = reader.tell() + 4
+                reader.seek(section_start + reader.read_uint32())
+                value = LMS_Field(reader.read_str_variable_encoding(), definition)
+                reader.seek(last)
+            else:
+                value = read_field(reader, definition)
+
+            attribute[definition.name] = value
+
+        attributes.append(LMS_FieldMap(attribute))
+
+    return attributes, size_per_attr, None
 
 
 def write_encoded_atr1(
@@ -43,36 +81,6 @@ def write_encoded_atr1(
         writer.write_bytes(string_table)
 
 
-def read_decoded_atr1(
-    reader: FileReader, structure: AttributeConfig
-) -> tuple[list[LMS_FieldMap], int, None]:
-    section_start = reader.tell()
-
-    attr_count = reader.read_uint32()
-    size_per_attr = reader.read_uint32()
-
-    attributes, attr_start = [], reader.tell()
-
-    for i in range(attr_count):
-        reader.seek(attr_start + i * size_per_attr)
-
-        attribute = {}
-        for definition in structure.definitions:
-            if definition.datatype is LMS_DataType.STRING:
-                last = reader.tell() + 4
-                reader.seek(section_start + reader.read_uint32())
-                value = LMS_Field(reader.read_str_variable_encoding(), definition)
-                reader.seek(last)
-            else:
-                value = read_field(reader, definition)
-
-            attribute[definition.name] = value
-
-        attributes.append(attribute)
-
-    return attributes, size_per_attr, None
-
-
 def write_decoded_atr1(
     writer: FileWriter, attributes: list[LMS_FieldMap], size_per_attribute: int
 ) -> None:
@@ -83,7 +91,7 @@ def write_decoded_atr1(
     string_offset = 8 + size_per_attribute * len(attributes)
 
     for attr in attributes:
-        for field in attr.values():
+        for field in attr:
             if field.datatype is LMS_DataType.STRING:
                 field.value = str(field.value)
 

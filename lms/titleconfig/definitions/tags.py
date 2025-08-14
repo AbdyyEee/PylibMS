@@ -12,7 +12,6 @@ class TagConfig:
     def __init__(self, group_map: dict[int, str], definitions: list[TagDefinition]):
         self._group_map = group_map
         self._definitions = definitions
-        self.silence_reading_exceptions = False
 
     @property
     def group_map(self) -> dict[int, str]:
@@ -55,7 +54,7 @@ class TagConfig:
 
 @dataclass(frozen=True)
 class TagDefinition:
-    """Class that represents a signle tag definition in the structure."""
+    """Class that represents a signle definition in the tag config."""
 
     group_name: str
     group_id: int
@@ -67,28 +66,28 @@ class TagDefinition:
     @classmethod
     def from_dict(cls, data: dict, group_map: dict[int, str]):
         tag_name = data["name"]
-        group_index, tag_index = data["group_id"], data["tag_index"]
-        group_name = group_map[group_index]
-        tag_description = data["description"]
+        group_id, tag_index = data["group_id"], data["tag_index"]
+        description = data["description"]
+        group_name = group_map[group_id]
 
-        group_name = group_map[group_index]
+        if "parameters" not in data:
+            return cls(group_name, group_id, tag_name, tag_index, description)
 
         parameters = []
-        if "parameters" in data:
-            for param_def in data["parameters"]:
-                param_name = param_def["name"]
-                param_description = param_def["description"]
-                datatype = LMS_DataType.from_string(param_def["datatype"])
-                list_items = param_def.get("list_items")
-                parameters.append(
-                    ValueDefinition(param_name, param_description, datatype, list_items)
-                )
+        for param_def in data["parameters"]:
+            name = param_def["name"]
+            param_description = param_def["description"]
+            datatype = LMS_DataType.from_string(param_def["datatype"])
+            list_items = param_def.get("list_items")
+            parameters.append(
+                ValueDefinition(name, param_description, datatype, list_items)
+            )
 
         return cls(
             group_name,
-            group_index,
+            group_id,
             tag_name,
             tag_index,
-            tag_description,
+            description,
             parameters,
         )
