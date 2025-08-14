@@ -61,6 +61,16 @@ class LMS_FieldMap:
             }
         )
 
+    @classmethod
+    def from_string_dict(cls, data: dict[str, str], definitions: list[ValueDefinition]):
+        fields = {}
+
+        for definition in definitions:
+            value = convert_string_to_type(data[definition.name], definition.datatype)
+            fields[definition.name] = LMS_Field(value, definition)
+
+        return cls(fields)
+
 
 class LMS_Field:
     """

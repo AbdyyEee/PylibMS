@@ -182,11 +182,11 @@ class LMS_DecodedTag:
             return f"[{self._definition.group_name}:{self._definition.tag_name}]"
 
         parameters = []
-        for key, param in self._parameters.items():
+        for param in self._parameters:
             if isinstance(param.value, bytes):
-                parameters.append(f'{key}="{param.value.hex()}"')
+                parameters.append(f'{param.name}="{param.value.hex()}"')
             else:
-                parameters.append(f'{key}="{param.value}"')
+                parameters.append(f'{param.name}="{param.value}"')
 
         parameters = " ".join(parameters)
         return (
@@ -208,12 +208,7 @@ class LMS_DecodedTag:
             return cls(tag_definition, is_closing=True)
 
         parameters = dict(cls.PARAMETER_FORMAT.findall(tag))
-
-        parameter_map = {}
-        for definition in tag_definition.parameters:
-            casted_value = convert_string_to_type(
-                parameters[definition.name], definition.datatype
-            )
-            parameter_map[definition.name] = LMS_Field(casted_value, definition)
-
+        parameter_map = LMS_FieldMap.from_string_dict(
+            parameters, tag_definition.parameters
+        )
         return cls(tag_definition, parameter_map)
