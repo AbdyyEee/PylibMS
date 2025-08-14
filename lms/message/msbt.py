@@ -117,9 +117,11 @@ class MSBT:
         # Insert the section magics in the correct position that when writing the sections will be properly recognized
         if attribute is not None and "ATR1" not in self.section_list:
             self.section_list.insert(2, "ATR1")
+            self._info.section_count += 1
 
         if style_index is not None and "TSY1" not in self.section_list:
             self.section_list.insert(3, "TSY1")
+            self._info.section_count += 1
 
         self._entries.append(
             MSBTEntry(
