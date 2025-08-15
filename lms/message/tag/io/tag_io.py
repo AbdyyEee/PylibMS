@@ -1,9 +1,11 @@
 from lms.fileio.encoding import FileEncoding
 from lms.fileio.io import FileReader, FileWriter
-from lms.message.tag.io.param_io import (read_decoded_parameters,
-                                         read_encoded_parameters,
-                                         write_decoded_parameters,
-                                         write_encoded_parameters)
+from lms.message.tag.io.param_io import (
+    read_decoded_parameters,
+    read_encoded_parameters,
+    write_decoded_parameters,
+    write_encoded_parameters,
+)
 from lms.message.tag.lms_tag import LMS_DecodedTag, LMS_EncodedTag
 from lms.message.tag.lms_tagexceptions import LMS_TagReadingError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition

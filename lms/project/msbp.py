@@ -24,7 +24,7 @@ class MSBP:
         self._info = info
 
         self._colors = colors
-        self._config = config
+        self._attribute_definitions = config
         self._tag_groups = tag_groups
         self._styles = styles
         self._source_files = source_files
@@ -40,9 +40,9 @@ class MSBP:
         return self._colors
 
     @property
-    def attribute_info(self) -> list[LMS_AttributeDefinition] | None:
+    def attribute_definitions(self) -> list[LMS_AttributeDefinition] | None:
         """The attribute definitions for the project instance."""
-        return self._config
+        return self._attribute_definitions
 
     @property
     def tag_groups(self) -> list[LMS_TagGroup] | None:

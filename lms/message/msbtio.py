@@ -2,13 +2,15 @@ from typing import BinaryIO
 
 from lms.common.stream.fileinfo import read_file_info, write_file_info
 from lms.common.stream.hashtable import read_labels, write_labels
-from lms.common.stream.section import (read_section_data, write_section,
-                                       write_unsupported_section)
+from lms.common.stream.section import (
+    read_section_data,
+    write_section,
+    write_unsupported_section,
+)
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.msbt import MSBT
 from lms.message.msbtentry import MSBTEntry
-from lms.message.section.atr1 import (read_atr1, write_decoded_atr1,
-                                      write_encoded_atr1)
+from lms.message.section.atr1 import read_atr1, write_decoded_atr1, write_encoded_atr1
 from lms.message.section.tsy1 import read_tsy1, write_tsy1
 from lms.message.section.txt2 import read_txt2, write_txt2
 from lms.titleconfig.config import AttributeConfig, TagConfig

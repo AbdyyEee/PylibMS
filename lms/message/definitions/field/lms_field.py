@@ -25,27 +25,14 @@ class LMS_FieldMap:
     def __iter__(self) -> Iterator[LMS_Field]:
         return iter(self._fields.values())
 
-    def get_field(self, name: str) -> LMS_Field:
-        """
-        Returns the field associated with the name.
-
-        :param name: the name of the field.
-        """
+    def __getitem__(self, name: str) -> LMS_Field:
         if name not in self._fields:
             raise KeyError(f"Field '{name}' does not exist")
-
         return self._fields[name]
 
-    def set_value(self, name: str, value: FieldValue) -> None:
-        """
-        Sets the value of the specified field.
-
-        :param name: the name of the field.
-        :param value: the new value for the field.
-        """
+    def __setitem__(self, name: str, value: FieldValue) -> None:
         if name not in self._fields:
             raise KeyError(f"Field '{name}' does not exist")
-
         self._fields[name].value = value
 
     def to_dict(self) -> dict[str, FieldValue]:

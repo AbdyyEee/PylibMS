@@ -172,10 +172,10 @@ class TitleConfig:
                     config[TitleConfig.TAG_KEY]["tags"].append(definition)
 
         config[TitleConfig.ATTR_KEY] = []
-        if project.attribute_info is not None:
+        if project.attribute_definitions is not None:
 
             attr_definitions = []
-            for attr_def in project.attribute_info:
+            for attr_def in project.attribute_definitions:
                 definition = {
                     "name": attr_def.name,
                     "description": "",

@@ -1,8 +1,11 @@
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
-from lms.message.definitions.field.lms_field import (LMS_DataType, LMS_Field,
-                                                     LMS_FieldMap)
+from lms.message.definitions.field.lms_field import (
+    LMS_DataType,
+    LMS_Field,
+    LMS_FieldMap,
+)
 from lms.titleconfig.definitions.attribute import AttributeConfig
 
 
