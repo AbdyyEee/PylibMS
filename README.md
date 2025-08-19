@@ -37,7 +37,16 @@ To add or edit Preset, you may create an issue with the relevant `yaml` file and
 pip install PylibMS
 ```
 
+# Build Instructions
 Python version must be `>=3.12.`
+
+Clone the repository, then run `pip install` (venv recommended)
+```bash
+git clone https://github.com/AbdyyEee/PylibMS.git
+cd PylibMS
+pip install -e 
+```
+
 # Credits & Sources
 * [Nintendo-File-Formats](https://nintendo-formats.com) by Kinnay: For existing information on the MSBT and MSBP file formats.
 * [Trippixyz](https://github.com/Trippixyz): For helping me get started general decompilation of the formats and general help.
