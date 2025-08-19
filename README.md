@@ -36,6 +36,7 @@ To add or edit Preset, you may create an issue with the relevant `yaml` file and
 ```
 pip install PylibMS
 ```
+[Pip Page](https://pypi.org/project/PyLibMS/0.6/)
 
 # Build Instructions
 Python version must be `>=3.12.`
