@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import struct
 from io import BytesIO, IOBase
-from typing import BinaryIO, Generator, cast
+from typing import BinaryIO, Generator
 
 from lms.fileio.encoding import FileEncoding
 

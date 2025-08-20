@@ -11,7 +11,7 @@ type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
 
 
 def is_tag(obj: object) -> TypeGuard[LMS_ControlTag]:
-    """Typeguard for a tag."""
+    """Typeguard to narrow tag objects."""
     return isinstance(obj, (LMS_EncodedTag, LMS_DecodedTag))
 
 

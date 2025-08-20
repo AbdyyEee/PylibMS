@@ -17,27 +17,29 @@ type FieldValue = int | str | float | bool | bytes
 @dataclass(frozen=True)
 class LMS_FieldMap:
     """
-    A wrapper for a dictionary of LMS_Field objects for easier access and abstraction from the dictionary object.
+    A wrapper for a dictionary of LMS_Field objects for controlled access, validation and abstraction from the dictionary object.
     """
 
-    _fields: dict[str, LMS_Field]
+    fields: dict[str, LMS_Field]
 
     def __iter__(self) -> Iterator[LMS_Field]:
-        return iter(self._fields.values())
+        return iter(self.fields.values())
 
     def __getitem__(self, name: str) -> LMS_Field:
-        if name not in self._fields:
+        if name not in self.fields:
             raise KeyError(f"Field '{name}' does not exist")
-        return self._fields[name]
+
+        return self.fields[name]
 
     def __setitem__(self, name: str, value: FieldValue) -> None:
-        if name not in self._fields:
+        if name not in self.fields:
             raise KeyError(f"Field '{name}' does not exist")
-        self._fields[name].value = value
+
+        self.fields[name].value = value
 
     def to_dict(self) -> dict[str, FieldValue]:
         """Converts the field map to a regular dictionary."""
-        return {field.name: field.value for field in self._fields.values()}
+        return {field.name: field.value for field in self.fields.values()}
 
     @classmethod
     def from_dict(cls, data: dict[str, FieldValue], definitions: list[ValueDefinition]):
@@ -53,24 +55,38 @@ class LMS_FieldMap:
         fields = {}
 
         for definition in definitions:
-            value = convert_string_to_type(data[definition.name], definition.datatype)
-            fields[definition.name] = LMS_Field(value, definition)
+            if definition.datatype in (LMS_DataType.STRING, LMS_DataType.LIST):
+                fields[definition.name] = LMS_Field(data[definition.name], definition)
+                continue
+
+            value = data[definition.name]
+            match definition.datatype:
+                case LMS_DataType.BYTES:
+                    casted_value = bytes.fromhex(value)
+                case LMS_DataType.BOOL:
+                    if value not in ("false", "true"):
+                        raise ValueError("Value must be true or false for bool type.")
+                    casted_value = value.strip().lower() == "true"
+                case LMS_DataType.FLOAT32:
+                    casted_value = float(value)
+                case _:
+                    casted_value = int(value)
+
+            fields[definition.name] = LMS_Field(casted_value, definition)
 
         return cls(fields)
 
 
 class LMS_Field:
     """
-    A class that represents a mapped field linked to a config definition.
-
-    Acts as values for Attributes and Tag Parameters.
+    A class that represents a mapped value linked to a config definition.
     """
 
     def __init__(
         self, value: int | str | float | bytes | bool, definition: ValueDefinition
     ):
+        _verify_value(value, definition)
         self._definition = definition
-        self._verify_value(value)
         self._value = value
 
     def __repr__(self):
@@ -105,64 +121,48 @@ class LMS_Field:
 
     @value.setter
     def value(self, new_value: int | str | float | bytes | bool):
-        self._verify_value(new_value)
+        _verify_value(new_value, self._definition)
         self._value = new_value
 
-    def _verify_value(self, value: int | str | float | bytes | bool) -> None:
-        datatype = self._definition.datatype
 
-        if datatype in (LMS_DataType.BOOL, LMS_DataType.STRING):
-            return
+def _verify_value(
+    value: int | str | float | bytes | bool, definition: ValueDefinition
+) -> None:
+    datatype = definition.datatype
 
-        match datatype:
-            case LMS_DataType.BYTES if isinstance(value, bytes):
-                if len(value) != 1:
-                    raise ValueError("Byte types only work for values of length 1!")
-                else:
-                    return
-            case LMS_DataType.LIST if isinstance(value, str):
-                if value not in self._definition.list_items:
-                    raise ValueError(
-                        f"The value of '{value}' provided for field '{self.name}' is not in the list {self._definition.list_items}."
-                    )
-                else:
-                    return
-            case LMS_DataType.FLOAT32 if isinstance(value, float):
-                _verify_range(value, FLOAT_MIN, FLOAT_MAX, self._definition)
-                return
-            case _ if isinstance(value, int):
-                bits = datatype.stream_size * 8
-                if datatype.signed:
-                    max_value = 2 ** (bits - 1)
-                    min_value = -max_value
-                else:
-                    min_value, max_value = 0, (2**bits) - 1
-
-                _verify_range(value, min_value, max_value, self._definition)
-                return
-
-        raise TypeError(
-            f"The value provided for '{self.name}' type '{type(value)}' should be '{datatype.builtin_type}'."
-        )
-
-
-def convert_string_to_type(
-    value: str, datatype: LMS_DataType
-) -> int | str | bool | float | bytes:
-    if datatype in (LMS_DataType.STRING, LMS_DataType.LIST):
-        return cast(str, value)
+    if datatype in (LMS_DataType.BOOL, LMS_DataType.STRING):
+        return
 
     match datatype:
-        case LMS_DataType.BYTES:
-            return bytes.fromhex(value)
-        case LMS_DataType.BOOL:
-            if value not in ("false", "true"):
-                raise ValueError("Value must be true or false for bool type.")
-            return value.strip().lower() == "true"
-        case LMS_DataType.FLOAT32:
-            return float(value)
-        case _:
-            return int(value)
+        case LMS_DataType.BYTES if isinstance(value, bytes):
+            if len(value) != 1:
+                raise ValueError("Byte types only work for values of length 1!")
+            else:
+                return
+        case LMS_DataType.LIST if isinstance(value, str):
+            if value not in definition.list_items:
+                raise ValueError(
+                    f"The value of '{value}' provided for field '{definition.name}' is not in the list {definition.list_items}."
+                )
+            else:
+                return
+        case LMS_DataType.FLOAT32 if isinstance(value, float):
+            _verify_range(value, FLOAT_MIN, FLOAT_MAX, definition)
+            return
+        case _ if isinstance(value, int):
+            bits = datatype.stream_size * 8
+            if datatype.signed:
+                max_value = 2 ** (bits - 1)
+                min_value = -max_value
+            else:
+                min_value, max_value = 0, (2**bits) - 1
+
+            _verify_range(value, min_value, max_value, definition)
+            return
+
+    raise TypeError(
+        f"The value provided for '{definition.name}' type '{type(value)}' should be '{datatype.builtin_type}'."
+    )
 
 
 def _verify_range(

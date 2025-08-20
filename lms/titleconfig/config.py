@@ -1,7 +1,6 @@
 from importlib import resources
 
 import yaml
-
 from lms.common.lms_datatype import LMS_DataType
 from lms.project.msbp import MSBP
 from lms.titleconfig.definitions.attribute import AttributeConfig
@@ -23,11 +22,11 @@ class TitleConfig:
     def __init__(
         self,
         game: str | None,
-        attribute_configs: dict[str, AttributeConfig] | None = None,
+        attribute_config_map: dict[str, AttributeConfig] | None = None,
         tag_config: TagConfig | None = None,
     ):
         self._game = game
-        self._attribute_configs = attribute_configs
+        self._attribute_config_map = attribute_config_map
         self._tag_config = tag_config
 
     @property
@@ -36,14 +35,32 @@ class TitleConfig:
         return self._game
 
     @property
-    def attribute_configs(self) -> dict[str, AttributeConfig] | None:
-        """The map of attribute config instances."""
-        return self._attribute_configs
-
-    @property
     def tag_config(self) -> TagConfig | None:
         """The loaded tag config instance."""
         return self._tag_config
+
+    @property
+    def attribute_configs(self) -> tuple[AttributeConfig, ...]:
+        """Returns a tuple of all attribute configurations in read-only form."""
+        if self._attribute_config_map is None:
+            return ()
+        return tuple(self._attribute_config_map.values())
+
+    def get_attribute_config(self, name: str) -> AttributeConfig:
+        """
+        Returns the attribute configuration given the name.
+
+        :param name: the name of the attribute config.
+        """
+        if self._attribute_config_map is None:
+            raise ValueError(f"There are no attribute configs!")
+
+        if name not in self._attribute_config_map:
+            raise KeyError(
+                f"The attribute config '{name}' does not exist in the TitleConfig!"
+            )
+
+        return self._attribute_config_map[name]
 
     @classmethod
     def load_preset(cls, game: str):

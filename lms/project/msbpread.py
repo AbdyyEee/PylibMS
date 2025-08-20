@@ -91,7 +91,6 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
                 raise ValueError(f"Unknown section magic '{magic}' in MSBP file.")
 
     if attr_definitions is not None:
-        # There will always be attribute lists defined if there is any attribute definitions
         attribute_lists = cast(list, attr_definitions)
 
         for definition in attr_definitions:
@@ -99,7 +98,6 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
                 definition.list_items = attribute_lists[definition.list_index]
 
     if tag_groups is not None:
-        # There will always be parameter definitions alongside list items if there is any group definitions
         tag_definitions = cast(list, tag_definitions)
         tag_param_definitions = cast(list, tag_param_definitions)
         list_items = cast(list, list_items)

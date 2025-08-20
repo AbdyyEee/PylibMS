@@ -4,10 +4,8 @@ from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
 from lms.message.definitions.field.lms_field import LMS_Field, LMS_FieldMap
-from lms.message.tag.lms_tagexceptions import (
-    LMS_TagReadingError,
-    LMS_TagWritingException,
-)
+from lms.message.tag.lms_tagexceptions import (LMS_TagReadingError,
+                                               LMS_TagWritingException)
 from lms.titleconfig.definitions.tags import TagDefinition
 
 TAG_PADDING_BYTE = b"\xcd"

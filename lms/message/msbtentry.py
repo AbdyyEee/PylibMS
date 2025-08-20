@@ -11,7 +11,7 @@ class MSBTEntry:
         self,
         name: str,
         *,
-        message: LMS_MessageText | str | None = None,
+        message: LMS_MessageText | str | None = "",
         attribute: LMS_FieldMap | bytes | None = None,
         style_index: int | None = None,
     ):
@@ -74,9 +74,12 @@ class MSBTEntry:
         :param attribute_config: the config to use to import decoded attributes.
         :param tag_config: the config to use if decoded tags are included in the message.
         """
-        message = data.get("message")
+        message = data.get("message", "")
         attribute = data.get("attribute")
         style_index = data.get("style_index")
+
+        if tag_config is not None:
+            message = LMS_MessageText(message, tag_config)
 
         if attribute is not None:
             if not isinstance(attribute, (dict, str)):

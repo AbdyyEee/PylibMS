@@ -1,25 +1,29 @@
+from dataclasses import dataclass
+
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
-from lms.message.definitions.field.lms_field import (
-    LMS_DataType,
-    LMS_Field,
-    LMS_FieldMap,
-)
+from lms.message.definitions.field.lms_field import (LMS_DataType, LMS_Field,
+                                                     LMS_FieldMap)
 from lms.titleconfig.definitions.attribute import AttributeConfig
+
+
+@dataclass(frozen=True)
+class ATR1Data:
+    attributes: list[bytes] | list[LMS_FieldMap]
+    size_per_attribute: int
+    string_table: bytes | None
 
 
 def read_atr1(
     reader: FileReader, config: AttributeConfig | None, section_size: int
-) -> tuple[list[bytes] | list[LMS_FieldMap], int, bytes | None]:
+) -> ATR1Data:
     if config is None:
         return read_encoded_atr1(reader, section_size)
     return read_decoded_atr1(reader, config)
 
 
-def read_encoded_atr1(
-    reader: FileReader, section_size: int
-) -> tuple[list[bytes], int, bytes | None]:
+def read_encoded_atr1(reader: FileReader, section_size: int) -> ATR1Data:
     absolute_size = section_size + reader.tell()
 
     attribute_count = reader.read_uint32()
@@ -31,21 +35,19 @@ def read_encoded_atr1(
     if section_size > 8 + size_per_attribute * attribute_count:
         string_table = reader.read_bytes(absolute_size - reader.tell())
 
-    return (attributes, size_per_attribute, string_table)
+    return ATR1Data(attributes, size_per_attribute, string_table)
 
 
-def read_decoded_atr1(
-    reader: FileReader, config: AttributeConfig
-) -> tuple[list[LMS_FieldMap], int, None]:
+def read_decoded_atr1(reader: FileReader, config: AttributeConfig) -> ATR1Data:
     section_start = reader.tell()
 
     attr_count = reader.read_uint32()
-    size_per_attr = reader.read_uint32()
+    size_per_attribute = reader.read_uint32()
 
     attributes, attr_start = [], reader.tell()
 
     for i in range(attr_count):
-        reader.seek(attr_start + i * size_per_attr)
+        reader.seek(attr_start + i * size_per_attribute)
 
         attribute = {}
         for definition in config.definitions:
@@ -61,7 +63,7 @@ def read_decoded_atr1(
 
         attributes.append(LMS_FieldMap(attribute))
 
-    return attributes, size_per_attr, None
+    return ATR1Data(attributes, size_per_attribute, None)
 
 
 def write_encoded_atr1(

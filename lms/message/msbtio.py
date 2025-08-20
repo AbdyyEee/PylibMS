@@ -2,15 +2,13 @@ from typing import BinaryIO
 
 from lms.common.stream.fileinfo import read_file_info, write_file_info
 from lms.common.stream.hashtable import read_labels, write_labels
-from lms.common.stream.section import (
-    read_section_data,
-    write_section,
-    write_unsupported_section,
-)
+from lms.common.stream.section import (read_section_data, write_section,
+                                       write_unsupported_section)
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.msbt import MSBT
 from lms.message.msbtentry import MSBTEntry
-from lms.message.section.atr1 import read_atr1, write_decoded_atr1, write_encoded_atr1
+from lms.message.section.atr1 import (read_atr1, write_decoded_atr1,
+                                      write_encoded_atr1)
 from lms.message.section.tsy1 import read_tsy1, write_tsy1
 from lms.message.section.txt2 import read_txt2, write_txt2
 from lms.titleconfig.config import AttributeConfig, TagConfig
@@ -77,18 +75,16 @@ def read_msbt(
     if attribute_config is not None:
         file.uses_encoded_attributes = False
 
-    attributes = style_indexes = None
+    atr1_data = style_indexes = None
     for magic, size in read_section_data(reader, file_info.section_count):
         match magic:
             case "LBL1":
                 labels, slot_count = read_labels(reader)
                 file.slot_count = slot_count
             case "ATR1":
-                attributes, size_per_attr, str_table = read_atr1(
-                    reader, attribute_config, size
-                )
-                file.size_per_attribute = size_per_attr
-                file.attr_string_table = str_table
+                atr1_data = read_atr1(reader, attribute_config, size)
+                file.size_per_attribute = atr1_data.size_per_attribute
+                file.attr_string_table = atr1_data.string_table
             case "TXT2":
                 messages = read_txt2(reader, tag_config, suppress_tag_errors)
             case "TSY1":
@@ -97,14 +93,14 @@ def read_msbt(
                 file.unsupported_sections[magic] = reader.read_bytes(size)
 
         if not file.section_exists(magic):
-            file.section_list.append(magic)
+            file._section_list.append(magic)
 
     for i, label in labels.items():
         text = None if messages is None else messages[i]
-        attr = None if attributes is None else attributes[i]
-        style_i = None if style_indexes is None else style_indexes[i]
-        file.entries.append(
-            MSBTEntry(label, message=text, attribute=attr, style_index=style_i)
+        attr = None if atr1_data is None else atr1_data.attributes[i]
+        style = None if style_indexes is None else style_indexes[i]
+        file.add_entry(
+            MSBTEntry(label, message=text, attribute=attr, style_index=style)
         )
 
     return file
@@ -149,10 +145,10 @@ def write_msbt(file: MSBT) -> bytes:
     for section in file.section_list:
         match section:
             case "LBL1":
-                labels = [entry.name for entry in file.entries]
+                labels = [entry.name for entry in file]
                 write_section(writer, "LBL1", write_labels, labels, file.slot_count)
             case "ATR1":
-                attributes = [entry.attribute for entry in file.entries]
+                attributes = [entry.attribute for entry in file]
                 if file.uses_encoded_attributes:
                     write_section(
                         writer,
@@ -171,10 +167,10 @@ def write_msbt(file: MSBT) -> bytes:
                         file.size_per_attribute,
                     )
             case "TXT2":
-                messages = [entry.message for entry in file.entries]
+                messages = [entry.message for entry in file]
                 write_section(writer, "TXT2", write_txt2, messages)
             case "TSY1":
-                style_indexes = [entry.style_index for entry in file.entries]
+                style_indexes = [entry.style_index for entry in file]
                 write_section(writer, "TSY1", write_tsy1, style_indexes)
             case _:
                 write_unsupported_section(

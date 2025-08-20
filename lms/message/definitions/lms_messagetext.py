@@ -1,12 +1,8 @@
 import re
 
 from lms.message.definitions.field.lms_field import LMS_FieldMap
-from lms.message.tag.lms_tag import (
-    LMS_ControlTag,
-    LMS_DecodedTag,
-    LMS_EncodedTag,
-    is_tag,
-)
+from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
+                                     LMS_EncodedTag, is_tag)
 from lms.titleconfig.config import TagConfig
 
 
@@ -116,7 +112,7 @@ class LMS_MessageText:
         self._parts.append(tag)
         return tag
 
-    def append_tag_string(self, tag: str) -> None:
+    def append_tag_string(self, tag: str) -> LMS_ControlTag:
         """
         Appends a tag to the current message given a string.
 
@@ -125,11 +121,14 @@ class LMS_MessageText:
         if re.fullmatch(LMS_DecodedTag.TAG_FORMAT, tag):
             if self._tag_config is None:
                 raise ValueError("TagConfig is required to append decoded tags.")
-            self._parts.append(LMS_DecodedTag.from_string(tag, self._tag_config))
+            tag_obj = LMS_DecodedTag.from_string(tag, self._tag_config)
         elif re.fullmatch(LMS_EncodedTag.TAG_FORMAT, tag):
-            self._parts.append(LMS_EncodedTag.from_string(tag))
+            tag_obj = LMS_EncodedTag.from_string(tag)
         else:
             raise ValueError(f"Invalid format for tag '{tag}'.")
+
+        self._parts.append(tag_obj)
+        return tag_obj
 
     def _set_parts(self, text: str) -> None:
         self._parts = []
