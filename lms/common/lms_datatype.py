@@ -1,5 +1,35 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Type
+from typing import Type, TypeGuard
+
+
+def is_number_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[int | float]:
+    return datatype in (
+        LMS_DataType.UINT8,
+        LMS_DataType.UINT16,
+        LMS_DataType.UINT32,
+        LMS_DataType.INT8,
+        LMS_DataType.INT16,
+        LMS_DataType.INT32,
+        LMS_DataType.FLOAT32,
+    ) and isinstance(value, (int, float))
+
+
+def is_list_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[str]:
+    return datatype is LMS_DataType.LIST and isinstance(value, str)
+
+
+def is_bool_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[bool]:
+    return datatype is LMS_DataType.BOOL and isinstance(value, bool)
+
+
+def is_bytes_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[bytes]:
+    return datatype is LMS_DataType.BYTES and isinstance(value, bytes)
+
+
+def is_string_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[str]:
+    return datatype is LMS_DataType.STRING and isinstance(value, str)
 
 
 class LMS_DataType(Enum):
@@ -17,16 +47,16 @@ class LMS_DataType(Enum):
 
     # Unknown 16 bit type (value of 6) has yet to be documented
     # Might be some sort of 2 byte integer, float, or may be an array.
-    # We wont ever know cause no game (yet that has been found) has utilized this type
+    # We won't ever know cause no game (yet that has been found) has utilized this type
     # Thanks Nintendo.
     ...
 
     STRING = 8
     LIST = 9
 
-    # These types are not offical, but allow for abstraction from the value of the actual type
-    # As an example, BOOL can be utilized for UInt8 values that act like a bool
-    # Byte types can also be used for when the type/value is unknown or if there is extra data in the tag.
+    # Interface types
+    # These types act as an abstraction for a real LMS_Datatype
+    # The actual value isn't important since they are not real types, but are instantiated from a config
     BOOL = "bool"
     BYTES = "byte"
 
@@ -81,7 +111,7 @@ class LMS_DataType(Enum):
 
     @classmethod
     def from_string(cls, string: str):
-        """Creates a LMS_Datatype enum value from it's string representation"""
+        """Creates an enum value from its string representation"""
         member = string.upper()
         if member in cls.__members__:
             return cls[member]

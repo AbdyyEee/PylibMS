@@ -16,6 +16,8 @@ from lms.project.section.tag2 import read_tag2
 from lms.project.section.tgg2 import read_tgg2
 from lms.project.section.tgp2 import read_tgp2
 
+from PylibMS.lms.project.definitions.color import LMS_Color
+
 __all__ = ["read_msbp", "read_msbp_path"]
 
 
@@ -25,11 +27,9 @@ def read_msbp_path(file_path: str) -> MSBP:
 
     :param file_path: the path to the MSBP file.
 
-    ## Usage
-    ```
-    msbp = read_msbp_path("path/to/file.msbp")
-    ...
-    ```
+    Example
+    ---------
+    >>> msbp = read_msbp_path("path/to/file.msbp")
     """
     with open(file_path, "rb") as stream:
         return read_msbp(stream)
@@ -39,26 +39,26 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
     """
     Reads and retrieves a MSBP file from a specified stream.
 
-    :param stream: an `IOBase`, `BytesIO`, `memoryview`, or `bytes` object.
+    :param stream: an ``IOBase``, ``BytesIO``, ``memoryview``, or ``bytes`` object.
 
-    ## Usage
-    ```
-    with open(file_path, "rb") as file:
-        msbp = read_msbp(file)
-        ...
-    ```
+    Example
+    ---------
+    >>> msbp = read_msbp(stream)
     """
     reader = FileReader(stream)
-    file_info = read_file_info(reader, "MsgPrjBn")
+    file_info = read_file_info(reader, MSBP.MAGIC)
 
+    colors = None
     attr_definitions = None
-    attribute_lists = None
+    attribute_list_items = None
     tag_groups = None
     tag_definitions = None
     tag_param_definitions = None
+    tag_list_items = None
     styles = None
     source_list = None
 
+    items = []
     for magic, _ in read_section_data(reader, file_info.section_count):
         match magic:
             case "CLB1" | "ALB1" | "SLB1":
@@ -73,7 +73,7 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
                 attr_definitions = read_ati2(reader)
                 items = attr_definitions
             case "ALI2":
-                attribute_lists = read_ali2(reader)
+                attribute_list_items = read_ali2(reader)
             case "TGG2":
                 tag_groups = read_tgg2(reader, file_info.version)
             case "TAG2":
@@ -81,7 +81,7 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
             case "TGP2":
                 tag_param_definitions = read_tgp2(reader)
             case "TGL2":
-                list_items = read_strings(reader, False)
+                tag_list_items = read_strings(reader, False)
             case "SYL3":
                 styles = read_styles(reader)
                 items = styles
@@ -91,20 +91,14 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
                 raise ValueError(f"Unknown section magic '{magic}' in MSBP file.")
 
     if attr_definitions is not None:
-        attribute_lists = cast(list, attr_definitions)
-
         for definition in attr_definitions:
             if definition.datatype is LMS_DataType.LIST:
-                definition.list_items = attribute_lists[definition.list_index]
+                definition.list_items = attribute_list_items[definition.list_index]
 
     if tag_groups is not None:
-        tag_definitions = cast(list, tag_definitions)
-        tag_param_definitions = cast(list, tag_param_definitions)
-        list_items = cast(list, list_items)
-
         for group in tag_groups:
             group.set_all_definitions(
-                tag_definitions, tag_param_definitions, list_items
+                tag_definitions, tag_param_definitions, tag_list_items
             )
 
     file = MSBP(file_info, colors, attr_definitions, tag_groups, styles, source_list)

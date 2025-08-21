@@ -9,7 +9,7 @@ from lms.titleconfig.config import TagConfig
 class LMS_MessageText:
     """Class that represents a message text entry."""
 
-    TAG_FORMAT = re.compile(r"(\[[^\]]+\])")
+    TAG_FORMAT = re.compile(r"(\[[^]]+])")
 
     def __init__(
         self,
@@ -38,7 +38,7 @@ class LMS_MessageText:
         return "".join(result)
 
     @text.setter
-    def text(self, string: str):
+    def text(self, string: str) -> None:
         self._set_parts(string)
 
     @property
@@ -47,19 +47,20 @@ class LMS_MessageText:
         return [part for part in self._parts if is_tag(part)]
 
     def append_encoded_tag(
-        self, group_id: int, tag_index: int, is_closing: bool = False, *parameters: str
+        self, group_id: int, tag_index: int, *parameters: str, is_closing: bool = False
     ) -> LMS_EncodedTag:
         """
         Appends an encoded tag to the current message and returns that tag.
 
-        :param group: the group name or index.
-        :param tag: the group tag or index:
-        :param parameters: a list of hex strings.
+        :param group_id: the group index.
+        :param tag_index: the index of the tag in the group.
+        :param parameters: args of hex strings.
+        :param is_closing: whether the tag is closing or not.
 
-        ## Usage
-        ```
-        message.append_encoded_tag(1, 2, "01", "00", "00", "CD")
-        ```
+        Example
+        ------
+        >>> message = LMS_MessageText("Text")
+        >>> message.append_encoded_tag(0, 3, "00", "23", "43", "32")
         """
         if is_closing:
             tag = LMS_EncodedTag(group_id, tag_index, is_closing=True)
@@ -79,35 +80,32 @@ class LMS_MessageText:
         **parameters: int | str | float | bool | bytes,
     ) -> LMS_DecodedTag:
         """
-        Appends an decoded tag to the current message and returns that tag.
+        Appends a decoded tag to the current message and returns that tag.
 
         :param group_name: the group name.
         :param tag_name: the tag name.:
+        :param is_closing: whether the tag is closing or not.
         :param parameters: keyword arguments of parameters mapped to their value.
 
-        ## Usage
-        ```
-        message.append_decoded_tag("Mii", "Nickname", buffer=1, type="Voice", conversion="None")
-        ```
+        Example
+        -------
+        >>> message = LMS_MessageText("Text")
+        >>> message.append_decoded_tag("Mii", "Nickname", buffer=1, type="Voice", conversion="None")
         """
         if self._tag_config is None:
             raise ValueError("A TitleConfig is required to append decoded tags.")
 
         definition = self._tag_config.get_definition_by_names(group_name, tag_name)
 
-        param_map = None
-
         if not parameters:
             tag = LMS_DecodedTag(definition)
-            self._parts.append(tag)
-            return tag
-
-        param_map = LMS_FieldMap.from_dict(parameters, definition.parameters)
-
-        if is_closing:
-            tag = LMS_DecodedTag(definition, is_closing=True)
         else:
-            tag = LMS_DecodedTag(definition, param_map)
+            param_map = LMS_FieldMap.from_dict(parameters, definition.parameters)
+
+            if is_closing:
+                tag = LMS_DecodedTag(definition, is_closing=True)
+            else:
+                tag = LMS_DecodedTag(definition, param_map)
 
         self._parts.append(tag)
         return tag

@@ -25,7 +25,7 @@ class LMS_EncodedTag:
         - `[1:0 01-00-00-CD]`
     """
 
-    TAG_FORMAT = re.compile(r"\[\s*(\/)?\s*(\d+)\s*:\s*(\d+)(?:[^\]]*)\]")
+    TAG_FORMAT = re.compile(r"\[\s*(/)?\s*(\d+)\s*:\s*(\d+)[^]]*]")
     PARAMETER_FORMAT = re.compile(r"^\s*([0-9A-Fa-f]{2})(\s*-\s*[0-9A-Fa-f]{2})*\s*$")
 
     def __init__(
@@ -125,12 +125,12 @@ class LMS_DecodedTag:
 
     Example decoded tags:
         - `[System:Color r="0" g="255" b="255" a="255"]`
-        - `[System:Pagebreak]`
+        - `[System:PageBreak]`
         - `[Mii:Nickname buffer="1" type="Text" conversion="None"]`
     """
 
     TAG_FORMAT = re.compile(
-        r"\[\s*(/)?\s*([A-Za-z][\w]*)\s*:\s*([A-Za-z]+)(?:\s+[^\]]*)?\s*\]"
+        r"\[\s*(/)?\s*([A-Za-z]\w*)\s*:\s*([A-Za-z]+)(?:\s+[^]]*)?\s*]"
     )
     PARAMETER_FORMAT = re.compile(r'(\w+)="([^"]*)"')
 

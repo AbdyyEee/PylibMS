@@ -4,7 +4,8 @@ from lms.message.tag.io.param_io import (read_decoded_parameters,
                                          read_encoded_parameters,
                                          write_decoded_parameters,
                                          write_encoded_parameters)
-from lms.message.tag.lms_tag import LMS_DecodedTag, LMS_EncodedTag
+from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
+                                     LMS_EncodedTag)
 from lms.message.tag.lms_tagexceptions import LMS_TagReadingError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
@@ -12,9 +13,12 @@ TAG_PADDING_BYTE = b"\xcd"
 
 
 def get_tag_indicator(encoding: FileEncoding, is_big_endian: bool):
-    byte_order = "little" if not is_big_endian else "big"
-    start_indicator = int.to_bytes(0x0E, encoding.width, byte_order)
-    closing_indicator = int.to_bytes(0x0F, encoding.width, byte_order)
+    start_indicator = int.to_bytes(
+        0x0E, encoding.width, "little" if not is_big_endian else "big"
+    )
+    closing_indicator = int.to_bytes(
+        0x0F, encoding.width, "little" if not is_big_endian else "big"
+    )
     return start_indicator, closing_indicator
 
 
@@ -23,7 +27,7 @@ def read_tag(
     tag_config: TagConfig | None,
     is_closing: bool,
     suppress_tag_errors: bool,
-) -> LMS_EncodedTag | LMS_DecodedTag:
+) -> LMS_ControlTag:
     group_id = reader.read_uint16()
     tag_index = reader.read_uint16()
     start = reader.tell()
@@ -34,11 +38,11 @@ def read_tag(
     definition = tag_config.get_definition_by_indexes(group_id, tag_index)
 
     # Tags not defined in the config are not considered fallback tags
-    # Not all configs will define every tag, so this is simply a measure to still read tags that arent defined
+    # Not all configs will define every tag, so this is simply a measure to still read tags that aren't defined
     if definition is None:
         return _read_encoded_tag(reader, group_id, tag_index, is_closing)
 
-    # There doesnt need to be error handling in this case since there are no parameters for closing tags
+    # There doesn't need to be error handling in this case since there are no parameters for closing tags
     if is_closing:
         return _read_decoded_tag(reader, definition, is_closing=True)
 
@@ -60,7 +64,7 @@ def _read_encoded_tag(
     tag_index: int,
     is_closing: bool = False,
     is_fallback: bool = False,
-):
+) -> LMS_EncodedTag:
     if is_closing:
         return LMS_EncodedTag(group_id, tag_index, is_closing=True)
 

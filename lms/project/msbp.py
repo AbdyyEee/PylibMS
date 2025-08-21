@@ -6,9 +6,13 @@ from lms.project.definitions.tag import LMS_TagGroup
 
 
 class MSBP:
-    """A class that represents a MSBP file.
+    """
+    A class that represents a MSBP file.
 
-    https://nintendo-formats.com/libs/lms/msbp.html."""
+    https://nintendo-formats.com/libs/lms/msbp.html.
+    """
+
+    MAGIC = "MsjPrjBn"
 
     def __init__(
         self,

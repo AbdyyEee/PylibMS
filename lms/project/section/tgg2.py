@@ -11,12 +11,12 @@ def read_tgg2(reader: FileReader, version: int) -> list[LMS_TagGroup]:
 
         # in version 3 MSBP files, the group ID is the index in the list of groups
         # in version 4 MSBP files, the group ID is stored in the file and may be a value outside the range of the list
-        id = reader.read_uint16() if version == 4 else i
+        group_id = reader.read_uint16() if version == 4 else i
 
         tag_count = reader.read_uint16()
         tag_indexes = reader.read_uint16_array(tag_count)
 
         name = reader.read_str_variable_encoding()
-        group_list.append(LMS_TagGroup(name, id, tag_indexes))
+        group_list.append(LMS_TagGroup(name, group_id, tag_indexes))
 
     return group_list

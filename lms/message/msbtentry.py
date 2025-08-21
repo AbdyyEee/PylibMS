@@ -29,7 +29,8 @@ class MSBTEntry:
 
         if attribute is not None and not isinstance(attribute, (LMS_FieldMap, bytes)):
             raise TypeError(
-                f"An invalid type was provided for attribute in entry '{name}'. Expected dict or bytes got {type(attribute)},"
+                f"An invalid type was provided for attribute in entry '{name}'. "
+                f"Expected LMS_FieldMap or bytes, got {type(attribute)}"
             )
 
         self._attribute = attribute
@@ -47,9 +48,10 @@ class MSBTEntry:
 
     def to_dict(self) -> dict:
         """Converts the MSBTEntry instance into a dictionary object."""
-        result = {}
-        result["name"] = self.name
-        result["message"] = "" if self.message is None else self.message.text
+        result: dict[str, int | str | dict | None] = {
+            "name": self.name,
+            "message": "" if self.message is None else self.message.text,
+        }
 
         if self._attribute is not None:
             if isinstance(self._attribute, bytes):
@@ -64,7 +66,7 @@ class MSBTEntry:
     def from_dict(
         cls,
         data: dict,
-        attribute_conifg: AttributeConfig | None = None,
+        attribute_config: AttributeConfig | None = None,
         tag_config: TagConfig | None = None,
     ):
         """
@@ -86,12 +88,12 @@ class MSBTEntry:
                 raise TypeError("Invalid attribute type provided!")
 
             if isinstance(attribute, dict):
-                if attribute_conifg is None:
+                if attribute_config is None:
                     raise TypeError(
                         "A valid attribute config must be provided for decoded attributes!"
                     )
                 attribute = LMS_FieldMap.from_dict(
-                    attribute, attribute_conifg.definitions
+                    attribute, attribute_config.definitions
                 )
             else:
                 attribute = bytes.fromhex(attribute)

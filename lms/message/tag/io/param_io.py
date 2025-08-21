@@ -1,5 +1,6 @@
 from typing import cast
 
+from common.lms_datatype import is_string_datatype
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
@@ -54,8 +55,7 @@ def write_decoded_parameters(
     param_size = 0
 
     for field in parameters:
-        if field.datatype is LMS_DataType.STRING:
-            field.value = cast(str, field.value)
+        if is_string_datatype(field.value, field.datatype):
             param_size += 2 + len(field.value) * writer.encoding.width
         else:
             param_size += field.datatype.stream_size
@@ -67,9 +67,7 @@ def write_decoded_parameters(
 
     for field in parameters:
         try:
-            if field.datatype is LMS_DataType.STRING:
-                field.value = cast(str, field.value)
-
+            if is_string_datatype(field.value, field.datatype):
                 # Tags are padded by a 0xCD byte if the size is not aligned to the encoding
                 # This can occur before a string parameter, or at the end of the tag.
                 # If a string parameter exists, then the padding will always be at the first string instance

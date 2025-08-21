@@ -7,7 +7,7 @@ from lms.titleconfig.definitions.value import ValueDefinition
 
 
 class TagConfig:
-    """Class that represents an tag structure definition."""
+    """Class that represents a tag structure definition."""
 
     def __init__(self, group_map: dict[int, str], definitions: list[TagDefinition]):
         self._group_map = group_map
@@ -21,22 +21,24 @@ class TagConfig:
     def definitions(self) -> list[TagDefinition]:
         return self._definitions
 
-    def get_definition_by_names(self, group: str, tag: str) -> TagDefinition:
+    def get_definition_by_names(self, group_name: str, tag_name: str) -> TagDefinition:
         group_index = None
         for i, name in self.group_map.items():
-            if name == group:
+            if name == group_name:
                 group_index = i
                 break
 
         if group_index is None:
-            raise KeyError(f"Group name '{group}' was not found! Is the group defined?")
+            raise KeyError(
+                f"Group name '{group_name}' was not found! Is the group defined?"
+            )
 
         for tag_def in self.definitions:
-            if tag_def.group_id == group_index and tag_def.tag_name == tag:
+            if tag_def.group_id == group_index and tag_def.tag_name == tag_name:
                 return tag_def
 
         raise KeyError(
-            f"Tag name '{tag}' not found in group '{group}'. Is the tag defined?"
+            f"Tag name '{tag_name}' not found in group '{group_name}'. Is the tag defined?"
         )
 
     def get_definition_by_indexes(

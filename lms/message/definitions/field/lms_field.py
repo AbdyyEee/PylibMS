@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from dataclasses import dataclass, field
-from typing import cast
+from dataclasses import dataclass
 
 from lms.common.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
@@ -17,7 +16,8 @@ type FieldValue = int | str | float | bool | bytes
 @dataclass(frozen=True)
 class LMS_FieldMap:
     """
-    A wrapper for a dictionary of LMS_Field objects for controlled access, validation and abstraction from the dictionary object.
+    A wrapper for a dictionary of LMS_Field objects for controlled access, validation
+    and abstraction from the dict object.
     """
 
     fields: dict[str, LMS_Field]
@@ -91,8 +91,8 @@ class LMS_Field:
 
     def __repr__(self):
         if self.datatype is LMS_DataType.LIST:
-            return f"LMS_Field(value={self._value}, list_items={self.list_items})"
-        return f"LMS_Field(value={self._value}, type={self.datatype.name})"
+            return f"LMS_Field(value={self._value!r}, list_items={self.list_items!r})"
+        return f"LMS_Field(value={self._value!r}, type={self.datatype!r})"
 
     @property
     def name(self) -> str:
@@ -147,7 +147,7 @@ def _verify_value(
             else:
                 return
         case LMS_DataType.FLOAT32 if isinstance(value, float):
-            _verify_range(value, FLOAT_MIN, FLOAT_MAX, definition)
+            _verify_number_is_in_range(value, FLOAT_MIN, FLOAT_MAX, definition)
             return
         case _ if isinstance(value, int):
             bits = datatype.stream_size * 8
@@ -157,7 +157,7 @@ def _verify_value(
             else:
                 min_value, max_value = 0, (2**bits) - 1
 
-            _verify_range(value, min_value, max_value, definition)
+            _verify_number_is_in_range(value, min_value, max_value, definition)
             return
 
     raise TypeError(
@@ -165,10 +165,13 @@ def _verify_value(
     )
 
 
-def _verify_range(
-    value: int | float, min: int | float, max: int | float, definition: ValueDefinition
+def _verify_number_is_in_range(
+    value: int | float,
+    min_value: int | float,
+    max_value: int | float,
+    definition: ValueDefinition,
 ):
-    if not min <= value <= max:
+    if not min_value <= value <= max_value:
         raise ValueError(
-            f"The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' is out of range of ({min}, {max})"
+            f"The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' is out of range of ({min_value}, {max_value})"
         )

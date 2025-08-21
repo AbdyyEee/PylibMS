@@ -156,7 +156,7 @@ class TitleConfig:
 
         if project.tag_groups is not None:
             config[TitleConfig.TAG_KEY] = {
-                "groups": {group.id: group.name for group in project.tag_groups},
+                "groups": {group.group_id: group.name for group in project.tag_groups},
                 "tags": [],
             }
 
@@ -165,7 +165,7 @@ class TitleConfig:
 
                     definition = {
                         "name": tag_def.name,
-                        "group_id": group.id,
+                        "group_id": group.group_id,
                         "tag_index": i,
                         "description": "",
                         "parameters": None if not tag_def.parameter_definitions else [],

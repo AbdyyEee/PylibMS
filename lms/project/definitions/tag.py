@@ -9,11 +9,11 @@ class LMS_TagGroup:
     def __init__(
         self,
         name: str,
-        id: int,
+        group_id: int,
         tag_indexes: list[int],
     ):
         self._name = name
-        self._id = id
+        self._id = group_id
         self._tag_indexes = tag_indexes
 
         self.tag_definitions: list[LMS_TagDefinition] = []
@@ -23,7 +23,7 @@ class LMS_TagGroup:
         return self._name
 
     @property
-    def id(self) -> int:
+    def group_id(self) -> int:
         return self._id
 
     def set_all_definitions(

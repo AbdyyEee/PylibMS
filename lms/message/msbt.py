@@ -1,21 +1,29 @@
 from typing import Any
 
 from lms.common.lms_fileinfo import LMS_FileInfo
-from lms.message.definitions.field.lms_field import FieldValue, LMS_FieldMap
-from lms.message.definitions.lms_messagetext import LMS_MessageText
 from lms.message.msbtentry import MSBTEntry
 from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.tags import TagConfig
 
 
 class MSBT:
-    """A class that represents a MSBT file.
+    """
+    A class that represents a MSBT file.
 
-    https://nintendo-formats.com/libs/lms/msbt.html."""
+    https://nintendo-formats.com/libs/lms/msbt.html.
+    """
+
+    MAGIC = "MsgStdBn"
+
+    # While 101 is the default slot count for LBL1 sections in a MSBT
+    # The value may be overridden at the instance level as some games alter the value
+    DEFAULT_SLOT_COUNT = 101
 
     def __init__(
         self,
         info: LMS_FileInfo | None = None,
+        section_list: list[str] | None = None,
+        _unsupported_section_map: dict[str, bytes] | None = None,
         attribute_config: AttributeConfig | None = None,
         tag_config: TagConfig | None = None,
     ):
@@ -26,17 +34,15 @@ class MSBT:
 
         self.size_per_attribute = 0
 
-        # 101 is default for almost all games. However the value can be overriden by some games (i.e Echos of Wisdom).
-        # Due to this, the slot count is set dynamically when LBL1 is read.
-        self.slot_count = 101
+        self.slot_count = MSBT.DEFAULT_SLOT_COUNT
 
-        self.attr_string_table: bytes | None = None
         self.uses_encoded_attributes = True
+        self.attr_string_table: bytes | None = None
 
-        self.unsupported_sections: dict[str, bytes] = {}
+        self._unsupported_section_map = _unsupported_section_map or {}
 
         # Store the section list so that the order of any and all sections is preserved when writing
-        self._section_list: list[str] = ["LBL1"]
+        self._section_list: list[str] = section_list or ["LBL1"]
 
         self._attribute_config = attribute_config
         self._tag_config = tag_config
@@ -55,8 +61,13 @@ class MSBT:
         return tuple(self._section_list)
 
     @property
+    def unsupported_sections(self) -> tuple[str, ...]:
+        """The list of unsupported sections."""
+        return tuple(self._unsupported_section_map.keys())
+
+    @property
     def has_attributes(self) -> bool:
-        """If the msbt contains attributs."""
+        """If the msbt contains attributes."""
         return self.section_exists("ATR1")
 
     @property
@@ -79,7 +90,7 @@ class MSBT:
         """
         Retrieves an entry given its name.
 
-        :param name: the label name for the entry.
+        :param label: the label name for the entry.
         """
         if label not in self._label_map:
             raise KeyError(f"The label '{label}' does not exist!")
@@ -139,3 +150,14 @@ class MSBT:
         :param name: the name of the section.
         """
         return name in self._section_list
+
+    def get_unsupported_section_data(self, name: str) -> bytes:
+        """
+        Retrieves the raw data of an unsupported section.
+
+        :param name: the name of the section.
+        """
+        if name not in self._unsupported_section_map:
+            raise KeyError(f"The section '{name}' does not exist in the MSBT!")
+
+        return self._unsupported_section_map[name]
