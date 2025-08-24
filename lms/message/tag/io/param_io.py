@@ -1,6 +1,6 @@
 from typing import cast
 
-from common.lms_datatype import is_string_datatype
+from lms.common.lms_datatype import is_string_datatype
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
