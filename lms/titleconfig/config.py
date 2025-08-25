@@ -1,6 +1,7 @@
 from importlib import resources
 
 import yaml
+
 from lms.common.lms_datatype import LMS_DataType
 from lms.project.msbp import MSBP
 from lms.titleconfig.definitions.attribute import AttributeConfig

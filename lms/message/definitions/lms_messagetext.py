@@ -46,6 +46,18 @@ class LMS_MessageText:
         """The list of control tags in the message."""
         return [part for part in self._parts if is_tag(part)]
 
+    @property
+    def tag_positions(self) -> dict[LMS_ControlTag, tuple[int, int]]:
+        """Dict of tag objects to their start and end positions in text."""
+        positions = {}
+        pos = 0
+        for part in self._parts:
+            text_len = len(part)
+            if is_tag(part):
+                positions[part] = (pos, pos + text_len)
+            pos += text_len
+        return positions
+
     def append_encoded_tag(
         self, group_id: int, tag_index: int, *parameters: str, is_closing: bool = False
     ) -> LMS_EncodedTag:

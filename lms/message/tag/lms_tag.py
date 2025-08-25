@@ -7,13 +7,6 @@ from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
 TAG_PADDING_CHAR = "CD"
 
-type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
-
-
-def is_tag(obj: object) -> TypeGuard[LMS_ControlTag]:
-    """Typeguard to narrow tag objects."""
-    return isinstance(obj, (LMS_EncodedTag, LMS_DecodedTag))
-
 
 class LMS_EncodedTag:
     """
@@ -42,6 +35,9 @@ class LMS_EncodedTag:
 
         self._is_fallback = is_fallback
         self._is_closing = is_closing
+
+    def __len__(self) -> int:
+        return len(self.to_text())
 
     @property
     def group_id(self) -> int:
@@ -145,6 +141,9 @@ class LMS_DecodedTag:
 
         self._is_closing = is_closing
 
+    def __len__(self) -> int:
+        return len(self.to_text())
+
     @property
     def group_id(self) -> int:
         """The group id for the tag."""
@@ -218,3 +217,11 @@ class LMS_DecodedTag:
             parameters, tag_definition.parameters
         )
         return cls(tag_definition, parameter_map)
+
+
+type LMS_ControlTag = LMS_EncodedTag | LMS_DecodedTag
+
+
+def is_tag(obj: object) -> TypeGuard[LMS_ControlTag]:
+    """Typeguard to narrow tag objects."""
+    return isinstance(obj, (LMS_EncodedTag, LMS_DecodedTag))
