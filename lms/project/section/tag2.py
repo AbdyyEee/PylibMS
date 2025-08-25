@@ -11,7 +11,7 @@ def read_tag2(reader: FileReader) -> list[LMS_TagDefinition]:
 
         param_count = reader.read_uint16()
         parameter_indexes = reader.read_uint16_array(param_count)
-        name = reader.read_str_variable_encoding()
+        name = reader.read_encoded_string()
 
         info_list.append(LMS_TagDefinition(name, parameter_indexes))
 

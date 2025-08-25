@@ -3,8 +3,11 @@ from dataclasses import dataclass
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
-from lms.message.definitions.field.lms_field import (LMS_DataType, LMS_Field,
-                                                     LMS_FieldMap)
+from lms.message.definitions.field.lms_field import (
+    LMS_DataType,
+    LMS_Field,
+    LMS_FieldMap,
+)
 from lms.titleconfig.definitions.attribute import AttributeConfig
 
 
@@ -54,7 +57,7 @@ def read_decoded_atr1(reader: FileReader, config: AttributeConfig) -> ATR1Data:
             if definition.datatype is LMS_DataType.STRING:
                 last = reader.tell() + 4
                 reader.seek(section_start + reader.read_uint32())
-                value = LMS_Field(reader.read_str_variable_encoding(), definition)
+                value = LMS_Field(reader.read_encoded_string(), definition)
                 reader.seek(last)
             else:
                 value = read_field(reader, definition)
@@ -109,4 +112,4 @@ def write_decoded_atr1(
                 write_field(writer, field)
 
     for string in string_table:
-        writer.write_variable_encoding_string(string)
+        writer.write_encoded_string(string)

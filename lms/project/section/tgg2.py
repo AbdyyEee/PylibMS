@@ -16,7 +16,7 @@ def read_tgg2(reader: FileReader, version: int) -> list[LMS_TagGroup]:
         tag_count = reader.read_uint16()
         tag_indexes = reader.read_uint16_array(tag_count)
 
-        name = reader.read_str_variable_encoding()
+        name = reader.read_encoded_string()
         group_list.append(LMS_TagGroup(name, group_id, tag_indexes))
 
     return group_list

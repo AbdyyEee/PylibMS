@@ -12,7 +12,7 @@ def read_ali2(reader: FileReader) -> list[list[str]]:
         item_count = reader.read_uint32()
         for offset in reader.read_offset_array(item_count):
             reader.seek(offset)
-            items.append(reader.read_str_variable_encoding())
+            items.append(reader.read_encoded_string())
 
         attr_lists.append(items)
 

@@ -58,7 +58,7 @@ def write_txt2(writer: FileWriter, messages: list[LMS_MessageText]) -> None:
             if isinstance(part, (LMS_EncodedTag, LMS_DecodedTag)):
                 write_tag(writer, part)
             else:
-                writer.write_variable_encoding_string(part, False)
+                writer.write_encoded_string(part, False)
 
         writer.write_bytes(writer.encoding.terminator)
 

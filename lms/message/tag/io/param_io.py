@@ -1,12 +1,14 @@
 from typing import cast
 
-from common.lms_datatype import is_string_datatype
+from lms.common.lms_datatype import is_string_datatype
 from lms.common.lms_datatype import LMS_DataType
 from lms.fileio.io import FileReader, FileWriter
 from lms.message.definitions.field.io import read_field, write_field
 from lms.message.definitions.field.lms_field import LMS_Field, LMS_FieldMap
-from lms.message.tag.lms_tagexceptions import (LMS_TagReadingError,
-                                               LMS_TagWritingException)
+from lms.message.tag.lms_tagexceptions import (
+    LMS_TagReadingError,
+    LMS_TagWritingException,
+)
 from lms.titleconfig.definitions.tags import TagDefinition
 
 TAG_PADDING_BYTE = b"\xcd"
@@ -30,12 +32,12 @@ def read_decoded_parameters(
         param_offset = reader.tell()
         try:
             if param.datatype is LMS_DataType.STRING:
-                value = LMS_Field(reader.read_len_string_variable_encoding(), param)
+                value = LMS_Field(reader.read_len_string_encoded(), param)
             else:
                 value = read_field(reader, param)
         except Exception as e:
             raise LMS_TagReadingError(
-                f"An error occured reading tag '[{definition.group_name}:{definition.tag_name}]', parameter '{param.name}' at offset {param_offset}"
+                f"An error occurred reading tag '[{definition.group_name}:{definition.tag_name}]', parameter '{param.name}' at offset {param_offset}"
             ) from e
 
         parameters[param.name] = value
@@ -75,12 +77,12 @@ def write_decoded_parameters(
                     writer.write_bytes(TAG_PADDING_BYTE)
                     needs_padding = False
 
-                writer.write_len_variable_encoding_string(field.value)
+                writer.write_len_encoded_string(field.value)
             else:
                 write_field(writer, field)
         except Exception as e:
             raise LMS_TagWritingException(
-                f"An error occured in tag [{group_name}:{tag_name} writing parameter '{field.name}' at offset {writer.tell()}!"
+                f"An error occurred in tag [{group_name}:{tag_name} writing parameter '{field.name}' at offset {writer.tell()}!"
             ) from e
 
     if needs_padding:

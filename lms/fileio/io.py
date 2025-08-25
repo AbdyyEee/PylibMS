@@ -93,7 +93,7 @@ class FileReader:
     def read_string_len(self, length: int) -> str:
         return self._stream.read(length).decode("UTF-8")
 
-    def read_str_variable_encoding(self):
+    def read_encoded_string(self):
         message = b""
         while (
             raw_char := self.read_bytes(self.encoding.width)
@@ -101,7 +101,7 @@ class FileReader:
             message += raw_char
         return message.decode(self.encoding.to_string_format(self.is_big_endian))
 
-    def read_len_string_variable_encoding(self):
+    def read_len_string_encoded(self):
         self.align(self.encoding.width)
         length = self.read_uint16()
         return self.read_bytes(length).decode(
@@ -138,7 +138,7 @@ class FileWriter:
         return self.data.tell()
 
     def write_alignment(self, data: bytes, alignment: int) -> None:
-        self.write_bytes(data * self.align(self.tell(), alignment))
+        self.write_bytes(data * self._align(self.tell(), alignment))
 
     def write_uint16_array(self, array: list[int]) -> None:
         for number in array:
@@ -168,18 +168,18 @@ class FileWriter:
     def write_string(self, string: str):
         self.write_bytes(string.encode("UTF-8"))
 
-    def write_len_variable_encoding_string(self, string: str) -> None:
+    def write_len_encoded_string(self, string: str) -> None:
         self.write_uint16(len(string) * self.encoding.width)
-        self.write_variable_encoding_string(string, False)
+        self.write_encoded_string(string, False)
 
-    def write_variable_encoding_string(self, string: str, terminate: bool = True):
+    def write_encoded_string(self, string: str, terminate: bool = True):
         self.write_bytes(
             string.encode(self.encoding.to_string_format(self.is_big_endian))
         )
         if terminate:
             self.write_bytes(b"\x00" * self.encoding.width)
 
-    def align(self, number: int, alignment: int) -> int:
+    def _align(self, number: int, alignment: int) -> int:
         return (-number % alignment + alignment) % alignment
 
     def _get_datatype(self, name: str) -> str:
