@@ -4295,7 +4295,7 @@ attribute_definitions:
   description: ''
   definitions:
   - name: FileID
-    description: ''
+    description: 'The ID (located in the filename) of for the texture of the item.'
     datatype: int16
   - name: RegionJP
     description: 'Flag that determines if the item is enabled for Japenese regions of the game.'
@@ -4322,28 +4322,28 @@ attribute_definitions:
     - Disable
     - Enable
   - name: Price
-    description: ''
+    description: 'The price of the item in the JP version.'
     datatype: uint32
   - name: PriceUS
-    description: ''
+    description: 'The price of the item in the US version.'
     datatype: uint32
   - name: PriceEU
-    description: ''
+    description: 'The price of the item in the EU version.'
     datatype: uint32
   - name: PriceKR
-    description: ''
+    description: 'The price of the item in the KR version.'
     datatype: uint32
   - name: Shop
-    description: ''
-    datatype: uint8
+    description: 'Determines if the item can be sold at the shop.'
+    datatype: bool
   - name: Mii
     description: ''
-    datatype: uint8
+    datatype: bool
   - name: Food_FirstDaily
     description: ''
     datatype: uint8
   - name: BoxSize
-    description: ''
+    description: 'How large the the item texture will appear when displayed.'
     datatype: list
     list_items:
     - BoxSize_None
@@ -4351,7 +4351,7 @@ attribute_definitions:
     - BoxSize_Small
     - BoxSize_Big
   - name: Effect
-    description: ''
+    description: 'The steam effect of the item.'
     datatype: list
     list_items:
     - None
@@ -4359,7 +4359,7 @@ attribute_definitions:
     - Steam01
     - Steam02
   - name: Food_Type_JP
-    description: ''
+    description: 'The food type of the item for the JP version.'
     datatype: list
     list_items:
     - Japanese
@@ -4368,7 +4368,7 @@ attribute_definitions:
     - Dessert
     - Drink
   - name: Food_Type_USEU
-    description: ''
+    description: 'The food type of the item for both EU and US versions.'
     datatype: list
     list_items:
     - MainDishes
@@ -4376,7 +4376,7 @@ attribute_definitions:
     - Refreshments
     - Drinks
   - name: Food_Type_KR
-    description: ''
+    description: 'The food type of the item for the KR version.'
     datatype: list
     list_items:
     - Korean
@@ -4392,7 +4392,7 @@ attribute_definitions:
     - Quantity_Mid
     - Quantity_High
   - name: Food_Season
-    description: ''
+    description: 'Determines which season the item falls into.'
     datatype: list
     list_items:
     - Season_None
@@ -4401,94 +4401,94 @@ attribute_definitions:
     - Season_Autumn
     - Season_Winter
   - name: Food_Attr_Sweet
-    description: ''
+    description: 'Flag that determines if the food is considered sweet.'
     datatype: bool
   - name: Food_Attr_Spicy
-    description: ''
+    description: 'Flag that determines if the food is considered spicy.'
     datatype: bool
   - name: Food_Attr_Salty
-    description: ''
+    description: 'Flag that determines if the food is considered salty.'
     datatype: bool
   - name: Food_Attr_Sour
-    description: ''
+    description: 'Flag that determines if the food is considered sour.'
     datatype: bool
   - name: Food_Attr_Oily
-    description: ''
+    description: 'Flag that determines if the food is considered oily.'
     datatype: bool
   - name: Food_Attr_Cool
-    description: ''
+    description: 'Flag that determines if the food is considered cool.'
     datatype: bool
   - name: Food_Attr_Hot
-    description: ''
+    description: 'Flag that determines if the food is considered hot.'
     datatype: bool
   - name: Food_Attr_Awful
-    description: ''
+    description: 'Flag that determines if the food is considered dog water.'
     datatype: bool
   - name: Food_Attr_Confectionery
-    description: ''
+    description: 'Flag that determines if the food is considered a confectionery.'
     datatype: bool
   - name: Food_Attr_Fruit
-    description: ''
+    description: 'Flag that determines if the food is a fruit or has fruits as a main ingredient..'
     datatype: bool
   - name: Food_Attr_Vegetable
-    description: ''
+    description: 'Flag that determines if the food is a vegetable or has vegetables as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Rice
-    description: ''
+    description: 'Flag that determines if the food is rice or has rice as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Bread
-    description: ''
+    description: 'Flag that determines if the food is bread or has bread as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Meat
-    description: ''
+    description: 'Flag that determines if the food is meat or has meat as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Fish
-    description: ''
+    description: 'Flag that determines if the food is fish or has fish as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Egg
-    description: ''
+    description: 'Flag that determines if the food is egg or has egg as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Japanese
-    description: ''
+    description: 'Flag that determines if the food considered Japanese.'
     datatype: bool
   - name: Food_Attr_Western
-    description: ''
+    description: 'Flag that determines if the food is considered western.'
     datatype: bool
   - name: Food_Attr_Chinese
-    description: ''
+    description: 'Flag that determines if the food is considered Chinese.'
     datatype: bool
   - name: Food_Attr_Italian
-    description: ''
+    description: 'Flag that determines if the food is considered Italian.'
     datatype: bool
   - name: Food_Attr_Noodle
-    description: ''
+    description: 'Flag that determines if the food has noodles as a main ingredient.'
     datatype: bool
   - name: Food_Attr_Luxury
-    description: ''
+    description: 'Flag that determines if the food is considered luxurious'
     datatype: bool
   - name: Food_Attr_American
-    description: ''
+    description: 'Flag that determines if the food is considered American.'
     datatype: bool
   - name: Food_Attr_Asian
-    description: ''
+    description: 'Flag that determines if the food is considered Asian.'
     datatype: bool
   - name: Food_Attr_British
-    description: ''
+    description: 'Flag that determines if the food is considered British.'
     datatype: bool
   - name: Food_Attr_French
-    description: ''
+    description: 'Flag that determines if the food is considered French.'
     datatype: bool
   - name: Food_Attr_German
-    description: ''
+    description: 'Flag that determines if the food is considered German.'
     datatype: bool
   - name: Food_Attr_Spanish
-    description: ''
+    description: 'Flag that determines if the food is considered Spanish.'
     datatype: bool
   - name: Food_Attr_Junk
-    description: ''
+    description: 'Flag that determines if the food is considered as junk food.'
     datatype: bool
   - name: Food_Attr_Korean
-    description: ''
+    description: 'Flag that determines if the food is considered Korean.'
     datatype: bool
   - name: Food_NTR_ID
     description: ''
@@ -4574,7 +4574,7 @@ attribute_definitions:
     - '14'
     - '15'
   - name: Food_Se_Type
-    description: ''
+    description: 'The sound effect played when the food is consumed.'
     datatype: list
     list_items:
     - SE_MII_DRINK
@@ -4598,7 +4598,7 @@ attribute_definitions:
     description: ''
     datatype: uint8
   - name: Treasure_Type
-    description: ''
+    description: 'The type the treasure falls into.'
     datatype: list
     list_items:
     - TreasureToken
@@ -4636,7 +4636,7 @@ attribute_definitions:
     description: ''
     datatype: int32
   - name: Food_FirstCatalog
-    description: ''
+    description: 'Flag that determines if the food will be displayed on the first shop event played on a new save.'
     datatype: bool
   - name: ForIslanderOnly
     description: ''
