@@ -23,7 +23,7 @@ class MSBT:
         self,
         info: LMS_FileInfo | None = None,
         section_list: list[str] | None = None,
-        _unsupported_section_map: dict[str, bytes] | None = None,
+        unsupported_section_map: dict[str, bytes] | None = None,
         attribute_config: AttributeConfig | None = None,
         tag_config: TagConfig | None = None,
     ):
@@ -39,13 +39,16 @@ class MSBT:
         self.uses_encoded_attributes = True
         self.attr_string_table: bytes | None = None
 
-        self._unsupported_section_map = _unsupported_section_map or {}
+        self._unsupported_section_map = unsupported_section_map or {}
 
         # Store the section list so that the order of any and all sections is preserved when writing
         self._section_list: list[str] = section_list or ["LBL1"]
 
         self._attribute_config = attribute_config
         self._tag_config = tag_config
+
+    def __len__(self) -> int:
+        return len(self._entries)
 
     def __iter__(self):
         return iter(self._entries)
@@ -54,6 +57,11 @@ class MSBT:
     def info(self) -> LMS_FileInfo:
         """The file info for the MSBT instance."""
         return self._info
+
+    @property
+    def entries(self) -> tuple[MSBTEntry, ...]:
+        """Tuple of all the MSBT entries."""
+        return tuple(self._entries)
 
     @property
     def section_list(self) -> tuple[str, ...]:
