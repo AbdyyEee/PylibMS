@@ -56,7 +56,7 @@ class TagConfig:
 
 @dataclass(frozen=True)
 class TagDefinition:
-    """Class that represents a signle definition in the tag config."""
+    """Class that represents a single definition in the tag config."""
 
     group_name: str
     group_id: int

@@ -12,7 +12,7 @@ class MSBP:
     https://nintendo-formats.com/libs/lms/msbp.html.
     """
 
-    MAGIC = "MsjPrjBn"
+    MAGIC = "MsgPrjBn"
 
     def __init__(
         self,
