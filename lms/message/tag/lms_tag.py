@@ -5,7 +5,7 @@ from lms.message.definitions.field.lms_field import LMS_FieldMap
 from lms.message.tag.lms_tagexceptions import LMS_InvalidTagFormatError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
-TAG_PADDING_CHAR = "CD"
+TAG_PADDING_CHAR = 0xCD
 
 
 class LMS_EncodedTag:
@@ -25,7 +25,7 @@ class LMS_EncodedTag:
         self,
         group_id: int,
         tag_index: int,
-        parameters: list[str] | None = None,
+        parameters: list[int] | None = None,
         is_fallback: bool = False,
         is_closing: bool = False,
     ):
@@ -50,13 +50,13 @@ class LMS_EncodedTag:
         return self._tag_index
 
     @property
-    def parameters(self) -> list[str] | None:
-        """The list of hex string parameters."""
+    def parameters(self) -> list[int] | None:
+        """The list of parameters."""
         return self._parameters
 
     @property
     def is_fallback(self) -> bool:
-        """Determines if the tag is a fallback tag."""
+        """Determines if the tag is a fallback tag. Fallback tags have a '!' prefix before the group index."""
         return self._is_fallback
 
     @property
@@ -73,7 +73,8 @@ class LMS_EncodedTag:
         if self._parameters is None:
             return f"[{self.group_id}:{self.tag_index}]"
 
-        parameters = "-".join(self._parameters)
+        # 02x format to convert any int to hexadecimal uppercase
+        parameters = "-".join(format(param, "02x").upper() for param in self._parameters)
         return f"[{fallback_prefix}{self.group_id}:{self.tag_index} {parameters}]"
 
     @classmethod
@@ -103,10 +104,13 @@ class LMS_EncodedTag:
 
         if not cls.PARAMETER_FORMAT.match(param_str):
             raise LMS_InvalidTagFormatError(
-                f"Malformed parameters located in tag: '{tag}'"
+                f"Parameters located in the tag '{tag}'. Ensure all parameters are separated by dashes."
             )
 
-        parameters = [param.strip().upper() for param in param_str.split("-")]
+        try:
+            parameters = [int(param.strip().upper()) for param in param_str.split("-")]
+        except ValueError:
+            raise LMS_InvalidTagFormatError(f"Malformed parameters in tag '{tag}'. Ensure all the parameters are integers.")
 
         # Ensure 0xCD padding is added
         if len(parameters) % 2 == 1:

@@ -13,10 +13,11 @@ TAG_PADDING_BYTE = b"\xcd"
 
 def read_encoded_parameters(
     reader: FileReader, parameter_size: int
-) -> list[str] | None:
+) -> list[int] | None:
+
     hex_parameters = reader.read_bytes(parameter_size).hex().upper()
     encoded_parameters = [
-        f"{hex_parameters[i : i + 2]}" for i in range(0, len(hex_parameters), 2)
+        int(f"{hex_parameters[i : i + 2]}", 16) for i in range(0, len(hex_parameters), 2)
     ]
     return encoded_parameters
 
@@ -42,10 +43,10 @@ def read_decoded_parameters(
     return LMS_FieldMap(parameters)
 
 
-def write_encoded_parameters(writer: FileWriter, parameters: list[str]) -> None:
+def write_encoded_parameters(writer: FileWriter, parameters: list[int]) -> None:
     writer.write_uint16(len(parameters))
     for param in parameters:
-        writer.write_bytes(bytes.fromhex(param))
+        writer.write_bytes(int.to_bytes(param, 1))
 
 
 def write_decoded_parameters(

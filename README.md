@@ -4,8 +4,8 @@ PylibMS is a library built in Python 3.10+ for the libMessageStudio (LMS) propri
 * Full reading and writing of MSBT files.
 * Full reading of MSBP files.
 * Supports encoded/decoded attributes
-* Supporting encoded/decoded tags 1:1 with Nintendos offical tool and BB code Syntax.
-* Additonal tag manipulation.
+* Supporting encoded/decoded tags 1:1 with Nintendo's official tool and BB code Syntax.
+* Additional tag manipulation.
 
 This library is designed to support LMS revision 3.0 and above, with the associated file formats used across the following Nintendo platforms:
 * Wii (Specific titles only)
@@ -36,7 +36,7 @@ To add or edit Preset, you may create an issue with the relevant `yaml` file and
 ```
 pip install PylibMS
 ```
-[Pip Page](https://pypi.org/project/PyLibMS/0.6/)
+[Pip Page](https://pypi.org/project/PyLibMS/)
 
 # Build Instructions
 Python version must be `>=3.12.`

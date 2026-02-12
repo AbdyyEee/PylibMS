@@ -39,6 +39,11 @@ def read_encoded_atr1(reader: FileReader, section_size: int) -> ATR1Data:
 
 
 def read_decoded_atr1(reader: FileReader, config: AttributeConfig) -> ATR1Data:
+    # String table as a list is not necessary for decoded attributes
+    # It is easier to save all changes from the user by when writing
+    # to recreate the table from all the string parameters in every attribute
+    string_table = None
+
     section_start = reader.tell()
 
     attr_count = reader.read_uint32()
@@ -63,7 +68,7 @@ def read_decoded_atr1(reader: FileReader, config: AttributeConfig) -> ATR1Data:
 
         attributes.append(LMS_FieldMap(attribute))
 
-    return ATR1Data(attributes, size_per_attribute, None)
+    return ATR1Data(attributes, size_per_attribute, string_table)
 
 
 def write_encoded_atr1(

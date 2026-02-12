@@ -92,7 +92,7 @@ def _read_decoded_tag(
     return LMS_DecodedTag(definition, parameters)
 
 
-def write_tag(writer: FileWriter, tag: LMS_EncodedTag | LMS_DecodedTag) -> None:
+def write_tag(writer: FileWriter, tag: LMS_ControlTag) -> None:
     start_indicator, close_indicator = get_tag_indicator(
         writer.encoding, writer.is_big_endian
     )
