@@ -14,7 +14,7 @@ This library is designed to support LMS revision 3.0 and above, with the associa
 * Mobile (Specific titles only)
 * Nintendo Switch
 
-MSBF is in progress.
+MSBF is in current in the works.
 
 # Features and Usage
 Simple preview of the library is below. See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for more explanations and examples.
