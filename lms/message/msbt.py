@@ -1,9 +1,8 @@
-from typing import Any
-
 from lms.common.lms_fileinfo import LMS_FileInfo
 from lms.message.msbtentry import MSBTEntry
 from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.tags import TagConfig
+from lms.fileio.encoding import FileEncoding
 
 
 class MSBT:
@@ -46,6 +45,26 @@ class MSBT:
 
         self._attribute_config = attribute_config
         self._tag_config = tag_config
+
+    @classmethod
+    def new(cls,
+            attribute_config: AttributeConfig | None = None,
+            tag_config: TagConfig | None = None,
+            is_big_endian: bool = False,
+            encoding: FileEncoding = FileEncoding.UTF16,
+            version: int = 3,
+            section_count: int = 2):
+        """Creates a new MSBT instance.
+
+        :param attribute_config: The attribute config object
+        :param tag_config: The tag config object
+        :param is_big_endian: if the file is big endian.
+        :param encoding: the file encoding.
+        :param version: the file version.
+        :param section_count: the number of sections.
+        """
+        return MSBT(info=LMS_FileInfo(is_big_endian, encoding, version, section_count),
+                    attribute_config=attribute_config, tag_config=tag_config)
 
     def __len__(self) -> int:
         return len(self._entries)
