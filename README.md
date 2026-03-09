@@ -1,5 +1,5 @@
 # PylibMS
-PylibMS is a library built in Python 3.10+ for the libMessageStudio (LMS) proprietary file formats from Nintendo. It supports the following:
+PylibMS is a library built in Python 3.10+ for the libMessageStudio (LMS) proprietary file formats (`msbt`, `msbp`, `msbf`) from Nintendo. It supports the following:
 
 * Full reading and writing of MSBT files.
 * Full reading of MSBP files.
@@ -14,7 +14,7 @@ This library is designed to support LMS revision 3.0 and above, with the associa
 * Mobile (Specific titles only)
 * Nintendo Switch
 
-MSBF is in current in the works.
+MSBF is currently in the works.
 
 # Features and Usage
 Simple preview of the library is below. See [the wiki](https://github.com/AbdyyEee/PylibMS/wiki) for more explanations and examples.
