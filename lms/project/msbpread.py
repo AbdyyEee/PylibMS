@@ -1,5 +1,5 @@
 import os
-from typing import BinaryIO, cast
+from typing import BinaryIO
 
 from lms.common.lms_datatype import LMS_DataType
 from lms.common.stream.fileinfo import read_file_info
@@ -25,8 +25,9 @@ def read_msbp_path(file_path: str) -> MSBP:
 
     :param file_path: the path to the MSBP file.
 
-    Example
-    ---------
+    =====
+    Usage
+    =====
     >>> msbp = read_msbp_path("path/to/file.msbp")
     """
     with open(file_path, "rb") as stream:
@@ -39,8 +40,9 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
 
     :param stream: an ``IOBase``, ``BytesIO``, ``memoryview``, or ``bytes`` object.
 
-    Example
-    ---------
+    =====
+    Usage
+    =====
     >>> msbp = read_msbp(stream)
     """
     reader = FileReader(stream)

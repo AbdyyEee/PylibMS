@@ -13,7 +13,8 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
 
     if magic != expected_magic:
         raise lms_exceptions.LMS_UnexpectedMagicError(
-            f"Invalid magic!' Expected {expected_magic}', got '{magic}'."
+            f"""Invalid magic!' Expected {expected_magic}', got '{magic}'.
+            This file may not a valid LMS format or the wrong reading function was utilized."""
         )
 
     is_big_endian = reader.read_bytes(2) == BIG_ENDIAN_BOM

@@ -9,7 +9,6 @@ from lms.titleconfig.definitions.value import ValueDefinition
 FLOAT_MIN = 1.17549435e-38
 FLOAT_MAX = 3.4028235e38
 
-
 type FieldValue = int | str | float | bool | bytes
 
 
@@ -83,7 +82,7 @@ class LMS_Field:
     """
 
     def __init__(
-        self, value: int | str | float | bytes | bool, definition: ValueDefinition
+            self, value: int | str | float | bytes | bool, definition: ValueDefinition
     ):
         _verify_value(value, definition)
         self._definition = definition
@@ -126,7 +125,7 @@ class LMS_Field:
 
 
 def _verify_value(
-    value: int | str | float | bytes | bool, definition: ValueDefinition
+        value: int | str | float | bytes | bool, definition: ValueDefinition
 ) -> None:
     datatype = definition.datatype
 
@@ -155,7 +154,7 @@ def _verify_value(
                 max_value = 2 ** (bits - 1)
                 min_value = -max_value
             else:
-                min_value, max_value = 0, (2**bits) - 1
+                min_value, max_value = 0, (2 ** bits) - 1
 
             _verify_number_is_in_range(value, min_value, max_value, definition)
             return
@@ -166,10 +165,10 @@ def _verify_value(
 
 
 def _verify_number_is_in_range(
-    value: int | float,
-    min_value: int | float,
-    max_value: int | float,
-    definition: ValueDefinition,
+        value: int | float,
+        min_value: int | float,
+        max_value: int | float,
+        definition: ValueDefinition,
 ):
     if not min_value <= value <= max_value:
         raise ValueError(

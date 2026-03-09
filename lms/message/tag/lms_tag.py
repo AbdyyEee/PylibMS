@@ -2,32 +2,27 @@ import re
 from typing import TypeGuard
 
 from lms.message.definitions.field.lms_field import LMS_FieldMap
-from lms.message.tag.lms_tagexceptions import LMS_InvalidTagFormatError
+from lms.message.tag.lms_tagexceptions import LMS_TagInvalidFormatError, LMS_TagForbiddenParametersError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 
-TAG_PADDING_CHAR = 0xCD
+TAG_PADDING_VALUE = 0xCD
 
 
 class LMS_EncodedTag:
     """
     A class that represents an encoded tag.
-
-    Example encoded tags:
-        - `[0:3 00-00-00-FF]`
-        - `[0:4]`
-        - `[1:0 01-00-00-CD]`
     """
 
     TAG_FORMAT = re.compile(r"\[\s*(/)?\s*(\d+)\s*:\s*(\d+)[^]]*]")
     PARAMETER_FORMAT = re.compile(r"^\s*([0-9A-Fa-f]{2})(\s*-\s*[0-9A-Fa-f]{2})*\s*$")
 
     def __init__(
-        self,
-        group_id: int,
-        tag_index: int,
-        parameters: list[int] | None = None,
-        is_fallback: bool = False,
-        is_closing: bool = False,
+            self,
+            group_id: int,
+            tag_index: int,
+            parameters: list[int] | None = None,
+            is_fallback: bool = False,
+            is_closing: bool = False,
     ):
         self._group_id = group_id
         self._tag_index = tag_index
@@ -80,7 +75,7 @@ class LMS_EncodedTag:
     @classmethod
     def from_string(cls, tag: str):
         if not (match := cls.TAG_FORMAT.match(tag)):
-            raise LMS_InvalidTagFormatError(
+            raise LMS_TagInvalidFormatError(
                 f"Invalid encoded tag format detected for tag: '{tag}'"
             )
 
@@ -88,33 +83,35 @@ class LMS_EncodedTag:
         group_id, tag_index = match.group(2), match.group(3)
 
         if not group_id.isdigit() or not tag_index.isdigit():
-            raise LMS_InvalidTagFormatError(
+            raise LMS_TagInvalidFormatError(
                 f"The group id and or tag index must be digits in tag: '{tag}'"
             )
 
         group_id, tag_index = int(group_id), int(tag_index)
+        param_str = tag[match.end(3):].strip().removesuffix("]").strip()
 
         if is_closing:
-            return cls(group_id, tag_index, is_closing=True)
+            if param_str:
+                raise LMS_TagForbiddenParametersError("There may not be parameters for closing tags!")
 
-        param_str = tag[match.end(3) :].strip().removesuffix("]").strip()
+            return cls(group_id, tag_index, is_closing=True)
 
         if not param_str:
             return cls(group_id, tag_index)
 
         if not cls.PARAMETER_FORMAT.match(param_str):
-            raise LMS_InvalidTagFormatError(
-                f"Parameters located in the tag '{tag}'. Ensure all parameters are separated by dashes."
+            raise LMS_TagInvalidFormatError(
+                f"Malformed parameters in the tag '{tag}'. Ensure all parameters are separated by dashes."
             )
 
         try:
             parameters = [int(param.strip().upper()) for param in param_str.split("-")]
         except ValueError:
-            raise LMS_InvalidTagFormatError(f"Malformed parameters in tag '{tag}'. Ensure all the parameters are integers.")
+            raise LMS_TagInvalidFormatError(
+                f"Malformed parameters in tag '{tag}'. Ensure all the parameters are integers.")
 
-        # Ensure 0xCD padding is added
         if len(parameters) % 2 == 1:
-            parameters.append(TAG_PADDING_CHAR)
+            parameters.append(TAG_PADDING_VALUE)
 
         return cls(group_id, tag_index, parameters)
 
@@ -122,11 +119,6 @@ class LMS_EncodedTag:
 class LMS_DecodedTag:
     """
     A class that represents a decoded tag.
-
-    Example decoded tags:
-        - `[System:Color r="0" g="255" b="255" a="255"]`
-        - `[System:PageBreak]`
-        - `[Mii:Nickname buffer="1" type="Text" conversion="None"]`
     """
 
     TAG_FORMAT = re.compile(
@@ -135,10 +127,10 @@ class LMS_DecodedTag:
     PARAMETER_FORMAT = re.compile(r'(\w+)="([^"]*)"')
 
     def __init__(
-        self,
-        definition: TagDefinition,
-        parameters: LMS_FieldMap | None = None,
-        is_closing: bool = False,
+            self,
+            definition: TagDefinition,
+            parameters: LMS_FieldMap | None = None,
+            is_closing: bool = False,
     ):
         self._definition = definition
         self._parameters = parameters
@@ -205,7 +197,7 @@ class LMS_DecodedTag:
     @classmethod
     def from_string(cls, tag: str, config: TagConfig):
         if not (match := cls.TAG_FORMAT.match(tag)):
-            raise LMS_InvalidTagFormatError(
+            raise LMS_TagInvalidFormatError(
                 f"Invalid decoded tag format detected for tag '{tag}'"
             )
 

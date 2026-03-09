@@ -42,7 +42,7 @@ class TagConfig:
         )
 
     def get_definition_by_indexes(
-        self, group_id: int, tag_index: int
+            self, group_id: int, tag_index: int
     ) -> TagDefinition | None:
         if group_id not in self._group_map:
             return None

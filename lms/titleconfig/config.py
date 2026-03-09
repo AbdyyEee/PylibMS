@@ -21,10 +21,10 @@ class TitleConfig:
     ]
 
     def __init__(
-        self,
-        game: str | None,
-        attribute_config_map: dict[str, AttributeConfig] | None = None,
-        tag_config: TagConfig | None = None,
+            self,
+            game: str | None,
+            attribute_config_map: dict[str, AttributeConfig] | None = None,
+            tag_config: TagConfig | None = None,
     ):
         self._game = game
         self._attribute_config_map = attribute_config_map

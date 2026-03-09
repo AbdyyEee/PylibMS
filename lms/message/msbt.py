@@ -1,30 +1,32 @@
 from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.fileio.encoding import FileEncoding
 from lms.message.msbtentry import MSBTEntry
 from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.tags import TagConfig
-from lms.fileio.encoding import FileEncoding
 
 
 class MSBT:
     """
     A class that represents a MSBT file.
 
-    https://nintendo-formats.com/libs/lms/msbt.html.
+    https://nintendo-formats.com/libs/lms/msbt.html
     """
 
     MAGIC = "MsgStdBn"
 
-    # While 101 is the default slot count for LBL1 sections in a MSBT
-    # The value may be overridden at the instance level as some games alter the value
     DEFAULT_SLOT_COUNT = 101
 
+    ATR1_INDEX = 1
+    TXT2_INDEX = 2
+    TSY_INDEX = 3
+
     def __init__(
-        self,
-        info: LMS_FileInfo | None = None,
-        section_list: list[str] | None = None,
-        unsupported_section_map: dict[str, bytes] | None = None,
-        attribute_config: AttributeConfig | None = None,
-        tag_config: TagConfig | None = None,
+            self,
+            info: LMS_FileInfo | None = None,
+            section_list: list[str] | None = None,
+            unsupported_section_map: dict[str, bytes] | None = None,
+            attribute_config: AttributeConfig | None = None,
+            tag_config: TagConfig | None = None,
     ):
         self._info = info if info is not None else LMS_FileInfo()
 
@@ -54,14 +56,19 @@ class MSBT:
             encoding: FileEncoding = FileEncoding.UTF16,
             version: int = 3,
             section_count: int = 2):
-        """Creates a new MSBT instance.
+        """Create a new MSBT instance.
 
-        :param attribute_config: The attribute config object
-        :param tag_config: The tag config object
+        :param attribute_config: the attribute config object
+        :param tag_config: the tag config object
         :param is_big_endian: if the file is big endian.
         :param encoding: the file encoding.
         :param version: the file version.
         :param section_count: the number of sections.
+
+        ========
+        Examples
+        ========
+        See https://github.com/AbdyyEee/PylibMS/wiki/MSBT#creating-a-msbt
         """
         return MSBT(info=LMS_FileInfo(is_big_endian, encoding, version, section_count),
                     attribute_config=attribute_config, tag_config=tag_config)
@@ -94,12 +101,12 @@ class MSBT:
 
     @property
     def has_attributes(self) -> bool:
-        """If the msbt contains attributes."""
+        """If the MSBT contains attributes."""
         return self.section_exists("ATR1")
 
     @property
-    def has_style_indexes(self) -> bool:
-        """If the msbt contains style indexes."""
+    def has_styles(self) -> bool:
+        """If the MSBT contains style indexes."""
         return self.section_exists("TSY1")
 
     def get_entry_by_index(self, index: int) -> MSBTEntry:
@@ -133,18 +140,23 @@ class MSBT:
         if entry.name in self._label_map:
             raise KeyError(f"The label '{entry.name}' already exists!")
 
+        # The implementation of ensuring section orders are maintained are done by constant indexes.
+        # In most MSBT files, it goes as LBL1 -> TXT2 -> ATR1 -> TSY1.
+        # If add_entry is utilized on a new MSBT instance, then these indexes ensure the order is maintained.
+        # While technically, undocumented sections (i.e. ATO1) can prefix TXT2 and other sections,
+        # we do not need to account for that scenario as they aren't supported by the library
+
         if self.section_exists("ATR1"):
             if entry.attribute is None:
                 raise ValueError(
                     f"Entry '{entry.name}' can't be added with no attributes when attributes already exist!"
                 )
         elif entry.attribute is not None:
-            self._section_list.insert(1, "ATR1")
+            self._section_list.insert(self.ATR1_INDEX, "ATR1")
             self._info.section_count += 1
 
-        # TXT2 will always exist so insert it at all times
         if not self.section_exists("TXT2"):
-            self._section_list.insert(2, "TXT2")
+            self._section_list.insert(self.TXT2_INDEX, "TXT2")
 
         if self.section_exists("TSY1"):
             if entry.style_index is None:
@@ -152,7 +164,7 @@ class MSBT:
                     f"Entry '{entry.name}' can't be added with no style index when styles already exist!"
                 )
         elif entry.style_index is not None:
-            self._section_list.insert(3, "TSY1")
+            self._section_list.insert(self.TSY_INDEX, "TSY1")
             self._info.section_count += 1
 
         self._entries.append(entry)
@@ -160,7 +172,7 @@ class MSBT:
 
     def delete_entry(self, entry: MSBTEntry) -> None:
         """
-        Removes an entry from the MSBT instance.
+        Deletes an entry from the MSBT instance.
 
         :param entry: the MSBTEntry object to remove.
         """
@@ -172,7 +184,7 @@ class MSBT:
 
     def section_exists(self, name: str) -> bool:
         """
-        Determines if a section exists in the current MSBT.
+        Determines if a section exists in the MSBT instance.
 
         :param name: the name of the section.
         """

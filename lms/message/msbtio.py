@@ -9,6 +9,7 @@ from lms.message.msbt import MSBT
 from lms.message.msbtentry import MSBTEntry
 from lms.message.section.atr1 import (read_atr1, write_decoded_atr1,
                                       write_encoded_atr1)
+from lms.message.section.nli1 import read_nli1, write_nli1
 from lms.message.section.tsy1 import read_tsy1, write_tsy1
 from lms.message.section.txt2 import read_txt2, write_txt2
 from lms.titleconfig.config import AttributeConfig, TagConfig
@@ -17,11 +18,11 @@ __all__ = ["read_msbt", "read_msbt_path", "write_msbt", "write_msbt_path"]
 
 
 def read_msbt_path(
-    file_path: str,
-    *,
-    attribute_config: AttributeConfig | None = None,
-    tag_config: TagConfig | None = None,
-    suppress_tag_errors: bool = False,
+        file_path: str,
+        *,
+        attribute_config: AttributeConfig | None = None,
+        tag_config: TagConfig | None = None,
+        suppress_tag_errors: bool = False,
 ) -> MSBT:
     """
     Reads and retrieves a MSBT file from a given path.
@@ -31,8 +32,9 @@ def read_msbt_path(
     :param tag_config: the tag config to use for decoding tags.
     :param suppress_tag_errors: when a tag config is used, suppress any errors while reading decoded tags.
 
-    Example
-    ---------
+    =====
+    Usage
+    =====
     >>> msbt = read_msbt_path("path/to/file.msbt")
     """
     with open(file_path, "rb") as stream:
@@ -45,11 +47,11 @@ def read_msbt_path(
 
 
 def read_msbt(
-    stream: BinaryIO | bytes,
-    *,
-    attribute_config: AttributeConfig | None = None,
-    tag_config: TagConfig | None = None,
-    suppress_tag_errors: bool = False,
+        stream: BinaryIO | bytes,
+        *,
+        attribute_config: AttributeConfig | None = None,
+        tag_config: TagConfig | None = None,
+        suppress_tag_errors: bool = False,
 ) -> MSBT:
     """
     Reads and retrieves a MSBT file from a specified stream.
@@ -59,15 +61,19 @@ def read_msbt(
     :param tag_config: the tag config to use for decoding tags.
     :param suppress_tag_errors: when a tag config is used, suppress any errors while reading decoded tags.
 
-    Example
-    ---------
-    >>> msbt = read_msbt(stream)
+    =====
+    Usage
+    =====
+    >>> msbt = read_msbt_path("path/to/file.msbt")
     """
     reader = FileReader(stream)
     file_info = read_file_info(reader, MSBT.MAGIC)
 
     section_list = []
     unsupported_sections = {}
+
+    # While 101 is the default slot count for LBL1 sections in a MSBT
+    # The value may be overridden at the instance level... not sure why it varies though...
     slot_count = MSBT.DEFAULT_SLOT_COUNT
 
     messages = atr1_data = style_indexes = None
@@ -77,6 +83,8 @@ def read_msbt(
         match magic:
             case "LBL1":
                 labels, slot_count = read_labels(reader)
+            case "NLI1":
+                labels = read_nli1(reader)
             case "ATR1":
                 atr1_data = read_atr1(reader, attribute_config, size)
             case "TXT2":
@@ -112,13 +120,14 @@ def read_msbt(
 
 def write_msbt_path(file_path: str, file: MSBT) -> None:
     """
-    Writes a MSBT file to a given file path.
+    Writes a MSBT file to a given file path. If the target path does not exist, it will be created.
 
     :param file_path: the path to write the file to.
     :param file: the MSBT file object.
 
-    Example
-    -------
+    =====
+    Usage
+    =====
     >>> write_msbt_path("path/to/file.msbt", msbt)
     """
     with open(file_path, "wb") as stream:
@@ -131,8 +140,9 @@ def write_msbt(file: MSBT) -> bytes:
 
     :param file: a MSBT object.
 
-    Example
-    -------
+    =====
+    Usage
+    =====
     >>> data = write_msbt(msbt)
     """
     if not isinstance(file, MSBT):
@@ -148,6 +158,9 @@ def write_msbt(file: MSBT) -> bytes:
             case "LBL1":
                 labels = [entry.name for entry in file]
                 write_section(writer, "LBL1", write_labels, labels, file.slot_count)
+            case "NLI1":
+                labels = [entry.name for entry in file]
+                write_section(writer, "NLI1", write_nli1, labels)
             case "ATR1":
                 attributes = [entry.attribute for entry in file]
                 if file.uses_encoded_attributes:

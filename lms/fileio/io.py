@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import struct
-from io import BytesIO, IOBase
 from typing import BinaryIO, Generator
 
+from io import BytesIO, IOBase
 from lms.fileio.encoding import FileEncoding
 
 STRUCT_TYPES = {
@@ -96,7 +96,7 @@ class FileReader:
     def read_encoded_string(self):
         message = b""
         while (
-            raw_char := self.read_bytes(self.encoding.width)
+                raw_char := self.read_bytes(self.encoding.width)
         ) != self.encoding.terminator:
             message += raw_char
         return message.decode(self.encoding.to_string_format(self.is_big_endian))
