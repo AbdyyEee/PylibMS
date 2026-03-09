@@ -19,24 +19,23 @@ def read_txt2(
     for offset in reader.read_offset_array(message_count):
         reader.seek(offset)
 
-        text, parts = b"", []
+        text, message_segments = b"", []
         while (data := reader.read_bytes(encoding.width)) != encoding.terminator:
-            is_opening_tag = data == tag_start
             is_closing_tag = data == tag_close
 
-            if is_opening_tag or is_closing_tag:
-                parts.append(text.decode(encoding_format))
+            if data == tag_start or is_closing_tag:
+                message_segments.append(text.decode(encoding_format))
                 tag = read_tag(reader, config, is_closing_tag, suppress_tag_errors)
-                parts.append(tag)
+                message_segments.append(tag)
                 text = b""
             else:
                 text += data
 
         # Add the remaining text in case there were no control tags
         if text:
-            parts.append(text.decode(encoding_format))
+            message_segments.append(text.decode(encoding_format))
 
-        message = LMS_MessageText(parts, config)
+        message = LMS_MessageText(message_segments, config)
         messages.append(message)
 
     return messages

@@ -79,12 +79,14 @@ def read_msbt(
     messages = atr1_data = style_indexes = None
 
     labels: dict[int, str] = {}
+    uses_nli1 = False
     for magic, size in read_section_data(reader, file_info.section_count):
         match magic:
             case "LBL1":
                 labels, slot_count = read_labels(reader)
             case "NLI1":
                 labels = read_nli1(reader)
+                uses_nli1 = True
             case "ATR1":
                 atr1_data = read_atr1(reader, attribute_config, size)
             case "TXT2":
@@ -98,7 +100,8 @@ def read_msbt(
             section_list.append(magic)
 
     file = MSBT(
-        file_info, section_list, unsupported_sections, attribute_config, tag_config
+        file_info, uses_nli1, section_list,
+        unsupported_sections, attribute_config, tag_config
     )
     file.slot_count = slot_count
 

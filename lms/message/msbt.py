@@ -9,20 +9,28 @@ class MSBT:
     """
     A class that represents a MSBT file.
 
+    ======
+    Usages
+    ======
+    https://github.com/AbdyyEee/PylibMS/wiki/MSBT
+
+    =========
+    File Info
+    =========
     https://nintendo-formats.com/libs/lms/msbt.html
     """
-
     MAGIC = "MsgStdBn"
 
     DEFAULT_SLOT_COUNT = 101
 
     ATR1_INDEX = 1
     TXT2_INDEX = 2
-    TSY_INDEX = 3
+    TSY1_INDEX = 3
 
     def __init__(
             self,
             info: LMS_FileInfo | None = None,
+            uses_nli1: bool = False,
             section_list: list[str] | None = None,
             unsupported_section_map: dict[str, bytes] | None = None,
             attribute_config: AttributeConfig | None = None,
@@ -35,21 +43,26 @@ class MSBT:
 
         self.size_per_attribute = 0
 
-        self.slot_count = MSBT.DEFAULT_SLOT_COUNT
+        self._slot_count = MSBT.DEFAULT_SLOT_COUNT
 
         self.uses_encoded_attributes = True
         self.attr_string_table: bytes | None = None
 
         self._unsupported_section_map = unsupported_section_map or {}
 
+        # Some MSBTs store labels with NLI1 over LBL1
+        # This flag creates a MSBT instance with NLI1 preferred over LBL1
+        self.uses_nli1 = uses_nli1
+
         # Store the section list so that the order of any and all sections is preserved when writing
-        self._section_list: list[str] = section_list or ["LBL1"]
+        self._section_list: list[str] = section_list or ["LBL1" if not self.uses_nli1 else "NLI1"]
 
         self._attribute_config = attribute_config
         self._tag_config = tag_config
 
     @classmethod
     def new(cls,
+            uses_nli1: bool = False,
             attribute_config: AttributeConfig | None = None,
             tag_config: TagConfig | None = None,
             is_big_endian: bool = False,
@@ -58,6 +71,7 @@ class MSBT:
             section_count: int = 2):
         """Create a new MSBT instance.
 
+        :param uses_nli1: flag to determine if to use nli1 section for labels.
         :param attribute_config: the attribute config object
         :param tag_config: the tag config object
         :param is_big_endian: if the file is big endian.
@@ -65,13 +79,13 @@ class MSBT:
         :param version: the file version.
         :param section_count: the number of sections.
 
-        ========
-        Examples
-        ========
+        ======
+        Usages
+        ======
         See https://github.com/AbdyyEee/PylibMS/wiki/MSBT#creating-a-msbt
         """
-        return MSBT(info=LMS_FileInfo(is_big_endian, encoding, version, section_count),
-                    attribute_config=attribute_config, tag_config=tag_config)
+        return MSBT(LMS_FileInfo(is_big_endian, encoding, version, section_count),
+                    uses_nli1=uses_nli1, attribute_config=attribute_config, tag_config=tag_config)
 
     def __len__(self) -> int:
         return len(self._entries)
@@ -90,6 +104,11 @@ class MSBT:
         return tuple(self._entries)
 
     @property
+    def slot_count(self) -> int:
+        """The slot count for the MSBT instance."""
+        return self._slot_count
+
+    @property
     def section_list(self) -> tuple[str, ...]:
         """The list of sections with order preserved."""
         return tuple(self._section_list)
@@ -100,12 +119,12 @@ class MSBT:
         return tuple(self._unsupported_section_map.keys())
 
     @property
-    def has_attributes(self) -> bool:
+    def contains_attributes(self) -> bool:
         """If the MSBT contains attributes."""
         return self.section_exists("ATR1")
 
     @property
-    def has_styles(self) -> bool:
+    def contains_styles(self) -> bool:
         """If the MSBT contains style indexes."""
         return self.section_exists("TSY1")
 
@@ -141,7 +160,7 @@ class MSBT:
             raise KeyError(f"The label '{entry.name}' already exists!")
 
         # The implementation of ensuring section orders are maintained are done by constant indexes.
-        # In most MSBT files, it goes as LBL1 -> TXT2 -> ATR1 -> TSY1.
+        # In most MSBT files, it goes as LBL1/NLI1 -> TXT2 -> ATR1 -> TSY1.
         # If add_entry is utilized on a new MSBT instance, then these indexes ensure the order is maintained.
         # While technically, undocumented sections (i.e. ATO1) can prefix TXT2 and other sections,
         # we do not need to account for that scenario as they aren't supported by the library
@@ -164,7 +183,7 @@ class MSBT:
                     f"Entry '{entry.name}' can't be added with no style index when styles already exist!"
                 )
         elif entry.style_index is not None:
-            self._section_list.insert(self.TSY_INDEX, "TSY1")
+            self._section_list.insert(self.TSY1_INDEX, "TSY1")
             self._info.section_count += 1
 
         self._entries.append(entry)

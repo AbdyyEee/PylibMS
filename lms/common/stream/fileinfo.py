@@ -33,7 +33,7 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
 
     reader.seek(0, 2)
     if file_size != reader.tell():
-        raise lms_exceptions.LMS_MisalignedSizeError(f"Filesize is misaligned!")
+        raise lms_exceptions.LMS_MisalignedSizeError(f"File size is misaligned!")
 
     reader.seek(DATA_START)
 

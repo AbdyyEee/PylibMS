@@ -1,6 +1,6 @@
 import re
 
-from lms.message.definitions.field.lms_field import LMS_FieldMap
+from lms.message.definitions.field.lms_field import LMS_FieldMap, FieldValue
 from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
                                      LMS_EncodedTag, is_tag)
 from lms.message.tag.lms_tagexceptions import LMS_TagForbiddenParametersError
@@ -20,18 +20,18 @@ class LMS_MessageText:
         self._tag_config = tag_config
 
         if isinstance(message, str):
-            self._set_parts(message)
+            self._set_segments(message)
         else:
-            self._parts = message
+            self._segments = message
 
     def __iter__(self):
-        return iter(self._parts)
+        return iter(self._segments)
 
     @property
     def text(self) -> str:
         """The raw text of the message."""
         result = []
-        for part in self._parts:
+        for part in self._segments:
             if is_tag(part):
                 result.append(part.to_text())
             else:
@@ -40,19 +40,19 @@ class LMS_MessageText:
 
     @text.setter
     def text(self, string: str) -> None:
-        self._set_parts(string)
+        self._set_segments(string)
 
     @property
     def tags(self) -> list[LMS_ControlTag]:
         """The list of control tags in the message."""
-        return [part for part in self._parts if is_tag(part)]
+        return [part for part in self._segments if is_tag(part)]
 
     @property
     def tag_positions(self) -> dict[LMS_ControlTag, tuple[int, int]]:
         """Dict of tag objects to their start and end positions in text."""
         positions = {}
         pos = 0
-        for part in self._parts:
+        for part in self._segments:
             text_len = len(part)
             if is_tag(part):
                 positions[part] = (pos, pos + text_len)
@@ -86,7 +86,7 @@ class LMS_MessageText:
                 group_id, tag_index, None if not parameters else list(parameters)
             )
 
-        self._parts.append(tag)
+        self._segments.append(tag)
         return tag
 
     def append_decoded_tag(
@@ -94,7 +94,7 @@ class LMS_MessageText:
             group_name: str,
             tag_name: str,
             is_closing: bool = False,
-            **parameters: int | str | float | bool | bytes,
+            **parameters: FieldValue
     ) -> LMS_DecodedTag:
         """
         Appends a decoded tag to the current message and returns that tag.
@@ -120,7 +120,7 @@ class LMS_MessageText:
                 raise LMS_TagForbiddenParametersError("There may not be parameters for closing tags!")
 
             tag = LMS_DecodedTag(definition, is_closing=True)
-            self._parts.append(tag)
+            self._segments.append(tag)
             return tag
 
         if parameters:
@@ -129,7 +129,7 @@ class LMS_MessageText:
         else:
             tag = LMS_DecodedTag(definition)
 
-        self._parts.append(tag)
+        self._segments.append(tag)
         return tag
 
     def append_tag_string(self, tag: str) -> LMS_ControlTag:
@@ -158,13 +158,13 @@ class LMS_MessageText:
         else:
             raise ValueError(f"Invalid format in tag '{tag}'.")
 
-        self._parts.append(tag_obj)
+        self._segments.append(tag_obj)
         return tag_obj
 
-    def _set_parts(self, text: str) -> None:
-        self._parts = []
+    def _set_segments(self, text: str) -> None:
+        self._segments = []
         for part in self.TAG_FORMAT.split(text):
             if bool(re.match(self.TAG_FORMAT, part)):
                 self.append_tag_string(part)
             else:
-                self._parts.append(part)
+                self._segments.append(part)

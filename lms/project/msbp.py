@@ -9,7 +9,15 @@ class MSBP:
     """
     A class that represents a MSBP file.
 
-    https://nintendo-formats.com/libs/lms/msbp.html.
+    ======
+    Usages
+    ======
+    https://github.com/AbdyyEee/PylibMS/wiki/MSBP
+
+    =========
+    File Info
+    =========
+    https://nintendo-formats.com/libs/lms/msbp.html
     """
 
     MAGIC = "MsgPrjBn"
@@ -23,10 +31,9 @@ class MSBP:
             styles: list[LMS_Style] | None,
             source_files: list[str] | None,
     ):
-        self.name: str = ""
+        self.name = ""
 
         self._info = info
-
         self._colors = colors
         self._attribute_definitions = config
         self._tag_groups = tag_groups
@@ -35,7 +42,7 @@ class MSBP:
 
     @property
     def info(self) -> LMS_FileInfo:
-        """The stream info of the MSBP."""
+        """The file info for the MSBP instance."""
         return self._info
 
     @property

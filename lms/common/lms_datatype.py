@@ -3,6 +3,18 @@ from __future__ import annotations
 from enum import Enum
 from typing import Type, TypeGuard
 
+ALIAS_MAP = {
+    "u8": "UINT8",
+    "u16": "UINT16",
+    "u32": "UINT32",
+    "i8": "INT8",
+    "i16": "INT16",
+    "i32": "INT32",
+    "f32": "FLOAT32",
+    "str": "STRING",
+    "bool": "BOOL",
+    "byte": "BYTES",
+}
 
 def is_number_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[int | float]:
     return datatype in (
@@ -77,7 +89,7 @@ class LMS_DataType(Enum):
         raise TypeError(f"Signed is not a valid property for '{self.to_string()}'!")
 
     @property
-    def builtin_type(self) -> Type[int | str | float | bool | bytes]:
+    def builtin_type(self) -> Type[int | float | str | bool | bytes]:
         """The enum as the builtin python type."""
         return {
             LMS_DataType.UINT8: int,
@@ -116,20 +128,7 @@ class LMS_DataType(Enum):
         if member in cls.__members__:
             return cls[member]
 
-        alias_map = {
-            "u8": "UINT8",
-            "u16": "UINT16",
-            "u32": "UINT32",
-            "i8": "INT8",
-            "i16": "INT16",
-            "i32": "INT32",
-            "f32": "FLOAT32",
-            "str": "STRING",
-            "bool": "BOOL",
-            "byte": "BYTES",
-        }
-
-        alias_member = alias_map.get(string.lower())
+        alias_member = ALIAS_MAP.get(string.lower())
         if alias_member is not None:
             return cls[alias_member]
         else:
