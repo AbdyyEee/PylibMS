@@ -105,7 +105,7 @@ class LMS_EncodedTag:
             )
 
         try:
-            parameters = [int(param.strip().upper()) for param in param_str.split("-")]
+            parameters = [int(param.strip().upper(), 16) for param in param_str.split("-")]
         except ValueError:
             raise LMS_TagInvalidFormatError(
                 f"Malformed parameters in tag '{tag}'. Ensure all the parameters are integers.")
