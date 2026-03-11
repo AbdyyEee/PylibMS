@@ -39,7 +39,7 @@ def read_encoded_atr1(reader: FileReader, section_size: int) -> ATR1Data:
 
 def read_decoded_atr1(reader: FileReader, config: AttributeConfig) -> ATR1Data:
     # String table as a list is not necessary for decoded attributes
-    # It is easier to save all changes from the user by when writing
+    # It is easier to save all changes from the user  when writing
     # to recreate the table from all the string parameters in every attribute
     string_table = None
 

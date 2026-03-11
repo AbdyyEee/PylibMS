@@ -15,8 +15,7 @@ type FieldValue = int | str | float | bool | bytes
 @dataclass(frozen=True)
 class LMS_FieldMap:
     """
-    A wrapper for a dictionary of LMS_Field objects for controlled access, validation
-    and abstraction from the dict object.
+    A wrapper for a basic ``dict[str, LMS_Field]``. Difference is validation upon modification of a field.
     """
 
     fields: dict[str, LMS_Field]
@@ -52,8 +51,10 @@ class LMS_FieldMap:
     @classmethod
     def from_string_dict(cls, data: dict[str, str], definitions: list[ValueDefinition]):
         fields = {}
+        casted_value = None
 
         for definition in definitions:
+            # These datatypes do not require any casting
             if definition.datatype in (LMS_DataType.STRING, LMS_DataType.LIST):
                 fields[definition.name] = LMS_Field(data[definition.name], definition)
                 continue
@@ -64,7 +65,7 @@ class LMS_FieldMap:
                     casted_value = bytes.fromhex(value)
                 case LMS_DataType.BOOL:
                     if value not in ("false", "true"):
-                        raise ValueError("Value must be true or false for bool type.")
+                        raise ValueError("Invalid boolean value!")
                     casted_value = value.strip().lower() == "true"
                 case LMS_DataType.FLOAT32:
                     casted_value = float(value)
@@ -115,7 +116,7 @@ class LMS_Field:
 
     @property
     def list_items(self) -> list[str]:
-        """The list items bound to the field instance. Only is valid for `LMS_Datatype.LIST` values."""
+        """The list items bound to the field instance. Only is valid for ``LMS_Datatype.LIST`` values."""
         return self._definition.list_items
 
     @value.setter
@@ -141,7 +142,8 @@ def _verify_value(
         case LMS_DataType.LIST if isinstance(value, str):
             if value not in definition.list_items:
                 raise ValueError(
-                    f"The value of '{value}' provided for field '{definition.name}' is not in the list {definition.list_items}."
+                    f"""The value of '{value}' provided for field '{definition.name}' is not a 
+                    valid item in the list {definition.list_items}."""
                 )
             else:
                 return
@@ -172,5 +174,6 @@ def _verify_number_is_in_range(
 ):
     if not min_value <= value <= max_value:
         raise ValueError(
-            f"The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' is out of range of ({min_value}, {max_value})"
+            f"""The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' 
+            is out of range of ({min_value}, {max_value})"""
         )

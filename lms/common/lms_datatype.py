@@ -25,7 +25,7 @@ def is_number_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[int |
         LMS_DataType.INT16,
         LMS_DataType.INT32,
         LMS_DataType.FLOAT32,
-    ) and isinstance(value, (int, float))
+    ) and isinstance(value, int)
 
 
 def is_list_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[str]:

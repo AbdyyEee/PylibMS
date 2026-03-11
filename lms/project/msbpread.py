@@ -62,7 +62,7 @@ def read_msbp(stream: BinaryIO | bytes) -> MSBP:
     for magic, _ in read_section_data(reader, file_info.section_count):
         match magic:
             case "CLB1" | "ALB1" | "SLB1":
-                # Set the name attributes of last read item
+                # Set the name attribute of last read item
                 labels, _ = read_labels(reader)
                 for i in labels:
                     items[i].name = labels[i]

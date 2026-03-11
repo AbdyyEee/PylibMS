@@ -43,19 +43,15 @@ class MSBT:
 
         self.size_per_attribute = 0
 
-        self._slot_count = MSBT.DEFAULT_SLOT_COUNT
+        self.slot_count = MSBT.DEFAULT_SLOT_COUNT
 
         self.uses_encoded_attributes = True
         self.attr_string_table: bytes | None = None
 
         self._unsupported_section_map = unsupported_section_map or {}
 
-        # Some MSBTs store labels with NLI1 over LBL1
-        # This flag creates a MSBT instance with NLI1 preferred over LBL1
-        self.uses_nli1 = uses_nli1
-
         # Store the section list so that the order of any and all sections is preserved when writing
-        self._section_list: list[str] = section_list or ["LBL1" if not self.uses_nli1 else "NLI1"]
+        self._section_list: list[str] = section_list or ["LBL1" if not uses_nli1 else "NLI1"]
 
         self._attribute_config = attribute_config
         self._tag_config = tag_config
@@ -104,11 +100,6 @@ class MSBT:
         return tuple(self._entries)
 
     @property
-    def slot_count(self) -> int:
-        """The slot count for the MSBT instance."""
-        return self._slot_count
-
-    @property
     def section_list(self) -> tuple[str, ...]:
         """The list of sections with order preserved."""
         return tuple(self._section_list)
@@ -117,6 +108,11 @@ class MSBT:
     def unsupported_sections(self) -> tuple[str, ...]:
         """The list of unsupported sections."""
         return tuple(self._unsupported_section_map.keys())
+
+    @property
+    def uses_nli1(self) -> bool:
+        """If the MSBT contains the NLI1 section."""
+        return self.section_exists("NLI1")
 
     @property
     def contains_attributes(self) -> bool:
