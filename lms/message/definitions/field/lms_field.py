@@ -11,7 +11,6 @@ FLOAT_MAX = 3.4028235e38
 
 type FieldValue = int | str | float | bool | bytes
 
-
 @dataclass(frozen=True)
 class LMS_FieldMap:
     """
@@ -38,6 +37,21 @@ class LMS_FieldMap:
     def to_dict(self) -> dict[str, FieldValue]:
         """Converts the field map to a regular dictionary."""
         return {field.name: field.value for field in self.fields.values()}
+
+    @classmethod
+    def create_default_map(cls, definitions: list[ValueDefinition]):
+        field_map = {}
+        for definition in definitions:
+            match definition.datatype:
+                case LMS_DataType.LIST:
+                    field_map[definition.name] =  definition.list_items[0]
+                case LMS_DataType.BOOL:
+                    field_map[definition.name] =  False
+                case LMS_DataType.FLOAT32:
+                    field_map[definition.name] = 0.0
+                case _:
+                    field_map[definition.name] = 0
+        return cls.from_dict(field_map, definitions)
 
     @classmethod
     def from_dict(cls, data: dict[str, FieldValue], definitions: list[ValueDefinition]):

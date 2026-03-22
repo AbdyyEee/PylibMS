@@ -124,6 +124,12 @@ class MSBT:
         """If the MSBT contains style indexes."""
         return self.section_exists("TSY1")
 
+    def label_exists(self, label: str) -> bool:
+        """Returns if a label already exists in the MSBT instance.
+
+        :param label: the label to check."""
+        return label in self._label_map
+
     def get_entry_by_index(self, index: int) -> MSBTEntry:
         """
         Retrieves an entry given its index. Supports negative indexing.
