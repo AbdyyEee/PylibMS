@@ -38,9 +38,7 @@ class LMS_TagGroup:
             )
             for parameter in tag.parameter_definitions:
                 if parameter.datatype is LMS_DataType.LIST:
-                    parameter.list_items = [
-                        item for i in parameter.list_indexes for item in list_items[i]
-                    ]
+                    parameter.list_items = [list_items[i] for i in parameter.list_indexes]
 
 
 class LMS_TagDefinition:
