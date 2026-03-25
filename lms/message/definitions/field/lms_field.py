@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from lms.common.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
 
-FLOAT_MIN = 1.17549435e-38
-FLOAT_MAX = 3.4028235e38
+FLOAT32_MIN = -3.4028235e38
+FLOAT32_MAX = 3.4028235e38
 
 type FieldValue = int | str | float | bool | bytes
 
@@ -162,7 +162,7 @@ def _verify_value(
             else:
                 return
         case LMS_DataType.FLOAT32 if isinstance(value, float):
-            _verify_number_is_in_range(value, FLOAT_MIN, FLOAT_MAX, definition)
+            _verify_number_is_in_range(value, FLOAT32_MIN, FLOAT32_MAX, definition)
             return
         case _ if isinstance(value, int):
             bits = datatype.stream_size * 8
