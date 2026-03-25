@@ -117,11 +117,14 @@ class TitleConfig:
                 config["name"], config["description"], definitions
             )
 
-        tag_definitions = []
+        tag_definitions: dict[int, list[TagDefinition]] = {}
         group_map = parsed_content[cls.TAG_KEY]["groups"]
 
         for tag_def in parsed_content[cls.TAG_KEY]["tags"]:
-            tag_definitions.append(TagDefinition.from_dict(tag_def, group_map))
+            definition = TagDefinition.from_dict(tag_def, group_map)
+            if definition.group_id not in tag_definitions:
+                tag_definitions[definition.group_id] = []
+            tag_definitions[definition.group_id].append(definition)
 
         tag_config = TagConfig(group_map, tag_definitions)
 
@@ -169,11 +172,10 @@ class TitleConfig:
                         "group_id": group.group_id,
                         "tag_index": i,
                         "description": "",
-                        "parameters": None if not tag_def.parameter_definitions else [],
                     }
 
-                    if definition["parameters"] is None:
-                        continue
+                    if tag_def.parameter_definitions:
+                        definition["parameters"] = []
 
                     for param_def in tag_def.parameter_definitions:
                         param_definition: dict[str, str | list] = {

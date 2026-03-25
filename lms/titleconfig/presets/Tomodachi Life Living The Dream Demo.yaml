@@ -1,4 +1,4 @@
-game: Tomodachi Life Living The Dream Demo
+game: Tomodachi Life Living the Dream Demo
 tag_definitions:
   groups:
     0: System
@@ -15,39 +15,43 @@ tag_definitions:
   - name: Ruby
     group_id: 0
     tag_index: 0
-    description: ''
+    description: 'Inserts RUBY text above the text.'
     parameters:
     - name: rt
-      description: ''
+      description: 'The ruby character to insert.'
       datatype: string
   - name: Font
     group_id: 0
     tag_index: 1
-    description: ''
+    description: 'Sets a new font style for the current text.'
     parameters:
     - name: name
-      description: ''
+      description: 'The font  name.'
       datatype: string
   - name: Scale
     group_id: 0
     tag_index: 2
-    description: ''
+    description: 'Scales the text.'
     parameters:
     - name: percent
-      description: ''
+      description: 'Relative scale as a %.'
       datatype: uint16
   - name: Color
     group_id: 0
     tag_index: 3
-    description: ''
+    description: 'Sets the color of the text'
     parameters:
-    - name: name
-      description: ''
-      datatype: string
+    - name: id
+      description: 'The id of the color.'
+      datatype: int16
+  - name: PageBreak
+    group_id: 0
+    tag_index: 4
+    description: 'Displays text on a new page in the same label.'
   - name: Reference
     group_id: 0
     tag_index: 5
-    description: ''
+    description: 'References text from a different file.'
     parameters:
     - name: mltxt
       description: ''
@@ -512,6 +516,18 @@ tag_definitions:
       list_items:
       - PairDetail
       - PairSpoken
+  - name: RelationMeterRank
+    group_id: 2
+    tag_index: 21
+    description: ''
+  - name: BloodRelation
+    group_id: 2
+    tag_index: 22
+    description: ''
+  - name: BloodRelationLong
+    group_id: 2
+    tag_index: 23
+    description: ''
   - name: MapObject
     group_id: 2
     tag_index: 24
@@ -562,6 +578,10 @@ tag_definitions:
       list_items:
       - Valid
       - Invalid
+  - name: IslandType
+    group_id: 2
+    tag_index: 28
+    description: ''
   - name: RoommateGroup
     group_id: 2
     tag_index: 29
@@ -635,6 +655,10 @@ tag_definitions:
       list_items:
       - Valid
       - Invalid
+  - name: Travel
+    group_id: 2
+    tag_index: 33
+    description: ''
   - name: BookText
     group_id: 2
     tag_index: 34
@@ -646,6 +670,14 @@ tag_definitions:
       list_items:
       - Valid
       - Invalid
+  - name: WordAttrGrammaticality
+    group_id: 2
+    tag_index: 35
+    description: ''
+  - name: WordAttrCount
+    group_id: 2
+    tag_index: 36
+    description: ''
   - name: RandomSetUGCText
     group_id: 2
     tag_index: 37
@@ -818,6 +850,26 @@ tag_definitions:
       - ParticipantMii1
       - ParticipantMii2
       - ParticipantMii3
+  - name: PlayerNicknameCommon
+    group_id: 5
+    tag_index: 1
+    description: ''
+  - name: EmotionSadness
+    group_id: 6
+    tag_index: 0
+    description: ''
+  - name: EmotionAnger
+    group_id: 6
+    tag_index: 1
+    description: ''
+  - name: EmotionShout
+    group_id: 6
+    tag_index: 2
+    description: ''
+  - name: EmotionWhisper
+    group_id: 6
+    tag_index: 3
+    description: ''
   - name: Break
     group_id: 6
     tag_index: 4
@@ -933,6 +985,14 @@ tag_definitions:
       datatype: list
       list_items:
       - Emphasis
+  - name: LipSyncOff
+    group_id: 8
+    tag_index: 1
+    description: ''
+  - name: TelopOff
+    group_id: 8
+    tag_index: 2
+    description: ''
   - name: Pulldown
     group_id: 9
     tag_index: 0
@@ -954,6 +1014,10 @@ tag_definitions:
     - name: Neuter
       description: ''
       datatype: string
+  - name: RegisteredTrademark
+    group_id: 9
+    tag_index: 1
+    description: ''
   - name: AMPM
     group_id: 100
     tag_index: 0
@@ -1819,6 +1883,14 @@ tag_definitions:
       - ParticipantMii1
       - ParticipantMii2
       - ParticipantMii3
+  - name: FocusTelopSubject
+    group_id: 200
+    tag_index: 16
+    description: ''
+  - name: FocusTelopSubjectOnePerson
+    group_id: 200
+    tag_index: 17
+    description: ''
   - name: ThirdPersonPronoun
     group_id: 200
     tag_index: 18
@@ -2254,6 +2326,22 @@ tag_definitions:
       list_items:
       - Singular
       - Plural
+  - name: DefArt
+    group_id: 201
+    tag_index: 1
+    description: ''
+  - name: IndefArt
+    group_id: 201
+    tag_index: 2
+    description: ''
+  - name: Cap
+    group_id: 201
+    tag_index: 3
+    description: ''
+  - name: Decap
+    group_id: 201
+    tag_index: 4
+    description: ''
   - name: Gender
     group_id: 201
     tag_index: 5
@@ -2304,6 +2392,14 @@ tag_definitions:
     - name: 'No'
       description: ''
       datatype: string
+  - name: Case
+    group_id: 201
+    tag_index: 9
+    description: ''
+  - name: Declension
+    group_id: 201
+    tag_index: 10
+    description: ''
   - name: Elision
     group_id: 201
     tag_index: 11
@@ -2315,6 +2411,26 @@ tag_definitions:
     - name: Elision
       description: ''
       datatype: string
+  - name: CapAll
+    group_id: 201
+    tag_index: 12
+    description: ''
+  - name: IgnoreCap
+    group_id: 201
+    tag_index: 13
+    description: ''
+  - name: CapNext
+    group_id: 201
+    tag_index: 14
+    description: ''
+  - name: DecapAll
+    group_id: 201
+    tag_index: 15
+    description: ''
+  - name: DecapHyphenated
+    group_id: 201
+    tag_index: 16
+    description: ''
   - name: CountN
     group_id: 201
     tag_index: 17
@@ -2455,6 +2571,46 @@ tag_definitions:
     - name: NeuterPlural
       description: ''
       datatype: string
+  - name: CapSP
+    group_id: 201
+    tag_index: 21
+    description: ''
+  - name: PrepositionDefArt_It_a
+    group_id: 201
+    tag_index: 22
+    description: ''
+  - name: PrepositionDefArt_It_da
+    group_id: 201
+    tag_index: 23
+    description: ''
+  - name: PrepositionDefArt_It_di
+    group_id: 201
+    tag_index: 24
+    description: ''
+  - name: PrepositionDefArt_It_in
+    group_id: 201
+    tag_index: 25
+    description: ''
+  - name: PrepositionDefArt_It_su
+    group_id: 201
+    tag_index: 26
+    description: ''
+  - name: PrepositionDefArt_Es_a
+    group_id: 201
+    tag_index: 27
+    description: ''
+  - name: PrepositionDefArt_Es_de
+    group_id: 201
+    tag_index: 28
+    description: ''
+  - name: PrepositionDefArt_Fr_a
+    group_id: 201
+    tag_index: 29
+    description: ''
+  - name: PrepositionDefArt_Fr_de
+    group_id: 201
+    tag_index: 30
+    description: ''
   - name: CountClockHour
     group_id: 201
     tag_index: 31
@@ -2501,6 +2657,10 @@ tag_definitions:
     - name: Plural
       description: ''
       datatype: string
+  - name: CapNextIfNeed
+    group_id: 201
+    tag_index: 33
+    description: ''
   - name: AS
     group_id: 300
     tag_index: 0

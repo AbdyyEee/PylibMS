@@ -13,7 +13,6 @@ def read_strings(reader: FileReader, four_byte_count: bool) -> list[str]:
     for offset in reader.read_offset_array(count):
         reader.seek(offset)
         string = reader.read_encoded_string()
-        print(string)
         string_list.append(string)
 
     return string_list

@@ -9,7 +9,7 @@ from lms.titleconfig.definitions.value import ValueDefinition
 class TagConfig:
     """Class that represents a tag structure definition."""
 
-    def __init__(self, group_map: dict[int, str], definitions: list[TagDefinition]):
+    def __init__(self, group_map: dict[int, str], definitions: dict[int, list[TagDefinition]]):
         self._group_map = group_map
         self._definitions = definitions
 
@@ -18,23 +18,23 @@ class TagConfig:
         return self._group_map
 
     @property
-    def definitions(self) -> list[TagDefinition]:
+    def definitions(self) -> dict[int, list[TagDefinition]]:
         return self._definitions
 
     def get_definition_by_names(self, group_name: str, tag_name: str) -> TagDefinition:
-        group_index = None
+        group_id = None
         for i, name in self.group_map.items():
             if name == group_name:
-                group_index = i
+                group_id = i
                 break
 
-        if group_index is None:
+        if group_id is None:
             raise KeyError(
                 f"Group name '{group_name}' was not found! Is the group defined?"
             )
 
-        for tag_def in self.definitions:
-            if tag_def.group_id == group_index and tag_def.tag_name == tag_name:
+        for tag_def in self._definitions[group_id]:
+            if tag_def.group_id == group_id and tag_def.tag_name == tag_name:
                 return tag_def
 
         raise KeyError(
@@ -47,11 +47,7 @@ class TagConfig:
         if group_id not in self._group_map:
             return None
 
-        for tag_def in self.definitions:
-            if tag_def.group_id == group_id and tag_def.tag_index == tag_index:
-                return tag_def
-
-        return None
+        return self._definitions[group_id][tag_index]
 
 
 @dataclass(frozen=True)

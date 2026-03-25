@@ -32,7 +32,9 @@ def read_decoded_parameters(
                 value = read_field(reader, param)
         except Exception as e:
             raise LMS_TagReadingError(
-                f"An error occurred reading tag '[{definition.group_name}:{definition.tag_name}]', parameter '{param.name}' at offset {param_offset}"
+                f"""An error occurred reading tag '[{definition.group_name}:{definition.tag_name}]', at offset {param_offset}.
+                Parameter details: name='{param.name}', datatype='{param.datatype}'
+                """
             ) from e
 
         parameters[param.name] = value

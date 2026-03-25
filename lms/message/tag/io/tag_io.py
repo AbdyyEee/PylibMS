@@ -35,6 +35,7 @@ def read_tag(
     if tag_config is None:
         return _read_encoded_tag(reader, group_id, tag_index, is_closing)
 
+    print(group_id, tag_index, start, reader.tell())
     definition = tag_config.get_definition_by_indexes(group_id, tag_index)
 
     # Tags not defined in the config are not considered fallback tags
