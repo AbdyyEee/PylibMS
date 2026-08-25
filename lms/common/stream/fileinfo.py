@@ -1,11 +1,8 @@
 from lms.common import lms_exceptions
+from lms.common.lms_constants import BIG_ENDIAN_BOM, SECTION_DATA_START, LITTLE_ENDIAN_BOM, SIZE_OFFSET
 from lms.common.lms_fileinfo import LMS_FileInfo
 from lms.fileio.encoding import FileEncoding
 from lms.fileio.io import FileReader, FileWriter
-
-DATA_START = 0x20
-LITTLE_ENDIAN_BOM = b"\xff\xfe"
-BIG_ENDIAN_BOM = b"\xfe\xff"
 
 
 def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
@@ -32,10 +29,10 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     file_size = reader.read_uint32()
 
     reader.seek(0, 2)
-    if file_size != reader.tell():
-        raise lms_exceptions.LMS_MisalignedSizeError(f"File size is misaligned!")
+    if file_size != (real_size := reader.tell()):
+        raise lms_exceptions.LMS_MisalignedSizeError(f"File size is misaligned!` Got {file_size} expected {real_size}.")
 
-    reader.seek(DATA_START)
+    reader.seek(SECTION_DATA_START)
 
     return LMS_FileInfo(
         is_big_endian,
@@ -62,4 +59,9 @@ def write_file_info(writer: FileWriter, magic: str, file_info: LMS_FileInfo) -> 
     writer.write_bytes(b"\x00\x00")
     writer.write_bytes(b"\x00" * 4)
     writer.write_bytes(b"\x00" * 10)
-    writer.seek(DATA_START)
+    writer.seek(SECTION_DATA_START)
+
+
+def write_file_size(writer: FileWriter):
+    writer.seek(SIZE_OFFSET)
+    writer.write_uint32(writer.get_stream_size())

@@ -6,6 +6,8 @@ from typing import BinaryIO, Generator
 from io import BytesIO, IOBase
 from lms.fileio.encoding import FileEncoding
 
+PADDING_BYTE = b"\x00"
+
 STRUCT_TYPES = {
     "little": {
         "uint8": "<B",
@@ -89,6 +91,14 @@ class FileReader:
 
     def read_float32(self) -> float:
         return struct.unpack(self._get_datatype("float"), self._stream.read(4))[0]
+
+    def read_string_offset(self, section_start: int) -> str:
+        offset = self.read_uint32()
+        last_position = self.tell()
+        self.seek(section_start + offset)
+        string = self.read_encoded_string()
+        self.seek(last_position)
+        return string
 
     def read_string_len(self, length: int) -> str:
         return self._stream.read(length).decode("UTF-8")

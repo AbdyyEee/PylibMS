@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 
 
 @dataclass(frozen=True)
@@ -12,7 +12,7 @@ class ValueDefinition:
 
     @classmethod
     def from_dict(cls, data: dict):
-        name, description = data["name"], data["description"]
+        name, description = data["name"], data.get("description", "")
         datatype = LMS_DataType.from_string(data["datatype"])
         list_items = data.get("list_items", [])
         return cls(name, description, datatype, list_items)

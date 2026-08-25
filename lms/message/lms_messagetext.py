@@ -1,6 +1,6 @@
 import re
 
-from lms.message.definitions.field.lms_field import LMS_FieldMap, FieldValue
+from lms.common.field.lms_field import LMS_FieldMap, FieldValue
 from lms.message.tag.lms_tag import (LMS_ControlTag, LMS_DecodedTag,
                                      LMS_EncodedTag, is_tag)
 from lms.message.tag.lms_tagexceptions import LMS_TagForbiddenParametersError

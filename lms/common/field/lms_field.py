@@ -3,13 +3,14 @@ from __future__ import annotations
 from collections.abc import Iterator
 from dataclasses import dataclass
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
 
 FLOAT32_MIN = -3.4028235e38
 FLOAT32_MAX = 3.4028235e38
 
 type FieldValue = int | str | float | bool | bytes
+
 
 @dataclass(frozen=True)
 class LMS_FieldMap:
@@ -44,9 +45,9 @@ class LMS_FieldMap:
         for definition in definitions:
             match definition.datatype:
                 case LMS_DataType.LIST:
-                    field_map[definition.name] =  definition.list_items[0]
+                    field_map[definition.name] = definition.list_items[0]
                 case LMS_DataType.BOOL:
-                    field_map[definition.name] =  False
+                    field_map[definition.name] = False
                 case LMS_DataType.FLOAT32:
                     field_map[definition.name] = 0.0
                 case _:
@@ -97,15 +98,16 @@ class LMS_Field:
     """
 
     def __init__(
-            self, value: int | str | float | bytes | bool, definition: ValueDefinition
+            self, value: int | str | float | bytes | bool, definition: ValueDefinition,
     ):
-        _verify_value(value, definition)
+        _verify_value_from_definition(value, definition)
         self._definition = definition
         self._value = value
 
     def __repr__(self):
         if self.datatype is LMS_DataType.LIST:
             return f"LMS_Field(value={self._value!r}, list_items={self.list_items!r})"
+
         return f"LMS_Field(value={self._value!r}, type={self.datatype!r})"
 
     @property
@@ -135,11 +137,11 @@ class LMS_Field:
 
     @value.setter
     def value(self, new_value: int | str | float | bytes | bool):
-        _verify_value(new_value, self._definition)
+        _verify_value_from_definition(new_value, self._definition)
         self._value = new_value
 
 
-def _verify_value(
+def _verify_value_from_definition(
         value: int | str | float | bytes | bool, definition: ValueDefinition
 ) -> None:
     datatype = definition.datatype
@@ -161,33 +163,32 @@ def _verify_value(
                 )
             else:
                 return
-        case LMS_DataType.FLOAT32 if isinstance(value, float):
-            _verify_number_is_in_range(value, FLOAT32_MIN, FLOAT32_MAX, definition)
-            return
         case _ if isinstance(value, int):
-            bits = datatype.stream_size * 8
-            if datatype.signed:
-                max_value = 2 ** (bits - 1)
-                min_value = -max_value
-            else:
-                min_value, max_value = 0, (2 ** bits) - 1
-
-            _verify_number_is_in_range(value, min_value, max_value, definition)
+            _verify_number_datatype(value, definition.datatype)
             return
 
     raise TypeError(
-        f"The value provided for '{definition.name}' type '{type(value)}' should be '{datatype.builtin_type}'."
+        f"The value provided for '{definition.name}' type '{type(value)}' should be '{datatype.builtin_type}' (DATATYPE {definition.datatype})."
     )
 
 
-def _verify_number_is_in_range(
+def _verify_number_datatype(
         value: int | float,
-        min_value: int | float,
-        max_value: int | float,
-        definition: ValueDefinition,
+        datatype: LMS_DataType,
 ):
+    if datatype is LMS_DataType.FLOAT32:
+        max_value = FLOAT32_MAX
+        min_value = FLOAT32_MIN
+    else:
+        bits = datatype.stream_size * 8
+        if datatype.signed:
+            max_value = 2 ** (bits - 1)
+            min_value = -max_value
+        else:
+            min_value, max_value = 0, (2 ** bits) - 1
+
     if not min_value <= value <= max_value:
         raise ValueError(
-            f"""The value '{value}' of type '{definition.datatype}' provided for field '{definition.name}' 
+            f"""The value '{value}' of type '{datatype.name}' provided for this field
             is out of range of ({min_value}, {max_value})"""
         )

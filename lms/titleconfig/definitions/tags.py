@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 from lms.titleconfig.definitions.value import ValueDefinition
 
 
@@ -41,7 +41,7 @@ class TagConfig:
             f"Tag name '{tag_name}' not found in group '{group_name}'. Is the tag defined?"
         )
 
-    def get_definition_by_indexes(
+    def get_definition_by_indices(
             self, group_id: int, tag_index: int
     ) -> TagDefinition | None:
         if group_id not in self._group_map:
@@ -65,7 +65,7 @@ class TagDefinition:
     def from_dict(cls, data: dict, group_map: dict[int, str]):
         tag_name = data["name"]
         group_id, tag_index = data["group_id"], data["tag_index"]
-        description = data["description"]
+        description = data.get("description", "")
         group_name = group_map[group_id]
 
         if "parameters" not in data:

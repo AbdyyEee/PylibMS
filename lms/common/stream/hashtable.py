@@ -27,21 +27,23 @@ def read_labels(reader: FileReader) -> tuple[dict, int]:
     return sorted_labels, slot_count
 
 
-def write_labels(writer: FileWriter, labels: list[str], slot_count: int) -> None:
+def write_labels(writer: FileWriter, labels: list[str], slot_count: int, index_map: dict[str, int] = None) -> None:
     writer.write_uint32(slot_count)
 
     hash_slots = {}
-    index_map = {}
-    # Add each label to each hash slot
+
+    add_indices = index_map is None
+
+    if index_map is None:
+        index_map = {}
+
     for i, label in enumerate(labels):
-        hash = _calculate_hash(label, slot_count)
+        slot = _calculate_hash(label, slot_count)
 
-        if hash not in hash_slots:
-            hash_slots[hash] = [label]
-        else:
-            hash_slots[hash].append(label)
+        hash_slots.setdefault(slot, []).append(label)
 
-        index_map[label] = i
+        if add_indices:
+            index_map[label] = i
 
     label_offsets = slot_count * 8 + 4
 
@@ -66,8 +68,15 @@ def write_labels(writer: FileWriter, labels: list[str], slot_count: int) -> None
             writer.write_uint32(index_map[label])
 
 
-#  See https://nintendo-formats.com/libs/lms/overview.html#hash-tables
 def _calculate_hash(label: str, slot_count: int) -> int:
+    """
+    Calucate the hash of a label
+
+    :param label: the label to calculate the hash for.
+    :param slot_count: the number of slots.
+
+    Taken directly from https://nintendo-formats.com/libs/lms/overview.html#hash-tables
+    """
     hash = 0
     for character in label:
         hash = hash * 0x492 + ord(character)

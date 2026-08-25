@@ -16,6 +16,7 @@ ALIAS_MAP = {
     "byte": "BYTES",
 }
 
+
 def is_number_datatype(value: object, datatype: LMS_DataType) -> TypeGuard[int | float]:
     return datatype in (
         LMS_DataType.UINT8,
@@ -57,16 +58,10 @@ class LMS_DataType(Enum):
 
     FLOAT32 = 6
 
-    # Unknown 16 bit type (value of 6) has yet to be documented
-    # Might be some sort of 2 byte integer, float, or may be an array.
-    # We won't ever know cause no game (yet that has been found) has utilized this type
-    # Thanks Nintendo.
-    ...
-
     STRING = 8
     LIST = 9
 
-    # Interface types
+    # - Interface types -
     # These types act as an abstraction for a real LMS_Datatype
     # The actual value isn't important since they are not real types, but are instantiated from a config
     BOOL = "bool"
@@ -107,8 +102,8 @@ class LMS_DataType(Enum):
 
     @property
     def stream_size(self) -> int:
-        """The size the datatype takes up in a stream."""
-        return {
+        """Size of the datatype, only for fixed integers."""
+        sizes = {
             LMS_DataType.UINT8: 1,
             LMS_DataType.UINT16: 2,
             LMS_DataType.UINT32: 4,
@@ -116,10 +111,14 @@ class LMS_DataType(Enum):
             LMS_DataType.INT16: 2,
             LMS_DataType.INT32: 4,
             LMS_DataType.FLOAT32: 4,
-            LMS_DataType.LIST: 1,
-            LMS_DataType.BOOL: 1,
-            LMS_DataType.BYTES: 1,
-        }[self]
+        }
+
+        try:
+            return sizes[self]
+        except KeyError:
+            raise TypeError(
+                f"Stream size is not defined for '{self.to_string()}'."
+            )
 
     @classmethod
     def from_string(cls, string: str):

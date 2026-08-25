@@ -1,7 +1,7 @@
-from lms.common.lms_datatype import LMS_DataType, is_string_datatype
+from lms.common.field.io import read_field, write_field
+from lms.common.field.lms_datatype import LMS_DataType, is_string_datatype
+from lms.common.field.lms_field import LMS_Field, LMS_FieldMap
 from lms.fileio.io import FileReader, FileWriter
-from lms.message.definitions.field.io import read_field, write_field
-from lms.message.definitions.field.lms_field import LMS_Field, LMS_FieldMap
 from lms.message.tag.lms_tagexceptions import (LMS_TagReadingError,
                                                LMS_TagWritingError)
 from lms.titleconfig.definitions.tags import TagDefinition

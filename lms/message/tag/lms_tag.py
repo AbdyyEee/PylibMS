@@ -1,7 +1,7 @@
 import re
 from typing import TypeGuard
 
-from lms.message.definitions.field.lms_field import LMS_FieldMap
+from lms.common.field.lms_field import LMS_FieldMap
 from lms.message.tag.lms_tagexceptions import LMS_TagInvalidFormatError, LMS_TagForbiddenParametersError
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 

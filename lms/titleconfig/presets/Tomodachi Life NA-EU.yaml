@@ -1,4 +1,56 @@
-game: 'Tomodachi Life'
+game: 'Tomodachi Life NA-EU'
+node_definitions:
+  branch:
+    - id: 0
+      name: EvaluateExpression
+      parameter_type: string
+      parameters:
+        - name: exp
+          description: ''
+    - id: 1
+      name: SwitchVariable
+      description: ''
+      parameter_type: string
+      parameters:
+        - name: var
+          description: ''
+  event:
+    - id: 3
+      name: SetVariable
+      description: ''
+      parameter_type: string
+      parameters:
+        - name: expression
+          description: ''
+    - id: 43
+      name: SetMiiPosition
+      description: ''
+      parameter_type: string
+      parameters:
+        - name: pos
+          description: ''
+    - id: 58
+      name: SetupButtonPrompt
+      description: ''
+      next_node_dependency: true
+      parameter_type: string
+      parameters:
+        - name: var
+          description: ''
+    - id: 90
+      name: LoadSEGroup
+      description: ''
+      parameter_type: string
+      parameters:
+        - name: group
+          description: ''
+    - id: 96
+      name: PlaySE
+      description: ''
+      parameter_type: string
+      parameters:
+        - name: name
+          description: ''
 tag_definitions:
   groups:
     0: System

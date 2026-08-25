@@ -1,4 +1,4 @@
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 
 
 class LMS_AttributeDefinition:

@@ -1,7 +1,7 @@
 import os
 from typing import BinaryIO
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 from lms.common.stream.fileinfo import read_file_info
 from lms.common.stream.hashtable import read_labels
 from lms.common.stream.section import read_section_data

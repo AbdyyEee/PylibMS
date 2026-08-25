@@ -2,6 +2,9 @@ from typing import Any, Callable, Generator
 
 from lms.fileio.io import FileReader, FileWriter
 
+SECTION_PADDING_BYTE = b"\xAB"
+SECTION_ALIGNMENT = 16
+
 
 def read_section_data(
         reader: FileReader, section_count: int
@@ -14,7 +17,7 @@ def read_section_data(
         reader.skip(8)
         end = reader.tell() + size
 
-        yield (magic, size)
+        yield magic, size
 
         reader.seek(end)
         reader.align(16)
@@ -55,4 +58,4 @@ def _write_end_data(writer: FileWriter, data_start: int, size_offset: int) -> No
     writer.seek(size_offset)
     writer.write_uint32(size)
     writer.seek(end)
-    writer.write_alignment(b"\xab", 16)
+    writer.write_alignment(SECTION_PADDING_BYTE, SECTION_ALIGNMENT)

@@ -1,15 +1,15 @@
 from typing import Callable
 
-from lms.common.lms_datatype import (LMS_DataType, is_bool_datatype,
-                                     is_bytes_datatype, is_list_datatype,
-                                     is_number_datatype)
+from lms.common.field.lms_datatype import (LMS_DataType, is_bool_datatype,
+                                           is_bytes_datatype, is_list_datatype,
+                                           is_number_datatype)
+from lms.common.field.lms_field import LMS_Field
 from lms.fileio.io import FileReader, FileWriter
-from lms.message.definitions.field.lms_field import LMS_Field
 from lms.titleconfig.definitions.value import ValueDefinition
 
 
 def read_field(reader: FileReader, definition: ValueDefinition) -> LMS_Field:
-    # String is excluded as their reading varies between tags and attributes
+    # String is excluded as their reading varies between MSBT/MSBF
     match definition.datatype:
         case LMS_DataType.UINT8:
             value = reader.read_uint8()

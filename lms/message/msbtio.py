@@ -1,6 +1,7 @@
 from typing import BinaryIO
 
-from lms.common.stream.fileinfo import read_file_info, write_file_info
+from lms.common import lms_exceptions
+from lms.common.stream.fileinfo import read_file_info, write_file_info, write_file_size
 from lms.common.stream.hashtable import read_labels, write_labels
 from lms.common.stream.section import (read_section_data, write_section,
                                        write_unsupported_section)
@@ -64,7 +65,7 @@ def read_msbt(
     =====
     Usage
     =====
-    >>> msbt = read_msbt_path("path/to/file.msbt")
+    >>> msbt = read_msbt(stream)
     """
     reader = FileReader(stream)
     file_info = read_file_info(reader, MSBT.MAGIC)
@@ -76,7 +77,7 @@ def read_msbt(
     # The value may be overridden at the instance level... not sure why it varies though...
     slot_count = MSBT.DEFAULT_SLOT_COUNT
 
-    messages = atr1_data = style_indexes = None
+    messages = atr1_data = style_indices = None
 
     labels: dict[int, str] = {}
     uses_nli1 = False
@@ -92,7 +93,7 @@ def read_msbt(
             case "TXT2":
                 messages = read_txt2(reader, tag_config, suppress_tag_errors)
             case "TSY1":
-                style_indexes = read_tsy1(reader, len(labels))
+                style_indices = read_tsy1(reader, len(labels))
             case _:
                 unsupported_sections[magic] = reader.read_bytes(size)
 
@@ -113,7 +114,7 @@ def read_msbt(
     for i, label in labels.items():
         text = None if messages is None else messages[i]
         attr = None if atr1_data is None else atr1_data.attributes[i]
-        style = None if style_indexes is None else style_indexes[i]
+        style = None if style_indices is None else style_indices[i]
         file.add_entry(
             MSBTEntry(label, message=text, attribute=attr, style_index=style)
         )
@@ -149,7 +150,7 @@ def write_msbt(file: MSBT) -> bytes:
     >>> data = write_msbt(msbt)
     """
     if not isinstance(file, MSBT):
-        raise LMS_Exceptions.LMS_Error(
+        raise lms_exceptions.LMS_Error(
             f"File provided is not valid. Expected MSBT got {type(file)}."
         )
 
@@ -194,6 +195,5 @@ def write_msbt(file: MSBT) -> bytes:
                     writer, section, file.get_unsupported_section_data(section)
                 )
 
-    writer.seek(0x12)
-    writer.write_uint32(writer.get_stream_size())
+    write_file_size(writer)
     return writer.get_data()

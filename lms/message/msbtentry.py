@@ -1,5 +1,5 @@
-from lms.message.definitions.field.lms_field import LMS_FieldMap
-from lms.message.definitions.lms_messagetext import LMS_MessageText
+from lms.common.field.lms_field import LMS_FieldMap
+from lms.message.lms_messagetext import LMS_MessageText
 from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.tags import TagConfig
 

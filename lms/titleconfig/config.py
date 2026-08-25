@@ -2,18 +2,23 @@ from importlib import resources
 
 import yaml
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
+from lms.flowchart.definitions.node_type import LMS_NodeType
 from lms.project.msbp import MSBP
 from lms.titleconfig.definitions.attribute import AttributeConfig
+from lms.titleconfig.definitions.nodes import NodeConfig, NodeDefinition
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 from lms.titleconfig.definitions.value import ValueDefinition
 
 
 class TitleConfig:
-    """Represents a configuration for a specific title."""
+    """
+    Represents a configuration for a specific title.
+    """
 
     TAG_KEY = "tag_definitions"
     ATTR_KEY = "attribute_definitions"
+    NODE_KEY = "node_definitions"
 
     PRESET_LIST = [
         file.name.removesuffix(".yaml")
@@ -25,10 +30,12 @@ class TitleConfig:
             game: str | None,
             attribute_config_map: dict[str, AttributeConfig] | None = None,
             tag_config: TagConfig | None = None,
+            node_config: NodeConfig | None = None,
     ):
         self._game = game
         self._attribute_config_map = attribute_config_map
         self._tag_config = tag_config
+        self._node_config = node_config
 
     @property
     def game(self) -> str | None:
@@ -63,6 +70,11 @@ class TitleConfig:
 
         return self._attribute_config_map[name]
 
+    @property
+    def node_config(self) -> NodeConfig:
+        """The loaded node configuration."""
+        return self._node_config
+
     @classmethod
     def load_preset(cls, game: str):
         """
@@ -72,6 +84,7 @@ class TitleConfig:
 
         The list of presets are found with `TitleConfig.preset_list`.
         """
+        # TODO: Load presets via requests instead of hard-coded files in the library
         preset_map = {preset.lower(): preset for preset in cls.PRESET_LIST}
 
         if game.lower() not in preset_map:
@@ -114,7 +127,7 @@ class TitleConfig:
                 for value_def in config["definitions"]
             ]
             attribute_configs[config["name"]] = AttributeConfig(
-                config["name"], config["description"], definitions
+                config["name"], config.get("description", ""), definitions
             )
 
         tag_definitions: dict[int, list[TagDefinition]] = {}
@@ -128,7 +141,51 @@ class TitleConfig:
 
         tag_config = TagConfig(group_map, tag_definitions)
 
-        return cls(game, attribute_configs, tag_config)
+        branch_nodes: dict[int, NodeDefinition | tuple[NodeDefinition, ...]] = {}
+        event_nodes: dict[int, tuple[NodeDefinition, ...]] = {}
+
+        for definition in parsed_content[cls.NODE_KEY]["branch"]:
+            node_id = definition["id"]
+
+            node_definition = NodeDefinition.from_dict(
+                node_id,
+                LMS_NodeType.BRANCH,
+                definition
+            )
+
+            if node_id not in branch_nodes:
+                branch_nodes[node_id] = node_definition
+                continue
+
+            existing = branch_nodes[node_id]
+
+            if isinstance(existing, tuple):
+                branch_nodes[node_id] = existing + (node_definition,)
+            else:
+                branch_nodes[node_id] = (existing, node_definition)
+
+        for definition in parsed_content[cls.NODE_KEY]["event"]:
+            node_id = definition["id"]
+
+            node_definition = NodeDefinition.from_dict(
+                node_id,
+                LMS_NodeType.EVENT,
+                definition
+            )
+
+            if node_id not in event_nodes:
+                event_nodes[node_id] = node_definition
+                continue
+
+            existing = event_nodes[node_id]
+
+            if isinstance(existing, tuple):
+                event_nodes[node_id] = existing + (node_definition,)
+            else:
+                event_nodes[node_id] = (existing, node_definition)
+
+        node_config = NodeConfig(branch_nodes, event_nodes)
+        return cls(game, attribute_configs, tag_config, node_config)
 
     @staticmethod
     def generate_file(file_path: str, game: str, project: MSBP) -> None:
@@ -162,6 +219,7 @@ class TitleConfig:
             config[TitleConfig.TAG_KEY] = {
                 "groups": {group.group_id: group.name for group in project.tag_groups},
                 "tags": [],
+
             }
 
             for group in project.tag_groups:

@@ -1,5 +1,5 @@
 from lms.fileio.io import FileReader, FileWriter
-from lms.message.definitions.lms_messagetext import LMS_MessageText
+from lms.message.lms_messagetext import LMS_MessageText
 from lms.message.tag.io.tag_io import get_tag_indicator, read_tag, write_tag
 from lms.message.tag.lms_tag import LMS_DecodedTag, LMS_EncodedTag
 from lms.titleconfig.definitions.tags import TagConfig

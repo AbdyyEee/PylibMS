@@ -1,0 +1,87 @@
+from types import MappingProxyType
+
+from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.flowchart.definitions.flowchart import LMS_Flowchart
+from lms.flowchart.definitions.node import LMS_EntryNode
+
+
+class MSBF:
+    """
+    Class that represents a MSBF instance.
+
+    ======
+    Usages
+    ======
+    https://github.com/AbdyyEee/PylibMS/wiki/MSBF
+
+    =========
+    File Info
+    =========
+    https://nintendo-formats.com/libs/lms/msbf.html
+    """
+    MAGIC = "MsgFlwBn"
+
+    DEFAULT_SLOT_COUNT = 59
+
+    def __init__(self, info: LMS_FileInfo | None = None,
+                 flowcharts: dict[str, LMS_Flowchart] = None):
+        self._info = info if info is not None else LMS_FileInfo()
+        self._flowcharts: dict[str, LMS_Flowchart] = flowcharts or {}
+
+        self._global_node_id = 0
+
+    def __iter__(self):
+        return iter(self._flowcharts.values())
+
+    def __len__(self):
+        return len(self._flowcharts)
+
+    @property
+    def info(self) -> LMS_FileInfo:
+        """The file info for the MSBT instance."""
+        return self._info
+
+    @property
+    def flowcharts(self) -> MappingProxyType[str, LMS_Flowchart]:
+        """The flowcharts of the MSBF instance."""
+        return MappingProxyType(self._flowcharts)
+
+    @property
+    def global_node_id(self) -> int:
+        """Current node ID count."""
+        return self._global_node_id
+
+    def set_global_id_count(self, value: int) -> None:
+        if value < self._global_node_id:
+            raise ValueError("Cannot decrease global node ID below existing count.")
+        self._global_node_id = value
+
+    def generate_next_id(self) -> int:
+        next_id = self._global_node_id
+        self._global_node_id += 1
+        return next_id
+
+    def add_flowchart(self, flowchart_name: str, entry_point: LMS_EntryNode | None = None) -> LMS_Flowchart:
+        """
+        Add a flowchart to the MSBF instance.
+
+        :param flowchart_name: The name of the new flowchart.
+        """
+        if flowchart_name in self._flowcharts:
+            raise KeyError(f"Flowchart with name '{flowchart_name}' already exists!")
+
+        if entry_point is None:
+            entry_point = LMS_EntryNode(self.generate_next_id(), flowchart_name=flowchart_name)
+
+        print(entry_point.id)
+        flowchart = LMS_Flowchart(entry_point, self.generate_next_id)
+        self._flowcharts[flowchart_name] = flowchart
+        return flowchart
+
+    def delete_flowchart(self, name: str):
+        """Delete a flowchart from the MSBF instance."""
+
+        if name not in self._flowcharts:
+            raise KeyError(f"Flowchart with name {name} does not exist!")
+
+        del self._flowcharts[name]

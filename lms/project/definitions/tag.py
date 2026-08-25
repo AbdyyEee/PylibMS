@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from lms.common.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType
 
 
 class LMS_TagGroup:
@@ -12,7 +12,7 @@ class LMS_TagGroup:
     ):
         self._name = name
         self._id = group_id
-        self._tag_indexes = tag_indexes
+        self._tag_indices = tag_indexes
 
         self.tag_definitions: list[LMS_TagDefinition] = []
 
@@ -31,26 +31,26 @@ class LMS_TagGroup:
             list_items: list[list[str]],
     ) -> None:
 
-        self.tag_definitions.extend(tag_definitions[i] for i in self._tag_indexes)
+        self.tag_definitions.extend(tag_definitions[i] for i in self._tag_indices)
         for tag in self.tag_definitions:
             tag.parameter_definitions.extend(
-                parameter_definitions[i] for i in tag.parameter_indexes
+                parameter_definitions[i] for i in tag.parameter_indices
             )
             for parameter in tag.parameter_definitions:
                 if parameter.datatype is LMS_DataType.LIST:
-                    parameter.list_items = [list_items[i] for i in parameter.list_indexes]
+                    parameter.list_items = [list_items[i] for i in parameter.list_indices]
 
 
 class LMS_TagDefinition:
     def __init__(
             self,
             name: str,
-            parameter_indexes: list[int],
+            parameter_indices: list[int],
             parameter_definitions: list[LMS_TagParamDefinition] | None = None,
     ):
         self._name = name
         self._parameter_indexes = (
-            parameter_indexes if parameter_indexes is not None else []
+            parameter_indices if parameter_indices is not None else []
         )
         self.parameter_definitions = (
             parameter_definitions if parameter_definitions is not None else []
@@ -61,7 +61,7 @@ class LMS_TagDefinition:
         return self._name
 
     @property
-    def parameter_indexes(self) -> list[int]:
+    def parameter_indices(self) -> list[int]:
         return self._parameter_indexes
 
 
@@ -76,7 +76,7 @@ class LMS_TagParamDefinition:
         self.list_items: list[str] = []
 
         self._datatype = datatype
-        self._list_indexes = list_indexes if list_indexes is not None else []
+        self._list_indices = list_indexes if list_indexes is not None else []
 
     @property
     def name(self) -> str:
@@ -87,5 +87,5 @@ class LMS_TagParamDefinition:
         return self._datatype
 
     @property
-    def list_indexes(self) -> list[int]:
-        return self._list_indexes
+    def list_indices(self) -> list[int]:
+        return self._list_indices
