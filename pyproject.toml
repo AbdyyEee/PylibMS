@@ -2,6 +2,9 @@
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include = ["lms*"]
+
 [project]
 name = "PyLibMS"
 version = "4.0.0"
@@ -10,7 +13,8 @@ description = "Python library built for the libMessageStudio (LMS) proprietary f
 readme = "README.md"
 authors = [{ name = "AbdyyEee" }]
 keywords = ["nintendo", "msbf", "msbt", "msbp", "modding", "lms", "libmessagestudio", "flw3"]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE*"]
 dependencies = ["PyYAML>=6.0.1"]
 
 [project.urls]
