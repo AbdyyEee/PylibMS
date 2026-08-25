@@ -201,7 +201,7 @@ def write_flw3(writer: FileWriter, nodes: list[LMS_BaseNode], stream_ids: dict[L
                 writer.write_bytes(b"\x00" * 2)
                 writer.write_bytes(b"\x00" * 4)
 
-                write_next_node_id(writer, stream_ids[node.next_node])
+                write_next_node_id(writer, None if node.next_node is None else stream_ids[node.next_node])
 
                 writer.write_uint16(node.msbt_index)
                 writer.write_uint16(node.label_index)
