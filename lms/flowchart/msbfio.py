@@ -132,9 +132,7 @@ def write_msbf(file: MSBF) -> bytes:
         for flowchart in file
     }
 
-    print(index_map)
     write_section(writer, "FLW3", write_flw3, nodes, stream_ids)
-
     write_section(writer, "FEN1", write_labels, list(file.flowcharts.keys()), MSBF.DEFAULT_SLOT_COUNT, index_map)
     write_file_size(writer)
     return writer.get_data()

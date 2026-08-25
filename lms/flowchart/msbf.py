@@ -73,7 +73,6 @@ class MSBF:
         if entry_point is None:
             entry_point = LMS_EntryNode(self.generate_next_id(), flowchart_name=flowchart_name)
 
-        print(entry_point.id)
         flowchart = LMS_Flowchart(entry_point, self.generate_next_id)
         self._flowcharts[flowchart_name] = flowchart
         return flowchart

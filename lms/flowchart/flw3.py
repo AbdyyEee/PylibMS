@@ -148,7 +148,6 @@ def evaluate_node_parameter(reader: FileReader,
         result = {}
 
         if parameter_type is LMS_NodeParameterType.STRING:
-            print(definition, definition.parameter_type, parameter_type)
             param_definition = definition.parameter_definitions[0]
             value = reader.read_string_offset(section_start)
 
