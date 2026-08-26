@@ -24,7 +24,7 @@ MSBT/MSBF
 
 ```py
 from lms.message.msbtio import read_msbt_path
-from lms.message.msbfio import read_msbf_path
+from lms.flowchart.msbfio import read_msbf_path
 
 msbt = read_msbt_path("Game.msbt")
 msbf = read_msbf_path("Game_Flowchart.msbf")
@@ -34,7 +34,7 @@ msbf = read_msbf_path("Game_Flowchart.msbf")
 
 ```py
 from lms.message.msbtio import write_msbt_path
-from lms.message.msbfio import write_msbf_path
+from lms.flowchart.msbfio import write_msbf_path
 
 write_msbt_path("Out_Game.msbt")
 write_msbf_path("Out_Game_Flowchart.msbt")
