@@ -9,7 +9,9 @@ PylibMS is a library built in Python 3.12+ for the libMessageStudio (LMS) propri
 | MSBF        | ✅    | ✅     | Flexible node + parameter decoding through configuration definitions.                     |
 | MSBP        | ✅    | ❌     | N/A                                                                                       |
 
-This library is designed to support LMS revision 3.0+ from most Nintendo consoles. However, MSBF files that use `FLW1` and `FLW2` are not supported.
+This library is designed to support LMS revision 3.0+ from most Nintendo consoles. 
+
+**Note**: MSBF files that use `FLW1` and `FLW2` are not supported, and will not be supported as they are revision <3.0 of LMS.
 
 # Features and Usage
 
@@ -22,7 +24,7 @@ MSBT/MSBF
 
 ```py
 from lms.message.msbtio import read_msbt_path
-from lms.message.msbfio import read_msbf_path
+from lms.flowchart.msbfio import read_msbf_path
 
 msbt = read_msbt_path("Game.msbt")
 msbf = read_msbf_path("Game_Flowchart.msbf")
@@ -32,7 +34,7 @@ msbf = read_msbf_path("Game_Flowchart.msbf")
 
 ```py
 from lms.message.msbtio import write_msbt_path
-from lms.message.msbfio import write_msbf_path
+from lms.flowchart.msbfio import write_msbf_path
 
 write_msbt_path("Out_Game.msbt")
 write_msbf_path("Out_Game_Flowchart.msbt")
