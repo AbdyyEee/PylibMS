@@ -9,7 +9,9 @@ PylibMS is a library built in Python 3.12+ for the libMessageStudio (LMS) propri
 | MSBF        | ✅    | ✅     | Flexible node + parameter decoding through configuration definitions.                     |
 | MSBP        | ✅    | ❌     | N/A                                                                                       |
 
-This library is designed to support LMS revision 3.0+ from most Nintendo consoles. However, MSBF files that use `FLW1` and `FLW2` are not supported.
+This library is designed to support LMS revision 3.0+ from most Nintendo consoles. 
+
+**Note**: MSBF files that use `FLW1` and `FLW2` are not supported, and will not be supported as they are revision <3.0 of LMS.
 
 # Features and Usage
 
