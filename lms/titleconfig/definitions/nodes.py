@@ -93,7 +93,7 @@ class NodeDefinition:
         return NodeDefinition(
             name=data["name"],
             id=id,
-            description=data["description"],
+            description=data.get("description", ""),
             type=node_type,
             parameter_type=parameter_type,
             parameter_definitions=converted_parameters,
