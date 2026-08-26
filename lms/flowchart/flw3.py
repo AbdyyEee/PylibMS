@@ -261,7 +261,7 @@ def write_flw3(writer: FileWriter, nodes: list[LMS_BaseNode], stream_ids: dict[L
                 writer.write_bytes(b"\x00" * 2)
                 writer.write_bytes(b"\x00" * 4)
 
-                write_next_node_id(writer, node.next_node_id)
+                write_next_node_id(writer, None if node.next_node is None else stream_ids[node.next_node])
                 writer.skip(6)
             case LMS_JumpNode():
                 writer.write_bytes(b"\x00" * 2)
