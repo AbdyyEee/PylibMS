@@ -23,6 +23,10 @@ def read_file_info(reader: FileReader, expected_magic: str) -> LMS_FileInfo:
     reader.encoding = encoding
 
     version = reader.read_uint8()
+
+    if version < 3:
+        raise lms_exceptions.LMS_UnsupportedFileVersionError("Only version 3+ files are supported!")
+
     section_count = reader.read_uint16()
 
     reader.skip(2)
