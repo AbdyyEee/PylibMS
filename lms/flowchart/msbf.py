@@ -1,6 +1,7 @@
 from types import MappingProxyType
 
 from lms.common.lms_fileinfo import LMS_FileInfo
+from lms.fileio.encoding import FileEncoding
 from lms.flowchart.definitions.flowchart import LMS_Flowchart
 from lms.flowchart.definitions.node import LMS_EntryNode
 
@@ -34,6 +35,23 @@ class MSBF:
 
     def __len__(self):
         return len(self._flowcharts)
+
+    @classmethod
+    def new(cls,
+            is_big_endian: bool = False,
+            encoding: FileEncoding = FileEncoding.UTF16,
+            version: int = 3,
+            section_count: int = 2):
+        """
+        Create a new MSBF instance.
+
+        :param is_big_endian: if the file is big endian.
+        :param encoding: the file encoding.
+        :param version: the file version.
+        :param section_count: the number of sections.
+
+        """
+        return MSBF(LMS_FileInfo(is_big_endian, encoding, version, section_count))
 
     @property
     def info(self) -> LMS_FileInfo:
