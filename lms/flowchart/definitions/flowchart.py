@@ -53,7 +53,6 @@ class LMS_Flowchart:
         if node in self._nodes.values():
             raise ValueError(f"Node of ID '{node.id}' is already registered to this flowchart!")
 
-
         node.id = self._id_generator()
         self._nodes[node.id] = node
 

@@ -24,10 +24,9 @@ class MSBF:
     DEFAULT_SLOT_COUNT = 59
 
     def __init__(self, info: LMS_FileInfo | None = None,
-                 flowcharts: dict[str, LMS_Flowchart] = None):
+                 flowcharts: list[LMS_Flowchart] = None):
         self._info = info if info is not None else LMS_FileInfo()
-        self._flowcharts: dict[str, LMS_Flowchart] = flowcharts or {}
-
+        self._flowcharts = flowcharts or []
         self._global_node_id = 0
 
     def __iter__(self):
@@ -44,7 +43,7 @@ class MSBF:
     @property
     def flowcharts(self) -> MappingProxyType[str, LMS_Flowchart]:
         """The flowcharts of the MSBF instance."""
-        return MappingProxyType(self._flowcharts)
+        return MappingProxyType({flowchart.name: flowchart for flowchart in self._flowcharts})
 
     @property
     def global_node_id(self) -> int:
@@ -67,14 +66,14 @@ class MSBF:
 
         :param flowchart_name: The name of the new flowchart.
         """
-        if flowchart_name in self._flowcharts:
+        if flowchart_name in self.flowcharts:
             raise KeyError(f"Flowchart with name '{flowchart_name}' already exists!")
 
         if entry_point is None:
             entry_point = LMS_EntryNode(self.generate_next_id(), flowchart_name=flowchart_name)
 
         flowchart = LMS_Flowchart(entry_point, self.generate_next_id)
-        self._flowcharts[flowchart_name] = flowchart
+        self._flowcharts.append(flowchart)
         return flowchart
 
     def delete_flowchart(self, name: str):
