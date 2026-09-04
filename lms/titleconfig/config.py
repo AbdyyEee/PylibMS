@@ -1,5 +1,9 @@
-from importlib import resources
+import hashlib
+import os.path
+from pathlib import Path
+from typing import Literal, get_args
 
+import requests
 import yaml
 
 from lms.common.field.lms_datatype import LMS_DataType
@@ -9,6 +13,8 @@ from lms.titleconfig.definitions.attribute import AttributeConfig
 from lms.titleconfig.definitions.nodes import NodeConfig, NodeDefinition
 from lms.titleconfig.definitions.tags import TagConfig, TagDefinition
 from lms.titleconfig.definitions.value import ValueDefinition
+
+PRESETS_URL = "https://api.github.com/repos/AbdyyEee/PyLibMS/contents/lms/titleconfig/presets"
 
 
 class TitleConfig:
@@ -20,9 +26,17 @@ class TitleConfig:
     ATTR_KEY = "attribute_definitions"
     NODE_KEY = "node_definitions"
 
-    PRESET_LIST = [
-        file.name.removesuffix(".yaml")
-        for file in resources.files("lms.titleconfig.presets").iterdir()
+    GAME_PRESET = Literal[
+        "Badge Arcade",
+        "Brain Age Concentration Training",
+        "Kirby Planet Robobot",
+        "Super Mario Odyssey",
+        "Super Mario 3D Land",
+        "Super Mario 3D World + Bowsers Fury",
+        "The Legend of Zelda a Link Between Worlds",
+        "The Legend of Zelda Echos of Wisdom",
+        "Tomodachi Life Living The Dream",
+        "Tomodachi Life NA-EU",
     ]
 
     def __init__(
@@ -41,6 +55,84 @@ class TitleConfig:
     def game(self) -> str | None:
         """The name of the game for the titleconfig."""
         return self._game
+
+    @classmethod
+    def get_preset_list(cls) -> tuple[str, ...]:
+        """Get the current preset list."""
+        return get_args(cls.GAME_PRESET)
+
+    @classmethod
+    def preset_has_update(cls, game: GAME_PRESET) -> bool:
+        """
+        Checks whether a preset has an available update.
+
+        :param game: the game preset.
+        """
+        preset_list = cls._request_preset_list()
+
+        if f"{game}.yaml" not in os.listdir("presets"):
+            raise FileNotFoundError(f"Preset '{game}.yaml' was not found!")
+
+        path = os.path.join("presets", f"{game}.yaml")
+
+        with open(path, "rb") as f:
+            data = f.read().replace(b"\r\n", b"\n")
+
+        # Blob calculation https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html
+        local_hash = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+
+        return local_hash != preset_list[game.lower()]["sha"]
+
+    @classmethod
+    def download_preset(cls, game: GAME_PRESET):
+        """
+        Fetches a preset from the repository and loads it to ./presets
+
+        :param game: the game preset.
+
+        List of presets:
+
+        https://github.com/AbdyyEee/PylibMS/tree/main/lms/titleconfig/presets
+        """
+
+        preset_list = cls._request_preset_list()
+
+        if game.lower() not in preset_list:
+            raise FileNotFoundError(f"Preset '{game}' not found.")
+
+        raw = cls._request_preset_file(game, preset_list)
+
+        if "presets" not in os.path.join(os.getcwd(), "presets", f"{game}.yaml"):
+            Path("presets").mkdir()
+
+        path = os.path.join("presets", f"{game}.yaml")
+        with open(path, "wb") as f:
+            f.write(raw.content)
+
+    @classmethod
+    def _request_preset_list(cls) -> dict[str, dict]:
+        result = {}
+
+        try:
+            folder_response = requests.get(PRESETS_URL, timeout=10)
+            folder_response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError("An error occurred fetching the preset list!") from e
+
+        for preset in folder_response.json():
+            result[os.path.basename(preset["path"]).lower().removesuffix(".yaml")] = preset
+
+        return result
+
+    @classmethod
+    def _request_preset_file(cls, game: str, preset_list: dict) -> requests.Response:
+        try:
+            raw_response = requests.get(preset_list[game.lower()]["download_url"], timeout=10)
+            raw_response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            raise RuntimeError(f"An error occurred fetching the file data for preset '{game}'") from e
+
+        return raw_response
 
     @property
     def tag_config(self) -> TagConfig | None:
@@ -74,26 +166,6 @@ class TitleConfig:
     def node_config(self) -> NodeConfig:
         """The loaded node configuration."""
         return self._node_config
-
-    @classmethod
-    def load_preset(cls, game: str):
-        """
-        Loads an existing preset from a game.
-
-        :param game: the game preset.
-
-        The list of presets are found with `TitleConfig.preset_list`.
-        """
-        # TODO: Load presets via requests instead of hard-coded files in the library
-        preset_map = {preset.lower(): preset for preset in cls.PRESET_LIST}
-
-        if game.lower() not in preset_map:
-            raise FileNotFoundError(f"Preset '{game}' not found.")
-
-        actual_name = preset_map[game.lower()]
-
-        with resources.open_text("lms.titleconfig.presets", f"{actual_name}.yaml") as f:
-            return cls.load_config(f.read())
 
     @classmethod
     def load_file(cls, file_path: str):
