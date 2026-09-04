@@ -77,7 +77,7 @@ tag_definitions:
       description: 'Alters the size of the text.'
       parameters:
         - name: percent
-          description: 'The size as a percentage'
+          description: 'The size as a percentage.'
           datatype: uint16
     - name: Color
       group_id: 0
