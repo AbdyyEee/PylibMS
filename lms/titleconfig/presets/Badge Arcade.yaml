@@ -26,7 +26,7 @@ tag_definitions:
     - name: Size
       group_id: 0
       tag_index: 2
-      description: ''
+      description: 'Alters size of text.'
       parameters:
         - name: percent
           description: ''
