@@ -1,6 +1,6 @@
 import hashlib
 import os.path
-from pathlib import Path
+import pathlib
 from typing import Literal, get_args
 
 import requests
@@ -103,7 +103,7 @@ class TitleConfig:
         raw = cls._request_preset_file(game, preset_list)
 
         if "presets" not in os.path.join(os.getcwd(), "presets", f"{game}.yaml"):
-            Path("presets").mkdir()
+            pathlib.Path("presets").mkdir()
 
         path = os.path.join("presets", f"{game}.yaml")
         with open(path, "wb") as f:
