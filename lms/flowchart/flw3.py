@@ -9,7 +9,7 @@ from lms.flowchart.definitions.node_type import LMS_NodeType, LMS_NodeParameterT
 from lms.message.msbt import MSBT
 from lms.titleconfig.definitions.nodes import NodeConfig, NodeDefinition
 
-NO_NEXT_NODE = -1
+NO_NEXT_NODE = 0xFFFF
 FLW3_HEADER_SIZE = 16
 NODE_SIZE = 16
 
@@ -50,7 +50,7 @@ def read_flw3(reader: FileReader, config: NodeConfig | None, msbt: MSBT | None, 
                 reader.skip(2 + 4)
 
                 condition_id = reader.read_uint16()
-                case_count = reader.read_int16()
+                case_count = reader.read_uint16()
                 table_index = reader.read_uint16()
                 end = reader.tell()
 
@@ -86,7 +86,7 @@ def read_flw3(reader: FileReader, config: NodeConfig | None, msbt: MSBT | None, 
             case LMS_NodeType.JUMP:
                 reader.seek(node_data)
                 next_flowchart_id = read_next_node_id(reader)
-                unknown_short0a = reader.read_int16()
+                unknown_short0a = reader.read_uint16()
                 node = LMS_JumpNode(i, next_flowchart_id, unknown_short0a)
                 reader.skip(4)
 
@@ -121,7 +121,7 @@ def read_flw3(reader: FileReader, config: NodeConfig | None, msbt: MSBT | None, 
 
 
 def read_next_node_id(reader: FileReader) -> int | None:
-    return None if (id := reader.read_int16()) == NO_NEXT_NODE else id
+    return None if (id := reader.read_uint16()) == NO_NEXT_NODE else id
 
 
 def get_config_definition(config: NodeConfig,
@@ -163,15 +163,15 @@ def evaluate_node_parameter(reader: FileReader,
         # Default parameter reading
         match parameter_type:
             case LMS_NodeParameterType.PARAM_32_0 | LMS_NodeParameterType.PARAM_32_1:
-                return reader.read_int32()
+                return reader.read_uint32()
             case LMS_NodeParameterType.PARAM_16_16:
-                return reader.read_int16(), reader.read_int16()
+                return reader.read_uint16(), reader.read_uint16()
             case LMS_NodeParameterType.PARAM_16_8_8:
-                return reader.read_int16(), reader.read_int8(), reader.read_int8()
+                return reader.read_uint16(), reader.read_uint8(), reader.read_uint8()
             case LMS_NodeParameterType.PARAM_8_8_16:
-                return reader.read_int8(), reader.read_int8(), reader.read_int16()
+                return reader.read_uint8(), reader.read_uint8(), reader.read_uint16()
             case LMS_NodeParameterType.PARAM_8_8_8_8:
-                return reader.read_int8(), reader.read_int8(), reader.read_int8(), reader.read_int8()
+                return reader.read_uint8(), reader.read_uint8(), reader.read_uint8(), reader.read_uint8()
             case LMS_NodeParameterType.STRING:
                 return reader.read_string_offset(section_start)
             case _:
@@ -227,11 +227,11 @@ def write_flw3(writer: FileWriter, nodes: list[LMS_BaseNode], stream_ids: dict[L
                 starting_index = len(branch_table)
                 for branch in node.branches.values():
                     if branch is None:
-                        branch_table.append(-1)
+                        branch_table.append(NO_NEXT_NODE)
                     else:
                         branch_table.append(stream_ids[branch])
 
-                writer.write_int16(NO_NEXT_NODE)
+                writer.write_uint16(NO_NEXT_NODE)
 
                 writer.write_uint16(node.condition_id)
                 writer.write_uint16(node.case_count)
@@ -268,11 +268,11 @@ def write_flw3(writer: FileWriter, nodes: list[LMS_BaseNode], stream_ids: dict[L
                 writer.write_bytes(b"\x00" * 4)
 
                 write_next_node_id(writer, stream_ids[node.next_flowchart])
-                writer.write_int16(node.unknown_short0a)
+                writer.write_uint16(node.unknown_short0a)
                 writer.skip(4)
 
     for node_id in branch_table:
-        writer.write_int16(node_id)
+        writer.write_uint16(node_id)
 
     string_offset = FLW3_HEADER_SIZE + (NODE_SIZE * node_count) + (2 * len(branch_table))
 
@@ -303,24 +303,24 @@ def write_node_parameter(writer: FileWriter,
 
     match parameter_type:
         case LMS_NodeParameterType.PARAM_32_0 | LMS_NodeParameterType.PARAM_32_1:
-            writer.write_int32(value)
+            writer.write_uint32(value)
         case LMS_NodeParameterType.PARAM_16_16:
-            writer.write_int16(value[0])
-            writer.write_int16(value[1])
+            writer.write_uint16(value[0])
+            writer.write_uint16(value[1])
         case LMS_NodeParameterType.PARAM_16_8_8:
-            writer.write_int16(value[0])
-            writer.write_int8(value[1])
-            writer.write_int8(value[2])
+            writer.write_uint16(value[0])
+            writer.write_uint8(value[1])
+            writer.write_uint8(value[2])
         case LMS_NodeParameterType.PARAM_8_8_16:
-            writer.write_int8(value[0])
-            writer.write_int8(value[1])
-            writer.write_int16(value[2])
+            writer.write_uint8(value[0])
+            writer.write_uint8(value[1])
+            writer.write_uint16(value[2])
         case LMS_NodeParameterType.PARAM_8_8_8_8:
-            writer.write_int8(value[0])
-            writer.write_int8(value[1])
-            writer.write_int8(value[2])
-            writer.write_int8(value[3])
+            writer.write_uint8(value[0])
+            writer.write_uint8(value[1])
+            writer.write_uint8(value[2])
+            writer.write_uint8(value[3])
 
 
 def write_next_node_id(writer: FileWriter, id: int | None) -> None:
-    writer.write_int16(NO_NEXT_NODE if id is None else id)
+    writer.write_uint16(NO_NEXT_NODE if id is None else id)

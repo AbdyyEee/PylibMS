@@ -31,7 +31,7 @@ class MSBF:
         self._global_node_id = 0
 
     def __iter__(self):
-        return iter(self._flowcharts.values())
+        return iter(self._flowcharts)
 
     def __len__(self):
         return len(self._flowcharts)

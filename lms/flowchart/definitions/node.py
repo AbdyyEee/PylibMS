@@ -122,8 +122,8 @@ class LMS_MessageNode(LMS_BaseNode):
             stream_next_node
         )
 
-        self._msbt_index = msbt_index
-        self._entry_index = label_index
+        self.msbt_index = msbt_index
+        self.label_index = label_index
         self._msbt = msbt
 
     @classmethod
@@ -146,16 +146,6 @@ class LMS_MessageNode(LMS_BaseNode):
         :param msbt: the MSBT file.
         """
         return cls(None, None, file_index, msbt.entries.index(entry), msbt)
-
-    @property
-    def msbt_index(self) -> int:
-        """Index of the MSBT file the node references in a folder/archive."""
-        return self._msbt_index
-
-    @property
-    def label_index(self) -> int:
-        """Index of the MSBT entry the node references in the file."""
-        return self._entry_index
 
     @property
     def msbt(self) -> MSBT | None:

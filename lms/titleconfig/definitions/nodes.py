@@ -69,16 +69,16 @@ class NodeDefinition:
             if datatype_from_dict is None:
                 match parameter_type:
                     case LMS_NodeParameterType.PARAM_32_0 | LMS_NodeParameterType.PARAM_32_1:
-                        datatype_from_dict = LMS_DataType.INT32
+                        datatype_from_dict = LMS_DataType.UINT32
                     case LMS_NodeParameterType.PARAM_16_16:
-                        datatype_from_dict = (LMS_DataType.INT16, LMS_DataType.INT16)[i]
+                        datatype_from_dict = (LMS_DataType.UINT16, LMS_DataType.UINT16)[i]
                     case LMS_NodeParameterType.PARAM_16_8_8:
-                        datatype_from_dict = (LMS_DataType.INT16, LMS_DataType.INT8, LMS_DataType.INT8)[i]
+                        datatype_from_dict = (LMS_DataType.UINT16, LMS_DataType.UINT8, LMS_DataType.UINT8)[i]
                     case LMS_NodeParameterType.PARAM_8_8_16:
-                        datatype_from_dict = (LMS_DataType.INT8, LMS_DataType.INT8, LMS_DataType.INT16)[i]
+                        datatype_from_dict = (LMS_DataType.UINT8, LMS_DataType.UINT8, LMS_DataType.UINT16)[i]
                     case LMS_NodeParameterType.PARAM_8_8_8_8:
                         datatype_from_dict = \
-                            (LMS_DataType.INT8, LMS_DataType.INT8, LMS_DataType.INT8, LMS_DataType.INT8)[i]
+                            (LMS_DataType.UINT8, LMS_DataType.UINT8, LMS_DataType.UINT8, LMS_DataType.UINT8)[i]
                     case LMS_NodeParameterType.STRING:
                         datatype_from_dict = LMS_DataType.STRING
                 definition = ValueDefinition(parameter["name"], data.get("description", ""), datatype_from_dict,
