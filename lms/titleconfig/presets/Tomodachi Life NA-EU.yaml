@@ -3,7 +3,6 @@ node_definitions:
   branch:
     - id: 0
       name: EvaluateExpression
-      description: ''
       parameter_type: string
       parameters:
         - name: exp
