@@ -33,7 +33,6 @@ node_definitions:
       parameter_type: string
       parameters:
         - name: group
-          description: ''
     - id: 96
       name: PlaySE
       parameter_type: string
