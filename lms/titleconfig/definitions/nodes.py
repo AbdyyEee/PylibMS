@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from lms.common.field.lms_datatype import LMS_DataType
