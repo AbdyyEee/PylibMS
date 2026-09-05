@@ -62,7 +62,7 @@ class TitleConfig:
         return get_args(cls.GAME_PRESET)
 
     @classmethod
-    def preset_has_update(cls, game: GAME_PRESET) -> bool:
+    def check_for_preset_updates(cls) -> dict[str, bool]:
         """
         Checks whether a preset has an available update.
 
@@ -70,18 +70,23 @@ class TitleConfig:
         """
         preset_list = cls._request_preset_list()
 
-        if f"{game}.yaml" not in os.listdir("presets"):
-            raise FileNotFoundError(f"Preset '{game}.yaml' was not found!")
+        result = {}
 
-        path = os.path.join("presets", f"{game}.yaml")
+        for preset in preset_list:
+            if f"{preset}.yaml" not in os.listdir("presets"):
+                continue
 
-        with open(path, "rb") as f:
-            data = f.read().replace(b"\r\n", b"\n")
+            path = os.path.join("presets", f"{preset}.yaml")
 
-        # Blob calculation https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html
-        local_hash = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+            with open(path, "rb") as f:
+                data = f.read().replace(b"\r\n", b"\n")
 
-        return local_hash != preset_list[game.lower()]["sha"]
+            # Blob calculation https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html
+            local_hash = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+
+            result[preset] = local_hash != preset_list[preset]["sha"]
+
+        return result
 
     @classmethod
     def download_preset(cls, game: GAME_PRESET):
@@ -97,13 +102,12 @@ class TitleConfig:
 
         preset_list = cls._request_preset_list()
 
-        if game.lower() not in preset_list:
+        if game.lower() not in {preset.lower(): data for preset, data in preset_list.items()}:
             raise FileNotFoundError(f"Preset '{game}' not found.")
 
         raw = cls._request_preset_file(game, preset_list)
 
-        if "presets" not in os.path.join(os.getcwd(), "presets", f"{game}.yaml"):
-            pathlib.Path("presets").mkdir()
+        pathlib.Path("presets").mkdir(exist_ok=True)
 
         path = os.path.join("presets", f"{game}.yaml")
         with open(path, "wb") as f:
@@ -120,14 +124,14 @@ class TitleConfig:
             raise RuntimeError("An error occurred fetching the preset list!") from e
 
         for preset in folder_response.json():
-            result[os.path.basename(preset["path"]).lower().removesuffix(".yaml")] = preset
+            result[os.path.basename(preset["path"]).removesuffix(".yaml")] = preset
 
         return result
 
     @classmethod
     def _request_preset_file(cls, game: str, preset_list: dict) -> requests.Response:
         try:
-            raw_response = requests.get(preset_list[game.lower()]["download_url"], timeout=10)
+            raw_response = requests.get(preset_list[game]["download_url"], timeout=10)
             raw_response.raise_for_status()
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"An error occurred fetching the file data for preset '{game}'") from e
