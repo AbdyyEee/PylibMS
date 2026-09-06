@@ -5,7 +5,8 @@ from types import MappingProxyType
 from typing import Generator
 
 import lms.flowchart.definitions.lms_nodeexceptions as node_exceptions
-from lms.common.field.lms_field import LMS_FieldMap
+from lms.common.field.lms_datatype import LMS_DataType
+from lms.common.field.lms_field import LMS_FieldMap, verify_number_from_datatype
 from lms.common.lms_exceptions import LMS_Error
 from lms.flowchart.definitions.node_type import LMS_NodeType, LMS_NodeParameterType
 from lms.message.msbt import MSBT
@@ -63,6 +64,37 @@ class LMS_BaseNode:
     def parameter_value(self) -> LMS_NodeParameter | None:
         """The parameter value of the node."""
         return self._parameter_value
+
+    @parameter_value.setter
+    def parameter_value(self, value: LMS_NodeParameter):
+        if self._parameter_type == LMS_NodeParameterType.NONE:
+            raise TypeError("Unable to set parameter values when there is no parameter!")
+
+        if isinstance(self._parameter_value, LMS_FieldMap):
+            raise ValueError("Edit a parameter value through the value property of a field!")
+
+        if not isinstance(value, self._parameter_type.builtin_type):
+            raise TypeError(f"Wrong value provided! Expected {self._parameter_type.builtin_type} got {type(value)}")
+
+        sliced_datatype = {
+            LMS_NodeParameterType.PARAM_16_16: (LMS_DataType.UINT16, LMS_DataType.UINT16),
+            LMS_NodeParameterType.PARAM_16_8_8: (LMS_DataType.UINT16, LMS_DataType.UINT8, LMS_DataType.UINT8),
+            LMS_NodeParameterType.PARAM_8_8_16: (LMS_DataType.UINT8, LMS_DataType.UINT8, LMS_DataType.UINT16),
+            LMS_NodeParameterType.PARAM_8_8_8_8: (LMS_DataType.UINT8, LMS_DataType.UINT8, LMS_DataType.UINT8,
+                                                  LMS_DataType.UINT8)
+        }
+
+        match self._parameter_type:
+            case LMS_NodeParameterType.STRING:
+                self._parameter_value = value
+            case LMS_NodeParameterType.PARAM_32_0 | LMS_NodeParameterType.PARAM_32_1:
+                verify_number_from_datatype(value, LMS_DataType.UINT32)
+                self._parameter_value = value
+            case _:
+                for i, parameter in enumerate(value):
+                    verify_number_from_datatype(parameter, sliced_datatype[self._parameter_type][i])
+
+        self._parameter_value = value
 
     def set_next_node(self, node: LMS_BaseNode | None) -> LMS_BaseNode | None:
         """Set the next node for the instance.

@@ -3,6 +3,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import Type, TypeGuard
 
+FLOAT32_MIN = -3.4028235e38
+FLOAT32_MAX = 3.4028235e38
+
 ALIAS_MAP = {
     "u8": "UINT8",
     "u16": "UINT16",
@@ -132,3 +135,25 @@ class LMS_DataType(Enum):
             return cls[alias_member]
         else:
             raise ValueError(f"Unknown value of '{string}' was provided!")
+
+
+def verify_number_from_datatype(
+        value: int | float,
+        datatype: LMS_DataType,
+):
+    if datatype is LMS_DataType.FLOAT32:
+        max_value = FLOAT32_MAX
+        min_value = FLOAT32_MIN
+    else:
+        bits = datatype.stream_size * 8
+        if datatype.signed:
+            max_value = 2 ** (bits - 1)
+            min_value = -max_value
+        else:
+            min_value, max_value = 0, (2 ** bits) - 1
+
+    if not min_value <= value <= max_value:
+        raise ValueError(
+            f"""The value '{value}' of type '{datatype.name}' provided
+            is out of range of ({min_value}, {max_value})"""
+        )

@@ -3,11 +3,8 @@ from __future__ import annotations
 from collections.abc import Iterator
 from dataclasses import dataclass
 
-from lms.common.field.lms_datatype import LMS_DataType
+from lms.common.field.lms_datatype import LMS_DataType, verify_number_from_datatype
 from lms.titleconfig.definitions.value import ValueDefinition
-
-FLOAT32_MIN = -3.4028235e38
-FLOAT32_MAX = 3.4028235e38
 
 type FieldValue = int | str | float | bool | bytes
 
@@ -164,31 +161,9 @@ def _verify_value_from_definition(
             else:
                 return
         case _ if isinstance(value, int):
-            _verify_number_datatype(value, definition.datatype)
+            verify_number_from_datatype(value, definition.datatype)
             return
 
     raise TypeError(
         f"The value provided for '{definition.name}' type '{type(value)}' should be '{datatype.builtin_type}' (DATATYPE {definition.datatype})."
     )
-
-
-def _verify_number_datatype(
-        value: int | float,
-        datatype: LMS_DataType,
-):
-    if datatype is LMS_DataType.FLOAT32:
-        max_value = FLOAT32_MAX
-        min_value = FLOAT32_MIN
-    else:
-        bits = datatype.stream_size * 8
-        if datatype.signed:
-            max_value = 2 ** (bits - 1)
-            min_value = -max_value
-        else:
-            min_value, max_value = 0, (2 ** bits) - 1
-
-    if not min_value <= value <= max_value:
-        raise ValueError(
-            f"""The value '{value}' of type '{datatype.name}' provided for this field
-            is out of range of ({min_value}, {max_value})"""
-        )
